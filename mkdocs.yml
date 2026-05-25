@@ -55,3 +55,90 @@ plugins:
 
 nav:
   - Home: index.md
+  - Downloads: downloads.md
+  - About:
+      - Features: features.md
+      - License: license.md
+      - Contributors: contributors.md
+  - Documentation:
+      - User Guide: documentation/end-users-docs.md
+      - FAQ: documentation/faq.md
+      - Technical Documentation:
+          - Overview: documentation/technical-docs.md
+          - Poudriere image: documentation/technical-docs/poudriere.md
+          - NanoBSD: documentation/technical-docs/nanobsd.md
+          - FreeBSD Forwarding Performance: documentation/technical-docs/performance.md
+          - FreeBSD networking performance lab: documentation/technical-docs/bench-lab.md
+      - Examples, Labs & Benchmarks:
+          - Overview: documentation/examples.md
+          - How to build a BSDRP router lab: documentation/examples/how-to-build-a-bsdrp-router-lab.md
+          - Routing labs:
+              - Multi-tenant router and firewall: documentation/examples/multi-tenant-router-and-firewall.md
+              - Simple BGP/RIP/OSPF/ISIS/BABEL with FRRouting: documentation/examples/simple-bgp-rip-ospf-lab.md
+              - Simple BGP/RIP/OSPF/BABEL with bird: documentation/examples/simple-bgp-rip-ospf-lab-with-bird.md
+              - BGP Route Reflector and Confederation: documentation/examples/bgp-route-reflector-and-confederation-using-quagga-and-bird.md
+              - OSPF inter-area loop prevention: documentation/examples/ospf-inter-area-loop-prevention.md
+              - Multicast with PIM-DM: documentation/examples/multicast-with-pim-dm.md
+              - Multicast with PIM-SM: documentation/examples/multicast-with-pim-sm.md
+              - Equal-cost multi-path (ECMP): documentation/examples/ecmp.md
+              - Lab with CARP, Xorp and Quagga: documentation/examples/lab-with-carp-xorp-and-quagga.md
+          - High availability:
+              - Multi-tenant HA pf firewalls: documentation/examples/multi-tenant-ha-pf-firewalls.md
+              - Simple VRRP lab: documentation/examples/simple-vrrp-lab.md
+              - Simple uCarp lab: documentation/examples/simple-ucarp-lab.md
+              - pf, pfsync, carp and pflog lab: documentation/examples/pf-and-carp-lab.md
+          - VPN:
+              - PPPoE and L2TP with mpd: documentation/examples/pppoe-and-l2tp-lab.md
+              - GRE, GIF, IPSec, OpenVPN and Wireguard: documentation/examples/gre-ipsec-and-openvpn.md
+              - Validating OpenVPN's low-latency servers patch: documentation/examples/validating-openvpn-s-low-latency-servers-selection-patch.md
+              - Aggregating ISP links with ML-PPP (mpd5): documentation/examples/aggregating-multiple-isp-links.md
+              - Aggregating ISP links with MLVPN: documentation/examples/aggregating-multiple-isp-links-with-mlvpn.md
+              - Strongswan IPSec mediation feature: documentation/examples/strongswan-ipsec-mediation-feature.md
+          - DHCP:
+              - DHCP Relay and DHCP Server lab: documentation/examples/dhcp-relay-and-server-lab.md
+          - Firewall:
+              - Dropping packets at high rate: documentation/examples/dropping-packets-at-high-rate.md
+          - Traffic shaping:
+              - Fair traffic shaping per IP (IPFW-Dummynet): documentation/examples/fair-traffic-shaping-per-ip-with-ipfw-dummynet.md
+          - IPv6:
+              - NAT64: documentation/examples/nat64.md
+              - IPv6-only BGP/OSPF/RIPNG/ISIS lab: documentation/examples/ipv6-only-bgp-ospf-ripng-isis-lab-frrouting.md
+          - Benchmarks:
+              - Setting up a forwarding benchmark lab: documentation/examples/setting-up-a-forwarding-performance-benchmark-lab.md
+              - Setting up a VPN performance benchmark lab: documentation/examples/setting-up-a-vpn-ipsec-gre-etc-performance-benchmark-lab.md
+              - HP ProLiant DL360p Gen8:
+                  - Hardware: documentation/examples/hp-proliant-dl360p-gen8.md
+                  - Forwarding (10G Chelsio T540-CR): documentation/examples/forwarding-performance-lab-of-a-hp-proliant-dl360p-gen8-with-10-gigabit-with-10-gigabit-chelsio-t540-cr.md
+              - SuperMicro 5018A-FTN4:
+                  - Hardware: documentation/examples/superserver-5018a-ftn4.md
+                  - Forwarding (10G Chelsio T540-CR): documentation/examples/forwarding-performance-lab-of-a-superserver-5018a-ftn4-with-10-gigabit-chelsio-t540-cr.md
+                  - IPSec performance: documentation/examples/ipsec-performance-of-a-superserver-5018a-ftn4.md
+              - PC Engines APU2:
+                  - Hardware: documentation/examples/pc-engines-apu2.md
+                  - Forwarding: documentation/examples/forwarding-performance-lab-of-a-pc-engines-apu2.md
+                  - IPSec performance: documentation/examples/ipsec-performance-of-a-pc-engines-apu2.md
+              - Netgate RCC-VE 4860:
+                  - Hardware: documentation/examples/netgate-rcc-ve-4860.md
+                  - Forwarding: documentation/examples/forwarding-performance-lab-of-a-netgate-rcc-ve-4860.md
+                  - IPSec performance: documentation/examples/ipsec-performance-of-a-netgate-rcc-ve-4860.md
+              - IBM System x3550 M3:
+                  - Hardware: documentation/examples/ibm-system-x3550-m3.md
+                  - Forwarding (Intel 82580): documentation/examples/forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md
+                  - IPSec (Intel 82580): documentation/examples/ipsec-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md
+                  - OpenVPN (Intel 82580): documentation/examples/openvpn-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md
+                  - Forwarding (10G Intel X540-AT2): documentation/examples/forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-10-gigabit-intel-x540-at2.md
+                  - Forwarding (10G Intel 82599EB): documentation/examples/forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-10-gigabit-intel-82599eb.md
+              - PC Engines APU:
+                  - Hardware: documentation/examples/pc-engines-apu.md
+                  - Forwarding: documentation/examples/forwarding-performance-lab-of-a-pc-engines-apu.md
+                  - IPSec performance: documentation/examples/ipsec-performance-of-a-pc-engines-apu.md
+              - IBM eServer xSeries 306m:
+                  - Hardware: documentation/examples/ibm-eserver-xseries-306m.md
+                  - With Intel 82546GB: documentation/examples/ibm-eserver-306m-with-intel-82546gb.md
+          - Misc:
+              - Maximum BSDRP features lab: documentation/examples/maximum-bsdrp-features-lab.md
+              - Testing graphpath ASCII network diagram tool: documentation/examples/graphpath.md
+              - FreeBSD performance regression lab: documentation/examples/freebsd-performance-regression-lab.md
+  - Community:
+      - Mailing Lists: community/mailing-lists.md
+      - How to contribute: community/how-to-contribute.md
