@@ -6,9 +6,9 @@ hide:
 ---
 # BSD Router Project
 
-*Don’t buy a router: download it !*
+*Don’t buy a router: download it!*
 
-BSD Router Project (BSDRP) is an embedded free and open source software router distribution based on [FreeBSD](http://www.freebsd.org) with [FRRouting](https://frrouting.org/) and [Bird](http://bird.network.cz/).
+BSD Router Project (BSDRP) is an embedded, free and open-source router distribution based on [FreeBSD](http://www.freebsd.org), with [FRRouting](https://frrouting.org/) and [Bird](http://bird.network.cz/).
 
 ## Downloads
 
@@ -35,7 +35,7 @@ More information on the [Downloads page](downloads.md).
 **Documentation**
 
 - [User Guide](documentation/end-users-docs.md)
-- [Examples, Labs and benchmarks](documentation/examples.md)
+- [Examples, labs and benchmarks](documentation/examples.md)
 - [Technical documentation for developers](documentation/technical-docs.md)
 - [Frequently Asked Questions (FAQ)](documentation/faq.md)
 
