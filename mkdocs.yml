@@ -2,7 +2,7 @@ site_name: BSD Router Project
 site_url: https://bsdrp.net/
 site_description: BSD Router Project — open source router distribution based on FreeBSD
 site_author: The BSDRP Development Team
-copyright: Copyright &copy; 2009 The BSDRP Development Team
+copyright: Copyright &copy; 2009-2026 The BSDRP Development Team
 
 repo_url: https://github.com/ocochard/BSDRP
 edit_uri: ""

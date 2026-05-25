@@ -2,7 +2,7 @@
 title: License
 description: "BSD Router Project License: Simplified BSD License"
 ---
-BSD Router Project (BSDRP) © 2009-2018, The BSDRP Development Team
+BSD Router Project (BSDRP) © 2009-2026, The BSDRP Development Team
 
 All rights reserved.
 

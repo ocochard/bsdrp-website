@@ -14,7 +14,7 @@ More information on the [Downloads page](downloads.md).
 
 ## News
 
-** 2026-05-21: BSDRP 2.2 released, read the full [Release notes](https://github.com/ocochard/BSDRP/releases/tag/v2.2) for more details **
+**2026-05-21: BSDRP 2.2 released, read the full [Release notes](https://github.com/ocochard/BSDRP/releases/tag/v2.2) for more details**
 
 2026-03-13: BSDRP 2.1 released, read the full [Release notes](https://github.com/ocochard/BSDRP/releases/tag/v2.1) for more details
 
