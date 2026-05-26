@@ -81,7 +81,6 @@ nav:
               - Multicast with PIM-DM: documentation/examples/multicast-with-pim-dm.md
               - Multicast with PIM-SM: documentation/examples/multicast-with-pim-sm.md
               - Equal-cost multi-path (ECMP): documentation/examples/ecmp.md
-              - Lab with CARP, Xorp and Quagga: documentation/examples/lab-with-carp-xorp-and-quagga.md
           - High availability:
               - Multi-tenant HA pf firewalls: documentation/examples/multi-tenant-ha-pf-firewalls.md
               - Simple VRRP lab: documentation/examples/simple-vrrp-lab.md

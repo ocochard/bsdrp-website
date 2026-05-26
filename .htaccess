@@ -57,7 +57,6 @@ RewriteRule ^documentation/examples/ipsec_performance_of_a_pc_engines_apu/?$ /do
 RewriteRule ^documentation/examples/ipsec_performance_of_a_pc_engines_apu2/?$ /documentation/examples/ipsec-performance-of-a-pc-engines-apu2/ [R=301,L]
 RewriteRule ^documentation/examples/ipsec_performance_of_a_superserver_5018a-ftn4/?$ /documentation/examples/ipsec-performance-of-a-superserver-5018a-ftn4/ [R=301,L]
 RewriteRule ^documentation/examples/ipv6_only_bgp_ospf_ripng_isis_lab_frrouting/?$ /documentation/examples/ipv6-only-bgp-ospf-ripng-isis-lab-frrouting/ [R=301,L]
-RewriteRule ^documentation/examples/lab_with_carp_xorp_and_quagga/?$ /documentation/examples/lab-with-carp-xorp-and-quagga/ [R=301,L]
 RewriteRule ^documentation/examples/maximum_bsdrp_features_lab/?$ /documentation/examples/maximum-bsdrp-features-lab/ [R=301,L]
 RewriteRule ^documentation/examples/multi-tenant_ha_pf_firewalls/?$ /documentation/examples/multi-tenant-ha-pf-firewalls/ [R=301,L]
 RewriteRule ^documentation/examples/multi-tenant_router_and_firewall/?$ /documentation/examples/multi-tenant-router-and-firewall/ [R=301,L]
