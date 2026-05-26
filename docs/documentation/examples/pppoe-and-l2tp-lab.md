@@ -3,7 +3,7 @@ title: PPPoE and L2TP lab with mpd
 ---
 This lab shows an example with [MPD](http://mpd.sourceforge.net/).
 
-## Presentation
+## Overview
 
 ### Network diagram
 
@@ -11,17 +11,17 @@ Here is the logical and physical view:
 
 ![bsdrp-example-pppoe-l2tp.png](../../assets/images/documentation/examples/bsdrp-example-pppoe-l2tp.png)
 
-### Setting-up a virtual lab
+### Setting up a virtual lab
 
 #### Downloading BSD Router Project images
 
-Download BSDRP serial image (prevent to have to use an X display) on Sourceforge.
+Download the BSDRP serial image (which avoids the need for an X display) from SourceForge.
 
-#### Download Lab scripts
+#### Download lab scripts
 
-More information on these BSDRP lab scripts available on [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
+More information on the BSDRP lab scripts is available in [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
 
-Start the lab with full-meshed 5 routers and one shared LAN, on this example using bhyve lab script on FreeBSD:
+Start the lab with 4 full-meshed routers and one shared LAN. This example uses the bhyve lab script on FreeBSD:
 
 ```
 # tools/BSDRP-lab-bhyve.sh -i workdir/BSDRP.amd64/BSDRP-n257626-full-amd64-serial.img.xz -n 4
@@ -58,7 +58,7 @@ To connect VM'serial console, you can use:
 
 ## Routers configuration
 
-### Router 2 : BAS and LAC
+### Router 2: BAS and LAC
 
 Router 2 forwards PPP between PPPoE and L2TP.
 
@@ -82,7 +82,7 @@ service mpd5 start
 config save
 ```
 
-### Router 3 : LNS (L2TP server)
+### Router 3: LNS (L2TP server)
 
 ```
 sysrc hostname=R3
@@ -114,7 +114,7 @@ service mpd5 start
 config save
 ```
 
-### Router 1 : PPPoE client
+### Router 1: PPPoE client
 
 ```
 sysrc hostname=R1
@@ -142,9 +142,9 @@ service mpd5 start
 config save
 ```
 
-### Router 4 : Remote host
+### Router 4: Remote host
 
-Router 4 is configured as simple host, and be used an Internet server too for testing connectivity with the PC.
+Router 4 is configured as a simple host, and also acts as an Internet server for testing connectivity with the PC.
 
 ```
 sysrc hostname=R4
@@ -180,7 +180,7 @@ PING6(56=40+8+8 bytes) fe80::2bb:bbff:fe00:1%ng0 --> fe80::a8aa:ff:fe00:323
 16 bytes from fe80::a8aa:ff:fe00:323%ng0, icmp_seq=3 hlim=64 time=0.901 ms
 ```
 
-## Full Logs
+## Full logs
 
 ### PPPoE client (R1)
 

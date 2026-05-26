@@ -1,21 +1,21 @@
 ---
 title: Lab with UCarp, Xorp and Quagga
 ---
-In this example the routers R1 and R3 will be configured is Xorp and ucarp, R2 is configure with quagga and ucarp. The routing protocol is OPSF ans it is set in one backbone area. Two workstations are set and configured in each lan. They use ping for a prelimenary test, and then a ssh connexion to see if we keep it up to live.
+In this example, routers R1 and R3 are configured with Xorp and ucarp, while R2 is configured with Quagga and ucarp. The routing protocol is OSPF, set in a single backbone area. Two workstations are set up, one in each LAN. They use ping for a preliminary test, and then an SSH connection to verify that the session stays alive.
 
-# Lab Diagram:
+## Lab diagram
 
-## Abstract Diagram
+### Abstract diagram
 
 ![highavailability_horiz.png](../../assets/images/documentation/examples/highavailability_horiz.png)
 
-## Ip Diagram
+### IP diagram
 
 ![highavailability_horiz.ip.png](../../assets/images/documentation/examples/highavailability_horiz.ip.png)
 
-# Lab Setup
+## Lab setup
 
-## Network setup
+### Network setup
 
 | Net name | Network Address range |
 |----------|----------------------:|
@@ -25,7 +25,7 @@ In this example the routers R1 and R3 will be configured is Xorp and ucarp, R2 i
 | WAN13    |          10.0.13.0/24 |
 | WAN23    |          10.0.23.0/24 |
 
-## Routeur setup
+### Router setup
 
 | R1:   | If name | Ip address        |
 |:------|:--------|-------------------|
@@ -50,15 +50,15 @@ In this example the routers R1 and R3 will be configured is Xorp and ucarp, R2 i
 | WAN23 | re2     | 10.0.23.3/24      |
 | WAN13 | re3     | 10.0.13.3/24      |
 
-I used the “BSDRP_0.31_full_i386_vga.img” file and Qemu 0.11.0 to virtualize the example.
+I used the "BSDRP_0.31_full_i386_vga.img" file and QEMU 0.11.0 to virtualize the example.
 
-Here is the characteristic of the routeurs:
+Here are the characteristics of the routers:
 
-| Hardware spec | Virtual Box command option |
-|:--------------|----------------------------|
-| 128 MB of Ram | –memory 128                |
+| Hardware spec | VirtualBox command option |
+|:--------------|---------------------------|
+| 128 MB of RAM | --memory 128              |
 
-Qemu Command for the routers:
+QEMU command for the routers:
 
 ```
 qemu -m 128 -hda R1.qcow \
@@ -78,22 +78,20 @@ qemu -m 128 -hda R3.qcow \
      -net nic,macaddr=08:00:27:03:13:03,vlan=13 -net socket,mcast=230.10.0.1:1313,vlan=13 &
 ```
 
-Then setup to workstation on each LAN with this IP configuration:
+Set up a workstation on each LAN with this IP configuration:
 
-| Workstation | Ip address        | Gateway        |
+| Workstation | IP address        | Gateway        |
 |:------------|:------------------|----------------|
 | On LAN13    | 192.168.13.100/24 | 192.168.13.254 |
 | On LAN23    | 192.168.23.100/24 | 192.168.23.254 |
 
-------------------------------------------------------------------------
+## R1 configuration
 
-## R1 Configuration
-
-They is two main file that set up the router. The /etc/rc.conf and the /etc/local/xorp.conf. To modify the /etc/rc.conf we use “vi” editor, to modify the /etc/local/xorp.conf we use the “xorpsh” cli.
+Two main files set up the router: `/etc/rc.conf` and `/etc/local/xorp.conf`. To modify `/etc/rc.conf` we use the `vi` editor; to modify `/etc/local/xorp.conf` we use the `xorpsh` CLI.
 
 ### R1 rc.conf
 
-Modification to the rc.conf
+Modifications to the rc.conf:
 
 ```
 # Hostname
@@ -119,11 +117,11 @@ xorp_enable="YES"
 
 ### R1 xorp.conf
 
-There is two solutions to input the configuration of Xorp. The first that can be used for many other configuration file is to use a text editor and paste the configuration into it. The second is to use a specific shell that are launched by “xorpsh”for Xorp and “vtysh” for Quagga Since Xorp and quagga have a shell to introduce new configuration and parse the command, I recommand to use the shell.
+There are two ways to enter the Xorp configuration. The first, which also applies to many other configuration files, is to use a text editor and paste the configuration into it. The second is to use a dedicated shell, launched with `xorpsh` for Xorp and `vtysh` for Quagga. Since both Xorp and Quagga provide a shell to enter new configuration and parse the commands, I recommend using the shell.
 
-To give a brief intro to Xorp that is a JunOS like interface; all configuration are done in configuration mode summoned by the “configure” command. It is a highly strucuture configuration, so the configuration is to set value into a structure. the command “set” create and set the value, the command “edit” allow to navigate into the structure.
+Xorp has a JunOS-like interface. All configuration is done in configuration mode, entered with the `configure` command. The configuration is highly structured, so configuring the router means setting values inside a structure. The `set` command creates and sets a value; the `edit` command navigates into the structure.
 
-To launch the shell and enter into configuration mode
+Launch the shell and enter configuration mode:
 
 ```
 [root@R1XORP]~#xorpsh
@@ -135,13 +133,13 @@ There are no other users in configuration mode.
 root@R1XORP.lab#
 ```
 
-To setup an IP address to an interface
+Set an IP address on an interface:
 
 ```
 root@R1XORP.lab# set interfaces interface re0 vif re0 address 192.168.13.1 prefix-length 24
 ```
 
-Its look a little bit long at first, but we can split it into a more comprehensive set of command
+This looks a little long at first, but we can split it into a more readable sequence of commands:
 
 ```
 root@R1XORP.lab# edit interfaces interface re0
@@ -149,7 +147,7 @@ root@R1XORP.lab# edit interfaces interface re0
 root@R1XORP.lab#
 ```
 
-At this point we are under the structure “interfaces interface re0” We first create an virtual interface called vif that will contains the protocol to handle IP in this case and its IP.
+At this point we are inside the `interfaces interface re0` structure. First create a virtual interface called `vif`, which in this case will hold the IP protocol and its address.
 
 ```
 root@R1XORP.lab# set vif re0
@@ -157,7 +155,7 @@ root@R1XORP.lab# set vif re0
 root@R1XORP.lab# set vif re0 address 192.168.13.1
 ```
 
-Then we can even go deeper in the structure to set the mask
+We can go deeper in the structure to set the mask:
 
 ```
 root@R1XORP.lab# edit vif re0 address 192.168.13.1
@@ -165,11 +163,11 @@ root@R1XORP.lab# edit vif re0 address 192.168.13.1
 root@R1XORP.lab# set prefix-length 24
 ```
 
-Or just do one line : set interfaces interface re0 vif re0 address 192.168.13.1 prefix-length 24
+Or do it on a single line: `set interfaces interface re0 vif re0 address 192.168.13.1 prefix-length 24`.
 
-Same rules apply to the rest of the configuration. Two veryuseful tool to create the configuration: autocompletion with the key “tab”, and contextual help by pressing the “?” key.
+The same rules apply to the rest of the configuration. Two very useful tools when building the configuration: autocompletion with the `tab` key, and contextual help with the `?` key.
 
-Here the targetted configuration:
+Here is the target configuration:
 
 ```
     protocols {
@@ -240,7 +238,7 @@ Here the targetted configuration:
     }
 ```
 
-Once this configuration is entered. It must be commited. It is just prepared but not apply. So use the command commit to push this draft configuration into the operational configuration of the router.
+Once this configuration is entered, it must be committed. It is only prepared, not yet applied. Use the `commit` command to push this draft configuration into the operational configuration of the router.
 
 ```
 root@R1XORP.lab# commit
@@ -249,25 +247,25 @@ OK
 root@R1XORP.lab#
 ```
 
-It must be saved to the default file, so on the next reboot the configuration will be loaded.
+It must be saved to the default file so the configuration is loaded on the next reboot:
 
 ```
 root@R1XORP.lab# save /etc/local/xorp.conf
 ```
 
-Once R1 is all done save the configuration:
+Once R1 is done, save the configuration:
 
 ```
 [root@R1XORP]~#config save
 ```
 
-## R2 configuration:
+## R2 configuration
 
-R2 is set with Quagga and carp. To configure uCarp we edit the /etc/rc.conf. To configure Quagga we check the /etc/rc.conf to see if the service is started with the correct option at the boot, and we use the “vtysh” command to enter the configuration.
+R2 is set up with Quagga and carp. To configure uCarp we edit `/etc/rc.conf`. To configure Quagga we check `/etc/rc.conf` to confirm the service is started with the correct options at boot, and we use the `vtysh` command to enter the configuration.
 
 ### R2 rc.conf
 
-Edit the rc.conf with “vi” editor to change the value and check the Quagga and XORP configuration setting.
+Edit `/etc/rc.conf` with the `vi` editor to change the values and check the Quagga and Xorp configuration settings.
 
 ```
 # Hostname
@@ -293,13 +291,11 @@ quagga_daemons="zebra ripd ripngd ospfd ospf6d bgpd isisd"
 #xorp_enable="YES"
 ```
 
-------------------------------------------------------------------------
-
 ### R2 Quagga
 
-To introduce the configuration to Quagga it is hilgy recommanded to do it with the shell proposed by “vtysh”. It will parse the initial configuration and saved it to file that can be then copy-saved-restored…
+To introduce the configuration into Quagga, it is highly recommended to use the shell provided by `vtysh`. It parses the initial configuration and saves it to a file that can then be copied, saved, and restored.
 
-To introduce the configuration, we enter the configuration mode an reach the strucutre and enter the configuration command. Here an example to set an interface IP address:
+To enter the configuration, switch to configuration mode, navigate to the right structure, and enter the configuration commands. Here is an example to set an interface IP address:
 
 ```
 [root@R2Quagga]~#vtysh
@@ -313,9 +309,9 @@ R2Quagga.lab(config-if)# ip address 10.0.23.2/24
 R2Quagga.lab(config-if)#
 ```
 
-Same rules apply to the rest of the configuration. Two veryuseful tool to create the configuration: autocompletion with the key “tab”, and contextual help by pressing the “?” key.
+The same rules apply to the rest of the configuration. Two very useful tools when building the configuration: autocompletion with the `tab` key, and contextual help with the `?` key.
 
-Here the targetted configuration:
+Here is the target configuration:
 
 ```
 !
@@ -357,7 +353,7 @@ line vty
 end
 ```
 
-Once the configuration is enterred it is active, they is no commit to apply like with Xorp, but it must be saved.
+Once the configuration is entered it is active; there is no commit step like in Xorp, but it must be saved.
 
 ```
 R2Quagga.lab# write memory
@@ -373,19 +369,19 @@ Configuration saved to /usr/local/etc/quagga/isisd.conf
 R2Quagga.lab#
 ```
 
-And then save the all configuration of the router:
+Then save the full configuration of the router:
 
 ```
 [root@R2Quagga]~#config save
 ```
 
-## R3 configuration:
+## R3 configuration
 
-R3 is set like like R1 with Xorp and Carp. It has two Carps interfaces as main difference. We can also will like to set this as the preferred router for the communication between the two lans and set a better “advskew” for Carp, and also set the preemption to resume its master rule after a failure. The preemption is optional.
+R3 is set up like R1, with Xorp and carp. The main difference is that it has two carp interfaces. We might also want to make it the preferred router for traffic between the two LANs by setting a better `advskew` value for carp, and enabling preemption so it resumes its master role after a failure. Preemption is optional.
 
 ### R3 rc.conf
 
-Here the rc.conf modification that should be present.
+Here are the rc.conf modifications that should be present:
 
 ```
 # Hostname
@@ -416,7 +412,7 @@ xorp_enable="YES"
 
 ### R3 xorp.conf
 
-Like R1 we configure the R3 router with the xorpsh. Then we save it to /etc/local/xorp.conf. Here is the final configuration.
+As with R1, we configure R3 using `xorpsh`, then save the configuration to `/etc/local/xorp.conf`. Here is the final configuration:
 
 ```
     protocols {
@@ -484,11 +480,11 @@ Like R1 we configure the R3 router with the xorpsh. Then we save it to /etc/loca
     }
 ```
 
-# Validation:
+## Validation
 
-Check the interface status at the system level with ifconfig command: Verify that the ip address is the correct one and have a look at the mac address to troobleshoot. Make sure the status is active for physical interface and ucarp are either Master or Backup.
+Check the interface status at the system level with the `ifconfig` command. Verify that the IP address is correct, and look at the MAC address for troubleshooting. Make sure the status is active for the physical interface, and that ucarp is either Master or Backup.
 
-## Example at R3XORP:
+### Example at R3XORP
 
 ```
 [root@R3XORP]~#ifconfig re0
@@ -533,7 +529,7 @@ Mar 20 14:02:25 R3XORP ucarp[1311]: [WARNING] Switching to state: BACKUP
 [root@R3XORP]~#
 ```
 
-In R3XORP, Xorp is running, so we check the ospf configuration and the routing table at the xorp level. The command “show ospf4 neighbor” the neighbor adjency to R3. We have R2 with the ID 2.2.2.2 connected to through the interface re2 named re2 (vif) at the address 10.0.23.2 and we have R1 with the ID 1.1.1.1 connected through the interface re3 named re3 (vif) at the address 10.0.13.1.
+On R3XORP, Xorp is running, so we check the OSPF configuration and the routing table at the Xorp level. The `show ospf4 neighbor` command displays the neighbor adjacencies of R3. We have R2 with ID 2.2.2.2 connected through interface re2 (vif re2) at address 10.0.23.2, and R1 with ID 1.1.1.1 connected through interface re3 (vif re3) at address 10.0.13.1.
 
 ```
 [root@R3XORP]~#xorpsh
@@ -544,7 +540,7 @@ root@R3XORP.lab> show ospf4 neighbor
 10.0.13.1        re3/re3                Full      1.1.1.1          128    33
 ```
 
-We then check the routing table:
+Then check the routing table:
 
 ```
 root@R3XORP.lab> show route table ipv4  unicast final
@@ -560,7 +556,7 @@ root@R3XORP.lab> show route table ipv4  unicast final
                 > via re1/re1
 ```
 
-And then we check the route learned by ospf process
+Then check the routes learned by the OSPF process:
 
 ```
 root@R3XORP.lab> show route table ipv4  unicast ospf
@@ -572,7 +568,7 @@ root@R3XORP.lab> show route table ipv4  unicast ospf
                 > to 10.0.23.2 via re2/re2
 ```
 
-We check also that these routes are correctly redistribute into the system.
+Also check that these routes are correctly redistributed into the system:
 
 ```
 [root@R3XORP]~#netstat -r
@@ -591,7 +587,7 @@ localhost          localhost          UH          0   156211    lo0
 192.168.23.254     192.168.23.254     UH          0        0  carp1
 ```
 
-Same routing check at R1XORP
+The same routing check on R1XORP:
 
 ```
 [root@R1XORP]~#netstat -r
@@ -635,9 +631,9 @@ root@R1XORP.lab> show route table ipv4 unicast ospf
                 > to 10.0.13.3 via re1/re1
 ```
 
-We do the same check with the R2Quagga routeur, and use the quagga routing interface to extract the same information.
+Run the same checks on R2Quagga, using the Quagga routing interface to extract the same information.
 
-Checking the ospf neighbor
+Check the OSPF neighbors:
 
 ```
 [root@R2Quagga]~#vtysh
@@ -653,7 +649,7 @@ R2Quagga.lab# sh ip ospf neighbor
 R2Quagga.lab#
 ```
 
-Check the Ip route table
+Check the IP routing table:
 
 ```
 R2Quagga.lab# sh ip route
@@ -674,7 +670,7 @@ C * 192.168.23.0/24 is directly connected, carp1
 C>* 192.168.23.0/24 is directly connected, re2
 ```
 
-Check the ospf routes learned.
+Check the OSPF routes learned:
 
 ```
 R2Quagga.lab# sh ip route  ospf
@@ -690,7 +686,7 @@ O>* 192.168.13.0/24 [110/0] via 10.0.12.1, re0, 01:28:26
 O   192.168.23.0/24 [110/0] via 10.0.23.3, re1, 01:28:25
 ```
 
-Check the system routing table
+Check the system routing table:
 
 ```
 [root@R2Quagga]~#netstat -nr
@@ -707,9 +703,9 @@ Destination        Gateway            Flags    Refs      Use  Netif Expire
 192.168.23.0/24    link#3             UC          0        0    re2
 ```
 
-## DR and BDR:
+### DR and BDR
 
-Checking the DR and BDR with the following command.
+Check the DR and BDR with the following command:
 
 ```
 root@R3XORP.lab> show ospf4 neighbor detail
@@ -731,11 +727,11 @@ root@R1XORP.lab> show ospf4 neighbor detail
   Up 01:53:03, adjacent 00:51:57
 ```
 
-By default we could assume that the DR in between R2Quagga and R3XORP would have benn R2Quagga. But R3XORP is the DR. It look like the priority value are not the same in between the Quagga and XORP.
+By default, we might assume that the DR between R2Quagga and R3XORP would be R2Quagga, but R3XORP is the DR. The default priority value is not the same in Quagga and Xorp.
 
-### Priority default value:
+#### Priority default value
 
-At this point One difference can be seen in between the Xorp implementation and the Quagga at the Ospf level. The command that show the neigboorhood display a different Priority setting, but we did not set it at all during the configuration phase.
+One difference between the Xorp and Quagga implementations shows up at the OSPF level. The neighbor command displays different priority settings, even though we did not set the priority during configuration.
 
 ```
 root@R3XORP.lab> show ospf4 neighbor
@@ -744,7 +740,7 @@ root@R3XORP.lab> show ospf4 neighbor
 10.0.13.1        re3/re3                Full      1.1.1.1          128    33
 ```
 
-By default the priority of Xorp is set at 1 in the ospf process, as we can see in the extract below of R1XORP
+By default, Xorp sets the OSPF interface priority to 128, as we can see in the extract below from R1XORP:
 
 ```
 root@R1XORP.lab# show -all
@@ -789,7 +785,7 @@ root@R1XORP.lab# show -all
     }
 ```
 
-On the other hand the interface on the Quagga router has a priority of 1. So R2 will no be a DR in front of the XORP default value. (Higher priority is preferred)
+In contrast, the interface on the Quagga router has a priority of 1. So R2 will not become DR against the Xorp default (higher priority wins).
 
 ```
 R2Quagga.lab# sh ip ospf interface re0
@@ -807,11 +803,11 @@ re0 is up
   Neighbor Count is 1, Adjacent neighbor count is 1
 ```
 
-# Failover and behavior:
+## Failover and behavior
 
-By default the lab is set to use the best path. So we should be using R3 as the shortest path from LAN13 to LAN 23. To do so, R3 should be turn on first; or premption should be enable.
+By default the lab is set to use the best path, so traffic from LAN13 to LAN23 should go through R3 as the shortest path. To make that happen, either start R3 first or enable preemption.
 
-Check on the workstation (DOS) at the LAN13:
+Check from the workstation (Windows) on LAN13:
 
 ```
 E:\BSDRP>tracert -d 192.168.23.100
@@ -840,25 +836,25 @@ Durée approximative des boucles en millisecondes :
 E:\BSDRP>
 ```
 
-The same command should be done on the workstation at LAN23 to see we have the same path.
+Run the same command on the workstation on LAN23 to confirm the path is the same.
 
-We can now try to turn on and off the interface with the following command
+We can now try bringing the interfaces down and back up with the following commands.
 
-Disconnect interface 1 (re0) on R3XORP and connect it back command:
+Disconnect interface 1 (re0) on R3XORP and bring it back up:
 
 ```
 [root@R3XORP]~# ifconfig re0 down
 [root@R3XORP]~# ifconfig re0 up
 ```
 
-Disconnect interface 2 (re1) on R3XORP and connect it back command:
+Disconnect interface 2 (re1) on R3XORP and bring it back up:
 
 ```
 [root@R3XORP]~# ifconfig re1 down
 [root@R3XORP]~# ifconfig re1 up
 ```
 
-To test the failover we run a ping command (DOS)
+To test the failover, run a ping command (Windows):
 
 ```
 E:\BSDRP>ping -t 192.168.23.100
@@ -900,6 +896,6 @@ Réponse de 192.168.23.100 : octets=32 temps=3 ms TTL=62
 Réponse de 192.168.23.100 : octets=32 temps=14 ms TTL=62
 ```
 
-In this run I loose a paquet, it does happen in the simulated environment that extra latency is added. Some other runs does not have this lost.
+In this run we lose one packet. In the simulated environment extra latency can be added, and some other runs show no packet loss.
 
-If we set a ucarp preemption at R3XORP, when we connect back the interface. R3XORP will reclaim its master right, and we will comme back to the initial state.
+If we enable ucarp preemption on R3XORP, then when we bring the interface back up, R3XORP reclaims its master role and we return to the initial state.

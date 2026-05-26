@@ -13,13 +13,13 @@ And here is this lab detailed diagram:
 
 ![bsdrp.lab.aggregate.isp.links.detail.png](../../assets/images/documentation/examples/bsdrp.lab.aggregate.isp.links.detail.png)
 
-## Virtual Lab
+## Virtual lab
 
-This chapter will describe how to start each routers and configuring the 3 central routers.
+This section describes how to start each router and configure the three central routers.
 
-More information on these BSDRP lab scripts available on [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
+More information on the BSDRP lab scripts is available in [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
 
-Start the Virtual lab (example using bhyve):
+Start the virtual lab (example using bhyve):
 
 ```
 # ./tools/BSDRP-lab-bhyve.sh -n 6
@@ -79,7 +79,7 @@ For connecting to VM'serial console, you can use:
 
 #### Router 2
 
-Router 2 is configured for rate-limiting traffic at 1 Mb/s on interface to/from R1.
+Router 2 is configured to rate-limit traffic at 1 Mb/s on the interface to/from R1.
 
 ```
 sysrc hostname=R2
@@ -114,7 +114,7 @@ config save
 
 #### Router 3
 
-Router 3 is configured for rate-limiting traffic at 20 Mb/s on interface to/from R1.
+Router 3 is configured to rate-limit traffic at 2 Mb/s on the interface to/from R1.
 
 ```
 sysrc hostname=R3
@@ -149,7 +149,7 @@ config save
 
 #### Router 4
 
-Router 4 is configured for rate-limiting traffic at 3 Mb/s on interface to/from R1.
+Router 4 is configured to rate-limit traffic at 3 Mb/s on the interface to/from R1.
 
 ```
 sysrc hostname=R4
@@ -184,7 +184,7 @@ config save
 
 #### Router 5
 
-Router 5 is the MLPPP server default gateway.
+Router 5 is the MLPPP server's default gateway.
 
 ```
 sysrc hostname=R5
@@ -202,9 +202,9 @@ hostname R5
 config save
 ```
 
-### Router 6 : L2TP MLPPP server
+### Router 6: L2TP MLPPP server
 
-Router 6 is configured as a L2TP server.
+Router 6 is configured as an L2TP server.
 
 ```
 sysrc hostname=R6
@@ -266,9 +266,9 @@ hostname R6
 config save
 ```
 
-### Router 1 : L2TP MLPPP client
+### Router 1: L2TP MLPPP client
 
-Router 1 is configured as a simple L2TP MLPPP client router connected to 3 Internet link.
+Router 1 is configured as a simple L2TP MLPPP client router connected to 3 Internet links.
 
 ```
 sysrc hostname=R1
@@ -302,7 +302,7 @@ l2tp_client:
         set link keep-alive 10 30
         set link mtu 1460
         set l2tp secret blah
-        # Retry indefinitly to redial
+        # Retry indefinitely to redial
         set link max-redial 0
         # SDSL1
         create link static sdsl1 L
@@ -344,11 +344,11 @@ Server listening on 5201
 -----------------------------------------------------------
 ```
 
-Now check the correct limited bandwitdh for each different links:
+Now check the rate limit on each link:
 
-- Link to R6 across R2: 1Mb/s
-- Link to R6 across R3: 2Mb/s
-- Link to R6 across R4: 3Mb/s
+- Link to R6 via R2: 1 Mb/s
+- Link to R6 via R3: 2 Mb/s
+- Link to R6 via R4: 3 Mb/s
 
 <!-- -->
 
@@ -390,7 +390,7 @@ iperf Done.
 
 ### Aggregated ISP link bandwidth
 
-The aggregated link bandwidth should be negotiated to 6Mb/s (1+2+3):
+The aggregated link bandwidth should be negotiated to 6 Mb/s (1+2+3):
 
 ```
 [root@R1]~# grep Bundle /var/log/ppp.log
@@ -400,7 +400,7 @@ Nov 12 06:04:54 router ppp[87823]: [B-1] Bundle: Status update: up 2 links, tota
 Nov 12 06:04:54 router ppp[87823]: [B-1] Bundle: Status update: up 3 links, total bandwidth 6000000 bps
 ```
 
-and iperf measurement close to 6Mb/s:
+and the iperf measurement is close to 6 Mb/s:
 
 ```
 [root@R1]~# iperf3 -i 0 -c 10.6.6.6
@@ -416,21 +416,21 @@ Connecting to host 10.6.6.6, port 5201
 iperf Done.
 ```
 
-In the same time, if you start a “netstat -ihw 1” on R2, R3 and R4, you should see distributed traffic between them.
+At the same time, if you start `netstat -ihw 1` on R2, R3 and R4, you should see traffic distributed between them.
 
 ## Performance lab
 
-This lab will test mpd5 performance by aggregating 2 gigabit links.
+This lab tests mpd5 performance by aggregating two gigabit links.
 
 Here is the concept:
 
 ![bsdrp.lab.mpd5.performance.png](../../assets/images/documentation/examples/bsdrp.lab.mpd5.performance.png)
 
-This lab use 3 [IBM System x3550 M3](ibm-system-x3550-m3.md) with **quad** cores (Intel Xeon L5630 2.13GHz, hyper-threading disabled), quad NIC 82580 connected to the PCI-Express Bus and dual port Intel 10-Gigabit X540-AT2 connected to the PCI-Express Bus.
+This lab uses 3 [IBM System x3550 M3](ibm-system-x3550-m3.md) with **quad** cores (Intel Xeon L5630 2.13 GHz, hyper-threading disabled), a quad NIC 82580 connected to the PCI Express bus, and a dual-port Intel 10-Gigabit X540-AT2 connected to the PCI Express bus.
 
 ### Router 1
 
-Router 1 is configured a a simple end-point.
+Router 1 is configured as a simple endpoint.
 
 Set the base parameters:
 
@@ -447,7 +447,7 @@ config save
 
 ### Router 2
 
-Router 2 is configured as a L2TP MLPPP client router.
+Router 2 is configured as an L2TP MLPPP client router.
 
 Configure global parameters:
 
@@ -511,7 +511,7 @@ config save
 
 ### Router 3
 
-Router 3 is configured as a (L2TP server).
+Router 3 is configured as an L2TP server.
 
 Set the global parameters:
 
@@ -566,7 +566,7 @@ l2tp_server:
 'EOF'
 ```
 
-if-up script (for installing routes to R1 subnet):
+if-up script (to install routes to the R1 subnet):
 
 ```
 cat > /usr/local/etc/mpd5/if-up.sh <<'EOF'
@@ -643,7 +643,7 @@ config save
 
 ### Performance tests
 
-#### Checking perf tool
+#### Checking the perf tool
 
 ##### Direct tests between R1 and R2
 
@@ -658,9 +658,9 @@ TCP window size: 32.5 KByte (default)
 [  3]  0.0-60.0 sec  24.5 GBytes  3.50 Gbits/sec
 ```
 
-### Direct tests between R2 and R3
+##### Direct tests between R2 and R3
 
-We start by testing each Gigabit links between R2 and R3 for measuring iperf value on standard gigabit link:
+Start by testing each gigabit link between R2 and R3 to measure the iperf value on a standard gigabit link:
 
 ```
 [root@R2]~# iperf -c 10.0.23.3 -t 60
@@ -681,11 +681,11 @@ TCP window size: 32.5 KByte (default)
 [  3]  0.0-60.0 sec  6.55 GBytes   937 Mbits/sec
 ```
 
-### mpd5 perfs
+#### mpd5 performance
 
-#### between R2 and R3
+##### Between R2 and R3
 
-Iperf will use the MPPP tunnel extremity:
+iperf will use the MLPPP tunnel endpoint:
 
 ```
 [root@R2]~# set DEST=`ifconfig ng0 | grep 'inet ' | cut -d ' ' -f 4`
@@ -699,7 +699,7 @@ TCP window size: 32.5 KByte (default)
 [  3]  0.0-60.1 sec  6.14 GBytes   878 Mbits/sec
 ```
 
-The value is almost the same than without MLPPP aggregated link, but correctly load-balanced across each link. iR2 stats during this test:
+The value is almost the same as without the MLPPP aggregated link, but correctly load-balanced across each link. R2 stats during this test:
 
 ```
                     /0   /1   /2   /3   /4   /5   /6   /7   /8   /9   /10
@@ -716,7 +716,7 @@ The value is almost the same than without MLPPP aggregated link, but correctly l
                  out   508.061 Mb/s        550.328 Mb/s           18.673 GB
 ```
 
-And the load show:
+And the load shows:
 
 ```
 [root@R2]~# top -nCHSIzs1
@@ -740,7 +740,7 @@ Swap:
     0 root       -92    0     0K   560K -       1   0:00   0.10% kernel{igb3 que}
 ```
 
-For information, using netblast (UDP packet generator) disturb the links:
+For reference, using netblast (a UDP packet generator) disturbs the links:
 
 ```
 netblast $DEST 9090 1470 30 `sysctl -n hw.ncpu`
@@ -762,7 +762,7 @@ and measure the bandwidth received on R3:
          0 pps    0.000 Mbps - 0 pkts in 0.501998785 ns
 ```
 
-The packet generator prevent to manage keepalive:
+The packet generator prevents keepalives from being processed:
 
 ```
 Jan 27 10:50:38 R2 ppp: [link1] LCP: no reply to 1 echo request(s)

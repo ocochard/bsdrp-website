@@ -1,21 +1,21 @@
 ---
 title: Fair traffic shaping per ip with ipfw and dummynet
 ---
-This lab shows an example of fair sharing asymmetric Internet access between multiple users (one user = one IP address). This feature is called [User-Based Rate Limiting on few Cisco products](http://www.cisco.com/c/en/us/products/collateral/switches/catalyst-6500-series-switches/prod_white_paper0900aecd803e5017.html).
+This lab shows an example of fair sharing of asymmetric Internet access between multiple users (one user = one IP address). This feature is called [User-Based Rate Limiting on some Cisco products](http://www.cisco.com/c/en/us/products/collateral/switches/catalyst-6500-series-switches/prod_white_paper0900aecd803e5017.html).
 
 ## Network diagram
 
-And here is this lab detailed diagram:
+Here is the detailed lab diagram:
 
 ![Fair traffic shaping diagram](../../assets/images/documentation/examples/bsdrp-fair-traffic-shaping.png)
 
-## Virtual Lab setp
+## Virtual lab setup
 
-This chapter will describe how to start each routers and configuring the 4 hosts.
+This chapter describes how to start each router and configure the 4 hosts.
 
-More information on these BSDRP lab scripts available on [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
+More information on the BSDRP lab scripts is available in [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
 
-Start the Virtual lab (example using bhyve):
+Start the virtual lab (example using bhyve):
 
 ```
 BSDRP-lab-bhyve.sh -i BSDRP-1.60-full-amd64-serial.img.xz -n 5 -l 1
@@ -66,7 +66,7 @@ For connecting to VM'serial console, you can use:
 
 ### User PC configuration
 
-Each user PC will be configured as simple DHCP clients.
+Each user PC is configured as a simple DHCP client.
 
 #### Router 1
 
@@ -118,7 +118,7 @@ config save
 
 ### Internet server configuration
 
-It’s a simple static addressed host
+It’s a simple host with a static address.
 
 ```
 sysrc hostname=R5 \
@@ -198,9 +198,9 @@ service ipfw start
 config save
 ```
 
-## Shapping Tests
+## Shaping tests
 
-Start 3 iperf3 servers on the “Internet server”, on 3 different TCP ports (uses tmux).
+Start 3 iperf3 servers on the “Internet server” on 3 different TCP ports (using tmux).
 
 ```
 [root@R5]~# iperf3 -s -p 9091
@@ -221,7 +221,7 @@ Server listening on 9093
 
 ### With only one user
 
-If there is only one user it should have the full bandwith. From only one client (R1, R2 or R3) start by generating traffic toward the iperf3 server for checking maximum upload bandwith is correctly shapped to 50Mb/s:
+If there is only one user, it should get the full bandwidth. From only one client (R1, R2 or R3), start by generating traffic toward the iperf3 server to check that the maximum upload bandwidth is correctly shaped to 50 Mb/s:
 
 ```
 [root@R3]~# iperf3 -c 10.0.5.5 -t 60 -i 10 -f m -p 9093
@@ -242,9 +242,9 @@ Connecting to host 10.0.5.5, port 5201
 iperf Done.
 ```
 
-=\> Upload is correctly shaped to 50Mb/s.
+=\> Upload is correctly shaped to 50 Mb/s.
 
-Now a “reverse” bench (server will send data to user) for testing the download shaping:
+Now a “reverse” bench (the server sends data to the user) to test the download shaping:
 
 ```
 [root@r3]~# iperf3 -c 10.0.5.5 -t 60 -i 10 -f m -R -p 9093
@@ -264,11 +264,11 @@ Reverse mode, remote host 10.0.5.5 is sending
 [  4]   0.00-60.00  sec   691 MBytes  96.6 Mbits/sec                  receiver
 ```
 
-⇒ Download is correctly shaped to 100Mb/s.
+⇒ Download is correctly shaped to 100 Mb/s.
 
 ### With two users
 
-Now start iperf clients on the same time on 2 clients and check that upload is equally share (25Mb/s each):
+Now start iperf clients at the same time on 2 clients and check that upload is equally shared (25 Mb/s each):
 
 ```
 [root@R3]~# iperf3 -c 10.0.5.5 -t 60 -i 10 -f m -p 9093
@@ -306,9 +306,9 @@ Connecting to host 10.0.5.5, port 9092
 iperf Done.
 ```
 
-=\> Upload bandwidth is fair-shaped-shared between these two users.
+=\> Upload bandwidth is fairly shared between the two users.
 
-Now the download speed should be 50Mb/s each too:
+Now the download speed should be 50 Mb/s each too:
 
 ```
 [root@R3]~# iperf3 -c 10.0.5.5 -t 60 -i 10 -f m -p 9093 -R
@@ -369,7 +369,7 @@ BKT Prot ___Source IP/port____ ____Dest. IP/port____ Tot_pkt/bytes Pkt/Byte Drp
 
 ### With three users
 
-Same correct behavior with three users, here is the upload bandwith of one of the three users:
+Same correct behavior with three users. Here is the upload bandwidth of one of the three users:
 
 ```
 [root@R1]~# iperf3 -c 10.0.5.5 -t 60 -i 10 -f m -p 9091
@@ -390,9 +390,9 @@ Connecting to host 10.0.5.5, port 9091
 iperf Done.
 ```
 
-=\> Only 50M/3 = 16.66 Mbs for each user regarding upload.
+=\> Only 50M/3 = 16.66 Mb/s for each user on upload.
 
-Queues status on the router during this three-users bench:
+Queue status on the router during this three-user bench:
 
 ```
 [root@R4]~# ipfw queue 1 show

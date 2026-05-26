@@ -3,21 +3,21 @@ title: VPN with GRE, GIF, IPSec, OpenVPN and Wireguard
 ---
 This lab shows some VPN examples with BSDRP 1.991.
 
-## Presentation
+## Overview
 
 ### Network diagram
 
-Lab build following [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md): 5 routers with full-meshed link.
+Lab built following [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md): 5 routers with full-meshed links.
 
 Here is the logical and physical view:
 
 ![labs.vpn.tunnels.png](../../assets/images/documentation/examples/labs.vpn.tunnels.png)
 
-### Download Lab scripts
+### Download lab scripts
 
-More information on these BSDRP lab scripts available on [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
+More information on the BSDRP lab scripts is available in [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
 
-Start the lab with full-meshed 5 routers. An example with bhyve under FreeBSD:
+Start the lab with 5 full-meshed routers. An example with bhyve on FreeBSD:
 
 ```
 root@host:~ # /tools/BSDRP-lab-bhyve.sh -i BSDRP-1.8-full-amd64-serial.img.xz -n 5
@@ -65,11 +65,11 @@ For connecting to VM'serial console, you can use:
 - VM 5 : cu -l /dev/nmdm5B
 ```
 
-## Base routers configuration
+## Base router configuration
 
-Router 1 and Router 5 as a simple workstation, Router 3 as a simple router.
+Router 1 and Router 5 are simple workstations; Router 3 is a simple router.
 
-All these routers can be pre-configured with labconfig tool (use it only on a lab, because it will replace your current running configuration):
+All these routers can be pre-configured with the labconfig tool (only use it in a lab, because it will replace your current running configuration):
 
 ```
 labconfig vpn_vm[VM-NUMBER]
@@ -96,7 +96,7 @@ config save
 
 ### Router 2
 
-Router 2 base configuration: A simple connected-network router with a default route pointing to VM3.
+Router 2 base configuration: a simple connected-network router with a default route pointing to VM3.
 
 ```
 sysrc hostname=VM2 \
@@ -115,7 +115,7 @@ config save
 
 ### Router 3
 
-Router 3 is configured as simple connected-only-interface router.
+Router 3 is configured as a simple connected-interface-only router.
 
 ```
 sysrc hostname=VM3 \
@@ -131,7 +131,7 @@ config save
 
 ### Router 4
 
-Router 4 base configuration, like VM2: A simple connected-network router with a default route pointing to VM3.
+Router 4 base configuration, like VM2: a simple connected-network router with a default route pointing to VM3.
 
 ```
 sysrc hostname=VM4 \
@@ -167,19 +167,19 @@ service routing restart
 config save
 ```
 
-## GRE Tunnel
+## GRE tunnel
 
-First example with a simple GRE tunnel.
+First example: a simple GRE tunnel.
 
-FreeBSD [GRE](http://www.freebsd.org/cgi/man.cgiquery=gre) support have a limitation: We can’t use IPv6 as end-point (this limitation is removed by the use of [gif](http://www.freebsd.org/cgi/man.cgiquery=gif) tunnel).
+FreeBSD [GRE](http://www.freebsd.org/cgi/man.cgiquery=gre) support has a limitation: IPv6 cannot be used as an endpoint (this limitation is lifted by using a [gif](http://www.freebsd.org/cgi/man.cgiquery=gif) tunnel).
 
 ### Router 2
 
-Create 1 GRE tunnels with IPv4 end-points.
+Create one GRE tunnel with IPv4 endpoints.
 
 #### Modify configuration
 
-Here is the parameters to add:
+Here are the parameters to add:
 
 ```
 sysrc cloned_interfaces=gre0 \
@@ -196,11 +196,11 @@ config save
 
 ### Router 4
 
-Configure the GRE tunnel using VM2 IPv4 as end-point.
+Configure the GRE tunnel using VM2's IPv4 address as the endpoint.
 
 #### Modify configuration
 
-Here is the parameters to add:
+Here are the parameters to add:
 
 ```
 sysrc cloned_interfaces=gre0 \
@@ -240,16 +240,16 @@ round-trip min/avg/max/std-dev = 1.142/2.064/2.761/0.680 ms
 
 ## GIF tunnels
 
-This example will be a little different as the gre example: Because gif support ipv6 end-point, we will set-up 2 gif tunnels:
+This example differs slightly from the GRE example: because gif supports IPv6 endpoints, we set up two gif tunnels:
 
-- a first with IPv4 end-point that will tunnel IPv4 traffic;
-- a second with IPv6 end-point that will tunnel IPv6 traffic.
+- a first one with IPv4 endpoints that tunnels IPv4 traffic;
+- a second one with IPv6 endpoints that tunnels IPv6 traffic.
 
 ### Router 2
 
 Create the gif tunnels.
 
-If you have previous gre configuration from the gre example: remove them.
+If you have a previous GRE configuration from the GRE example, remove it first.
 
 ```
 sysrc cloned_interfaces="gif0 gif1"
@@ -264,7 +264,7 @@ service routing restart
 config save
 ```
 
-Take care of avoiding fragmentation, TCP-MSS should be reduced on a gif using inet6, like with this pf.conf example:
+To avoid fragmentation, the TCP MSS should be reduced on a gif using inet6, as in this pf.conf example:
 
 ```
 set skip on lo0
@@ -275,7 +275,7 @@ pass
 
 ### Router 4
 
-Configure the 2 gif tunnel using VM2 addresses as end-point.
+Configure the two gif tunnels using VM2's addresses as endpoints.
 
 ```
 sysrc cloned_interfaces="gif0 gif1"
@@ -313,19 +313,19 @@ PING6(56=40+8+8 bytes) 2001:db8:12::1 --> 2001:db8:45::5
 round-trip min/avg/max/std-dev = 1.142/2.064/2.761/0.680 ms
 ```
 
-## IPSec
+## IPsec
 
-If you have previous gre/gif configuration part from previous examples, remove them.
+If you still have any gre/gif configuration from the previous examples, remove it first.
 
-These two examples will use native IPSec tunnel mode: If you need to enable some routing protocol over the IPSec tunnels, you should use IPSec VTI interface.
+These two examples use native IPsec tunnel mode: if you need to run a routing protocol over the IPsec tunnels, you should use an IPsec VTI interface.
 
 ### Tunnel without IKE
 
-A first simple example with manually configured Security Policy Database (SPD) and Security Association Database (SAD).
+A first simple example with a manually configured Security Policy Database (SPD) and Security Association Database (SAD).
 
 #### Router 2
 
-Create a file /etc/ipsec.conf with these lines:
+Create a file `/etc/ipsec.conf` with these lines:
 
 ```
 cat > /etc/ipsec.conf <<EOF
@@ -420,14 +420,14 @@ And check it:
 
 Same for the other side.
 
-Only if BSDRP version older than 1.59, disable ip.fastforwarding by editing /etc/sysctl.conf and comment this line:
+Only if BSDRP is older than 1.59, disable `net.inet.ip.fastforwarding` by editing `/etc/sysctl.conf` and commenting out this line:
 
 ```
 sed -i "" "s/net.inet.ip.fastforwarding=1/net.inet.ip.fastforwarding=0/g"  /etc/sysctl.conf
 sysctl net.inet.ip.fastforwarding=0
 ```
 
-Create a file /etc/ipsec.conf with these lines (same as VM2: only to have to invert the in/out keyword):
+Create a file `/etc/ipsec.conf` with these lines (same as VM2, but invert the `in`/`out` keywords):
 
 ```
 cat > /etc/ipsec.conf <<EOF
@@ -453,7 +453,7 @@ service ipsec restart
 
 #### Testing
 
-Start a tcpdump on VM3-em1 and from VM1 ping VM5:
+Start a tcpdump on VM3-em1, then ping VM5 from VM1:
 
 ```
 [root@VM3]~# tcpdump -pni em1
@@ -485,11 +485,11 @@ PING6(56=40+8+8 bytes) 2001:db8:12::1 --> 2001:db8:45::5
 
 ### Tunnel with IKE v1 (racoon)
 
-Using IKE, the SP will still be manually configured, but the SA will be negociated with racoon.
+When using IKE, the SP is still configured manually, but the SA is negotiated by racoon.
 
 #### Router 2
 
-Configure the IPSec Security Policy (SP) rules:
+Configure the IPsec Security Policy (SP) rules:
 
 ```
 cat > /usr/local/etc/racoon/setkey.conf <<'EOF'
@@ -502,7 +502,7 @@ spdadd 2001:db8:45::/64 2001:db8:12::/64 any -P in ipsec esp/tunnel/2001:db8:34:
 'EOF'
 ```
 
-Then define the password to use for the remote site and protect this password file (racoon will refuse to use it if the permission are not strict):
+Then define the password to use for the remote site, and protect this password file (racoon will refuse to use it if the permissions are not strict enough):
 
 ```
 cat > /usr/local/etc/racoon/psk.txt <<'EOF'
@@ -537,7 +537,7 @@ sainfo anonymous
 'EOF'
 ```
 
-Enable the service ipsec and racoon:
+Enable the ipsec and racoon services:
 
 ```
 sysrc ipsec_enable=YES
@@ -563,7 +563,7 @@ spdadd 2001:db8:12::/64 2001:db8:45::/64 any -P in ipsec esp/tunnel/2001:db8:23:
 'EOF'
 ```
 
-Then define the password to use for the remote site and protect this password file (racoon will refuse to use it if the permission are not strict):
+Then define the password to use for the remote site, and protect this password file (racoon will refuse to use it if the permissions are not strict enough):
 
 ```
 cat > /usr/local/etc/racoon/psk.txt <<'EOF'
@@ -611,9 +611,9 @@ service racoon restart
 
 #### Testing
 
-Like previous test, ping VM5 from VM1 with a tcpdump on VM3, and racoon log displayed on VM2:
+As in the previous test, ping VM5 from VM1 with tcpdump running on VM3 and the racoon log displayed on VM2.
 
-VM3 tcpdump paquets:
+VM3 tcpdump packets:
 
 ```
 [root@VM3]~# tcpdump -pni em1
@@ -873,9 +873,9 @@ Jul  8 12:39:45 router charon[79963]: 12[CFG] installing 'net-net'
 
 #### Testing
 
-Like previous test, ping VM5 from VM1 with a tcpdump on VM3, and racoon log displayed on VM2:
+As in the previous test, ping VM5 from VM1 with tcpdump running on VM3 and the strongswan log displayed on VM2.
 
-VM3 tcpdump paquets:
+VM3 tcpdump packets:
 
 ```
 [root@VM3]~# tcpdump -pni em1
@@ -914,9 +914,9 @@ PING6(56=40+8+8 bytes) 2001:db8:12::1 --> 2001:db8:45::5
 16 bytes from 2001:db8:45::5, icmp_seq=1 hlim=62 time=3.744 ms
 ```
 
-### VTI Tunnel without IKE
+### VTI tunnel without IKE
 
-This method presents a routing interface (like creating a GRE tunnel over IPSec): Useful for running a routing protocol over IPSec tunnels.
+This method presents a routing interface (like a GRE tunnel over IPsec), which is useful for running a routing protocol over IPsec tunnels.
 
 #### Router 2
 
@@ -1047,9 +1047,9 @@ round-trip min/avg/max/std-dev = 0.362/0.458/0.617/0.113 ms
 
 ### CA and certificates generation
 
-All these step will be done on VM2 (OpenVPN server)
+All these steps are done on VM2 (the OpenVPN server).
 
-Start by copying easyrsa3 configuration folder and define new configuration file:
+Start by copying the easyrsa3 configuration folder and defining the new configuration variables:
 
 ```
 cp -r /usr/local/share/easy-rsa /usr/local/etc/
@@ -1100,7 +1100,7 @@ easyrsa build-client-full VM4 nopass
 
 #### VM2: OpenVPN server
 
-Create the openvpn configuration file for server mode as /usr/local/etc/openvpn/openvpn.conf:
+Create the openvpn configuration file for server mode as `/usr/local/etc/openvpn/openvpn.conf`:
 
 ```
 mkdir /usr/local/etc/openvpn
@@ -1122,7 +1122,7 @@ route-ipv6 2001:db8:45::/64
 'EOF'
 ```
 
-Create the Client-Configuration-dir and declare the volatile route to the subnet behind the client VM4:
+Create the client-configuration directory and declare the volatile route to the subnet behind the client VM4:
 
 ```
 mkdir /usr/local/etc/openvpn/ccd
@@ -1132,7 +1132,7 @@ iroute-ipv6 2001:db8:45::/64
 'EOF'
 ```
 
-Enable and start openvpn and sshd (we will get certificates files by SCP later):
+Enable and start openvpn and sshd (we will fetch the certificate files via SCP later):
 
 ```
 service sshd enable
@@ -1141,13 +1141,13 @@ service openvpn start
 service sshd start
 ```
 
-And set a password for root account (mandatory for next SCP file copy):
+And set a password for the root account (mandatory for the next SCP file copy):
 
 ```
 passwd
 ```
 
-Now Generate client configuration file with embedded certificates:
+Now generate the client configuration file with embedded certificates:
 
 ```
 cat > /usr/local/etc/openvpn/VM4-openvpn.conf <<EOF
@@ -1168,9 +1168,9 @@ echo '</key>' >> /usr/local/etc/openvpn/VM4-openvpn.conf
 
 #### VM4: OpenVPN client
 
-As OpenVPN client, VM4 should get its openvpn configuration file (that embedded certificate and key) from VM2 and put them in /usr/local/etc/openvpn.
+As the OpenVPN client, VM4 needs to fetch its openvpn configuration file (which embeds the certificate and key) from VM2 and place it in `/usr/local/etc/openvpn`.
 
-On this lab, scp can be used for getting these files:
+In this lab, scp can be used to fetch the file:
 
 ```
 mkdir /usr/local/etc/openvpn
@@ -1264,10 +1264,10 @@ listening on em1, link-type EN10MB (Ethernet), capture size 65535 bytes
 
 ### Data Channel Offload (DCO), kernel mode (fast)
 
-Start with a working userland configuration, then modify existing configuration files like that:
+Start from a working userland configuration, then modify the existing configuration files as follows:
 
-- Need to load if_ovpn module on both side
-- Need to enable subnet topology on the server side
+- Load the `if_ovpn` module on both sides
+- Enable subnet topology on the server side
 
 #### VM2: OpenVPN server
 
@@ -1311,7 +1311,7 @@ PING6(56=40+8+8 bytes) 2001:db8:12::1 --> 2001:db8:45::5
 round-trip min/avg/max/std-dev = 1.618/2.158/2.699/0.541 ms
 ```
 
-OpenVPN log file on VM2 (error installing route are due to DCO restriction):
+OpenVPN log file on VM2 (the route installation errors are due to DCO restrictions):
 
 ```
 Oct  4 18:29:40 VM2 openvpn[89399]: OpenVPN 2.6_git [git:734de8f9aa2df56bcb45ebab7cfa799a23f36403] amd64-portbld-freebsd14.0 [SSL (OpenSSL)] [LZO] [LZ4] [MH/RECVDA] [AEAD] [DCO] built on Oct  4 2022
@@ -1366,15 +1366,15 @@ Oct  4 18:30:12 VM4 openvpn[86737]: WARNING: this configuration may cache passwo
 Oct  4 18:30:12 VM4 openvpn[86737]: Initialization Sequence Completed
 ```
 
-## Wireguard
+## WireGuard
 
-On current (14.0) needs only wireguard-tools (kernel module included), on older (12 or 13) needs wireguard-kmod.
+On current FreeBSD (14.0) only `wireguard-tools` is needed (the kernel module is included); on older releases (12 or 13) `wireguard-kmod` is also required.
 
-### Key pairs generation on VM2 and VM4
+### Key pair generation on VM2 and VM4
 
-The first step is to generate a couple of private and public keys on each wireguard endpoint.
+The first step is to generate a private/public key pair on each WireGuard endpoint.
 
-The standard way of generating keys is using this command:
+The standard way to generate the keys is with this command:
 
 ```
 cd /usr/local/etc/wireguard
@@ -1383,11 +1383,11 @@ chmod 600 private
 wg pubkey < private > public
 ```
 
-But on this example, we will use static keys as example.
+In this example, we use static keys for illustration.
 
 ### Router 2
 
-Write example-only static and public key, on real-life, used the one generated by wg.
+Write example-only private and public keys; in real use, use the ones generated by `wg`.
 
 ```
 echo "oFsqDWpgtlma4Dy3YkPd918d3Nw9xdV9MBVn4YT1N38=" > /usr/local/etc/wireguard/private
@@ -1410,7 +1410,7 @@ service wireguard start
 
 ### Router 4
 
-Generate example-only router 4 wg keys, and declare 2 public key.
+Generate example-only Router 4 wg keys, and declare the two public keys.
 
 ```
 echo "4HRXmxN77CVb5VykdNX6mqkzCh2ycu4hfWfYHTvkLGE=" > /usr/local/etc/wireguard/private

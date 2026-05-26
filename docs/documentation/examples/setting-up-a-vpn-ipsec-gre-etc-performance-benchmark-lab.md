@@ -1,30 +1,30 @@
 ---
-title: Setting-up a VPN (IPSec, GRE, etc…) performance benchmark lab
-description: How to build a VPN (IPSec, GRE, etc…) performance benchmark lab with BSDRP
+title: Setting up a VPN (IPsec, GRE, etc...) performance benchmark lab
+description: How to build a VPN (IPsec, GRE, etc...) performance benchmark lab with BSDRP
 ---
 ## Global concept
 
-Benching forwarding performance is not simple, benching VPN (IPsec, GRE, etc…) is lot’s more complex.
+Benchmarking forwarding performance is not simple, and benchmarking VPN (IPsec, GRE, etc...) is much more complex.
 
 - Methodology for Benchmarking IPsec Devices: [draft-ietf-bmwg-ipsec-meth-03](https://tools.ietf.org/html/draft-ietf-bmwg-ipsec-meth-03).
-- [Methodology for Benchmarking IPsec Gateways](http://www.mecs-press.org/ijcnis/ijcnis-v4-n9/IJCNIS-V4-N9-1.pdf) (from Department of Telecommunications, Slovak University of Technology) that introduce the concept of equilibrium throughput.
+- [Methodology for Benchmarking IPsec Gateways](http://www.mecs-press.org/ijcnis/ijcnis-v4-n9/IJCNIS-V4-N9-1.pdf) (from the Department of Telecommunications, Slovak University of Technology) which introduces the concept of equilibrium throughput.
 - [Performance Analysis of VPN Gateways](https://www.net.in.tum.de/fileadmin/bibtex/publications/theses/2018-pudelko-vpn-performance.pdf) (Linux/DPDK/OpenVPN/WireGuard)
 
-Equilibrium throughput is the highest forwarding rate of a device that is the same as offered load.
+Equilibrium throughput is the highest forwarding rate of a device that matches the offered load.
 
 The concept is simple:
 
-- Generating network load using 500 bytes UDP payload datagram (528 bytes IP packet);
-- Using a hybrid step/binary search algorithm, it generate multiple load and search for the optimum load (when offered load = forwarded load) in minimum tries.
+- Generate network load using 500-byte UDP payload datagrams (528-byte IP packets).
+- Using a hybrid step/binary search algorithm, generate multiple loads and search for the optimum load (when offered load = forwarded load) in the minimum number of tries.
 
-BSDRP includes a [shell script that use netmap-pkg for measuring the Equilibrium throughput](https://github.com/ocochard/BSDRP/blob/master/BSDRP/Files/usr/local/bin/equilibrium) that apply this concept:
+BSDRP includes a [shell script that uses netmap-pkg to measure the equilibrium throughput](https://github.com/ocochard/BSDRP/blob/master/BSDRP/Files/usr/local/bin/equilibrium) which applies this concept:
 
-- Use netmap’s pktgen in place of Iperf;
-- Generate about 2000 flows (mix of different source & destination IP);
-- Allow using 2 modes
-  - The standard “IPSec Benchmark mode”, using 500 bytes UDP payload (by default, but configurable) and using equilibrium throughput unit in Mb/s (Ethernet link-level);
-  - A specific “Router Benchmark mode”, using minimum 16 bytes UDP payload (default but configurable) and using equilibrium throughput unit in Kpp/s;
-- Add some fixes to the official hybrid step/binary search algorithm.
+- Uses netmap's pktgen in place of iperf.
+- Generates about 2000 flows (a mix of different source and destination IP addresses).
+- Supports two modes:
+  - The standard “IPsec Benchmark mode”, using a 500-byte UDP payload (default, configurable) and an equilibrium throughput unit in Mb/s (Ethernet link level).
+  - A specific “Router Benchmark mode”, using a minimum 16-byte UDP payload (default, configurable) and an equilibrium throughput unit in Kpps.
+- Adds some fixes to the official hybrid step/binary search algorithm.
 
 ## Diagram
 
@@ -48,7 +48,7 @@ BSDRP includes a [shell script that use netmap-pkg for measuring the Equilibrium
 
 ### Physical
 
-For cross-checking the packet counters, it’s possible to connect our devices to a non-blocking switch that have its own traffic counters.
+To cross-check the packet counters, it’s possible to connect the devices to a non-blocking switch that has its own traffic counters.
 
 ```
 +---------------------------+    +-------------------+     +-------------------+
@@ -67,15 +67,15 @@ Same configuration as on [forwarding performance benchmark lab](setting-up-a-for
 
 ## Configuring packet generator/receiver and DUT
 
-A detailed example of configuration can be found on [IPSec performance lab of an IBM System x3550 M3 with Intel 82580](ipsec-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md).
+A detailed example configuration can be found in [IPsec performance lab of an IBM System x3550 M3 with Intel 82580](ipsec-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md).
 
-We need to measure the performance of “Reference Device” by setting up a bench lab with 2 identical devices as DUT if possible. Or using a powerfull “reference” device if only one DUT is available.
+The performance of a “Reference Device” is measured by setting up a bench lab with two identical DUTs if possible, or with a powerful “reference” device if only one DUT is available.
 
-If CPU supports [AES-NI feature](http://www.intel.com/content/dam/www/public/us/en/documents/white-papers/aes-ipsec-performance-linux-paper.pdf), the [aesni kernel module](https://www.freebsd.org/cgi/man.cgiquery=aesni&sektion=4) need to be loaded.
+If the CPU supports the [AES-NI feature](http://www.intel.com/content/dam/www/public/us/en/documents/white-papers/aes-ipsec-performance-linux-paper.pdf), the [aesni kernel module](https://www.freebsd.org/cgi/man.cgiquery=aesni&sektion=4) needs to be loaded.
 
-## IPSec bench “Equilibrium throughput” method
+## IPsec bench “Equilibrium throughput” method
 
-Once lab set, we can use the BSDRP tools “equilibrium” for using a fast method for measuring the “IPsec equilibrium throughput” of the DUT.
+Once the lab is set up, the BSDRP `equilibrium` tool provides a fast method for measuring the “IPsec equilibrium throughput” of the DUT.
 
 ```
 [root@packet-generator]/# equilibrium

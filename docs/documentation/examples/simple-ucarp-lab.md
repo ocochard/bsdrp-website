@@ -1,15 +1,15 @@
 ---
 title: Simple uCarp lab
 ---
-This lab use the fixed ucarp rc script (introduced in BSDRP 0.34).
+This lab uses the fixed ucarp rc script (introduced in BSDRP 0.34).
 
-## Network Diagram
+## Network diagram
 
 ![bsdrp-example-ucarp.png](../../assets/images/documentation/examples/bsdrp-example-ucarp.png)
 
 ## Creating the lab with VirtualBox
 
-Start a lab using the [virtualbox-lab script](how-to-build-a-bsdrp-router-lab.md):
+Start a lab using the [VirtualBox lab script](how-to-build-a-bsdrp-router-lab.md):
 
 ```
 [root@d630]./virtualbox.sh -i BSDRP_0.34_full_i386_serial.img.bz2 -n 4 -l 2
@@ -62,7 +62,7 @@ Here is how to use a serial terminal software for connecting to the routers:
 Warning: Closing your session will close socat on both end
 ```
 
-## Configuring Routers
+## Configuring routers
 
 ### Router 1 (R1)
 
@@ -166,7 +166,7 @@ Jul 29 01:03:11 R3 ucarp[1225]: [WARNING] Preferred master advertised: going bac
 
 ### Forwarding and ARP state
 
-Pinging R4 from R1:
+Ping R4 from R1:
 
 ```
 [root@R1]~#ping 10.0.0.4
@@ -175,7 +175,7 @@ PING 10.0.0.4 (10.0.0.4): 56 data bytes
 64 bytes from 10.0.0.4: icmp_seq=1 ttl=63 time=2.360 ms
 ```
 
-And checking ARP cache:
+And check the ARP cache:
 
 ```
 [root@R1]~#arp -a | grep 192.168.10.254
@@ -184,12 +184,12 @@ And checking ARP cache:
 
 
 !!! note
-    The MAC address of the virtual CARP IP is the real MAC of the interface in MASTER state (and not a virtual MAC adress) due to the IP alias creation on the MASTER node: Gratious ARP is needed when switching carp state between two node
+    The MAC address of the virtual CARP IP is the real MAC of the interface in MASTER state (not a virtual MAC address), because of the IP alias creation on the MASTER node. A gratuitous ARP is needed when switching CARP state between two nodes.
 
 
 ### Testing uCarp failover
 
-Disable one interface on R2 for changing the VRRP states:
+Disable one interface on R2 to change the uCARP states:
 
 ```
 [root@R2]~#ifconfig em3 down
@@ -201,7 +201,7 @@ Jul 29 01:03:12 R2 ucarp[1819]: [WARNING] Non-preferred master advertising: reas
 Jul 29 01:03:12 R2 ucarp[1815]: [WARNING] Non-preferred master advertising: reasserting control of VIP with another gratuitous arp
 ```
 
-And check that R3 became the master:
+And check that R3 has become the master:
 
 ```
 [root@R3]~#tail -f /var/log/messages
@@ -209,7 +209,7 @@ Jul 29 00:56:37 R3 ucarp[1225]: [WARNING] Switching to state: MASTER
 Jul 29 00:56:37 R3 ucarp[1225]: [WARNING] Spawning [/usr/local/sbin/ucarp-up em3 192.168.10.254]
 ```
 
-And check that R1 still can reach R4:
+And check that R1 can still reach R4:
 
 ```
 [root@R1]~#ping 10.0.0.4

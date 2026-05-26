@@ -1,13 +1,13 @@
 ---
 title: Simple VRRP lab
 ---
-## Network Diagram
+## Network diagram
 
 ![bsdrp-simple-vrrp-lab.png](../../assets/images/documentation/examples/bsdrp-simple-vrrp-lab.png)
 
 ## Starting the lab
 
-More information on these BSDRP lab scripts available on [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
+More information on the BSDRP lab scripts is available in [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
 
 Example with the bhyve lab script:
 
@@ -52,7 +52,7 @@ To connect VM'serial console, you can use:
 - VM 3 : sudo cu -l /dev/nmdm-BSDRP.3B
 ```
 
-## Configuring Routers
+## Configuring routers
 
 ### Router 1 (R1)
 
@@ -128,7 +128,7 @@ Feb 27 01:41:29 R1 kernel: carp: 1@vtnet3: BACKUP -> MASTER (preempting a slower
 Feb 27 01:41:29 R1 kernel: carp: 2@vtnet4: BACKUP -> MASTER (preempting a slower master)
 ```
 
-*R1 is VRRP master for vrid 1 and 2.*
+*R1 is the VRRP master for vrid 1 and 2.*
 
 On R2:
 
@@ -146,7 +146,7 @@ Feb 27 01:41:29 R2 kernel: carp: 2@vtnet4: MASTER -> BACKUP (more frequent adver
 
 ### Forwarding and ARP entry
 
-Pinging R4 from R3:
+Ping R4 from R3:
 
 ```
 [root@R3]~# ping 192.168.2.4
@@ -156,16 +156,16 @@ PING 192.168.2.4 (192.168.2.4): 56 data bytes
 64 bytes from 192.168.2.4: icmp_seq=2 ttl=63 time=0.718 ms
 ```
 
-And checking ARP cache for a VRRP MAC address (00:00:5e:00:01:xx)
+And check the ARP cache for a VRRP MAC address (00:00:5e:00:01:xx):
 
 ```
 root@R3:~ # arp -na | grep 192.168.1.254
 ? (192.168.1.254) at 00:00:5e:00:01:01 on vtnet3 expires in 1191 seconds [ethernet]
 ```
 
-### Testing VRRP swap
+### Testing VRRP failover
 
-Disable one interface on R1 for changing the VRRP states:
+Disable one interface on R1 to change the VRRP states:
 
 ```
 root@R1:~ # ifconfig vtnet3 down
@@ -175,7 +175,7 @@ Feb 27 09:19:11 router kernel: carp: demoted by 240 to 240 (interface down)
 Feb 27 09:19:11 router kernel: carp: 2@vtnet4: MASTER -> BACKUP (more frequent advertisement received)
 ```
 
-And check that R2 became the master:
+And check that R2 has become the master:
 
 ```
 root@R2:~ # grep carp /var/log/messages
@@ -183,7 +183,7 @@ Feb 27 09:19:11 router kernel: carp: 2@vtnet4: BACKUP -> MASTER (preempting a sl
 Feb 27 09:19:15 router kernel: carp: 1@vtnet3: BACKUP -> MASTER (master timed out)
 ```
 
-And check that R3 still can reach R4:
+And check that R3 can still reach R4:
 
 ```
 [root@R3]~#ping 192.168.2.4

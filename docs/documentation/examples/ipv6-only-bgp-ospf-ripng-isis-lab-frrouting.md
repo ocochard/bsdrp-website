@@ -1,9 +1,9 @@
 ---
-title: IPv6 only BGP/OSPF/RIPNG/ISIS lab with FRRouting
+title: IPv6-only BGP/OSPF/RIPNG/ISIS lab with FRRouting
 ---
-This lab has been done with BSDRP under bhyve and it show an example of BGP/ISIS/RIPNG/OSPF interactions with IPv6 only.
+This lab was done with BSDRP under bhyve and shows an example of BGP/ISIS/RIPNG/OSPF interactions with IPv6 only.
 
-## Presentation
+## Overview
 
 ### Network diagram
 
@@ -13,45 +13,48 @@ Here is the logical and physical view:
 
 ### Description and limitations
 
-This lab has been done to improve IPv6 use and routing experience. The routers have been configured int the simpliest way. No authentication or log have been configured (and this is bad !!!)
+This lab was built to improve IPv6 use and routing experience. The routers are configured in the simplest way. No authentication or logging is configured (and this is bad!).
 
-I also tried to make some “funnies” BGP interconnections. - The IGP protocol do not send routes to the EGP protocol - Inside an area, BGP border routers exchange their routes
+I also tried some "funny" BGP interconnections:
 
-The LAB_v6only_GW is a router used to make an interconnexion with a global lab network
+- The IGP protocol does not send routes to the EGP protocol.
+- Inside an area, BGP border routers exchange their routes.
 
-The host are not described here but a simple host vith ipv6 auto-configuration is enough
+LAB_v6only_GW is a router used to interconnect with a global lab network.
 
-## Setting-up the lab
+The hosts are not described here, but a simple host with IPv6 auto-configuration is enough.
+
+## Setting up the lab
 
 ### Downloading BSD Router Project images
 
-Download BSDRP serial image (prevent to have to use an X display) on Sourceforge.
+[Download the BSDRP serial image](../../downloads.md) (which avoids the need for an X display).
 
 ### Configure lab with netlab
 
 #### Quick installation of netlab
 
-Pull the repository <https://github.com/stardco/netlab.git> In root mode :
+Pull the repository <https://github.com/stardco/netlab.git>. In root mode:
 
 ```
 make install
 ```
 
-#### Information to add on templates.conf
+#### Information to add to templates.conf
 
-BSDRP-1.96-full-amd64-serial.img must be on /usr/local/etc/netlab/templates/
+`BSDRP-1.96-full-amd64-serial.img` must be in `/usr/local/etc/netlab/templates/`.
 
 ```
 BSDRP_196:BSD:BSDRP-1.96-full-amd64-serial.img:
 ```
 
-#### Information to add on areas.conf
+#### Information to add to areas.conf
 
 ```
 LAB_v6only:LAB_v6only_GW BGP_R1 BGP_R2 BGP_R3 BGP_R4 BGPC_H1 ISIS_R1 ISIS_R2 ISIS_R3 ISIS_R4 ISISC_H1 OSPF_R1 OSPF_R2 OSPF_R3 OSPF_R4 OSPFC_H1 RIPNG_R1 RIPNG_R2 RIPNG_R3 RIPNG_R4 RIPNGC_H1:
 ```
 
-#### Information to add on switches.conf
+#### Information to add to switches.conf
 
 ```
 L2:ogb1:ogb1p1 ogb1p2
@@ -79,7 +82,7 @@ L2:rrb4:rrb4p1 rrb4p2
 L2:rcb1:rcb1p1 rcb1p2
 ```
 
-#### Information to add on machines.conf
+#### Information to add to machines.conf
 
 ```
 LAB_v6only_GW:BSDRP_196:1:256:3003:bbb1p3 ogb1p1 bgb1p1:
@@ -107,13 +110,13 @@ RIPNGC_H1:BSDRP_196:1:256:3219:rcb1p2:
 
 #### Launch the lab
 
-In root mode !
+In root mode:
 
 ```
 netlab load -a LAB_v6only
 ```
 
-## Routers configuration
+## Router configuration
 
 ### OSPF_R1
 
@@ -1152,7 +1155,7 @@ config save
 
 ## Final testing
 
-Ping and traceroute from LAB_v6only_GW lo0 interface loopback from client interface:
+Ping and traceroute the LAB_v6only_GW lo0 loopback interface from a client:
 
 ```
 root@RIPNGC_H1:~ # ping6 -c 5 2001:db8:ffff:ffff:ffff:ffff:ffff:fffc

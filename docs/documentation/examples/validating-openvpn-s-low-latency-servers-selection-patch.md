@@ -1,21 +1,21 @@
 ---
 title: Validating OpenVPN’s low latency servers selection patch
 ---
-This lab test a [cool OpenVPN's patch: lowest-latency-server](https://github.com/paulgarnier/openvpn/commit/259d94029595c80076eef2282fd24d1961cf7d2d). This mean when multiple remote servers are configured, we measure their latency and connect in priority to the lowest latency.
+This lab tests a [neat OpenVPN patch: lowest-latency-server](https://github.com/paulgarnier/openvpn/commit/259d94029595c80076eef2282fd24d1961cf7d2d). When multiple remote servers are configured, the client measures their latency and connects preferentially to the lowest-latency one.
 
-## Presentation
+## Overview
 
 ### Network diagram
 
-Lab build following [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md): 5 routers with full-meshed link.
+Lab built following [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md): 5 routers with full-meshed links.
 
 Here is the logical and physical view:
 
 ![bsdrp.lab.openvpn-low-latency-servers-selection.png](../../assets/images/documentation/examples/bsdrp.lab.openvpn-low-latency-servers-selection.png)
 
-## Base routers configuration
+## Base router configuration
 
-We start a 5 routers full-mesh lab with one shared LAN:
+Start a 5-router full-mesh lab with one shared LAN:
 
 ```
 root@lab:~ # /tools/BSDRP-lab-bhyve.sh -i BSDRP-1.591-full-amd64-vga.img.xz -n 5 -l 1
@@ -115,7 +115,7 @@ config save
 
 ### Router 4
 
-Router 4 base configuration, like R2: A simple connected-network router with a default route pointing to R3.
+Router 4 base configuration, like R2: a simple connected-network router with a default route pointing to R5.
 
 ```
 sysrc hostname=R4 \
@@ -133,7 +133,7 @@ config save
 
 ### Router 5
 
-Router 5 is the central router simulating Internet and low latency link.
+Router 5 is the central router simulating the Internet and low-latency links.
 
 ```
 sysrc hostname=R5 \
@@ -176,9 +176,9 @@ config save
 
 ### CA and certificates generation
 
-All these step will be done on R2 (OpenVPN server & CA)
+All these steps are done on R2 (the OpenVPN server and CA).
 
-Start by copying easyrsa3 configuration folder and define new configuration file:
+Start by copying the easyrsa3 configuration folder and defining the new configuration variables:
 
 ```
 cp -r /usr/local/share/easy-rsa /usr/local/etc/
@@ -218,7 +218,7 @@ Your new CA certificate file for publishing is at:
 /usr/local/etc/easy-rsa/pki/ca.crt
 ```
 
-Make a server certificate called R2, R3 and R4. Then client certificate called R1:
+Make server certificates called R2, R3, and R4, then a client certificate called R1:
 
 ```
 easyrsa build-server-full R2 nopass
@@ -230,7 +230,7 @@ config save
 
 ### R2: First OpenVPN server and cert generator
 
-Create the openvpn configuration file for server mode as /usr/local/etc/openvpn/openvpn.conf:
+Create the openvpn configuration file for server mode as `/usr/local/etc/openvpn/openvpn.conf`:
 
 ```
 mkdir /usr/local/etc/openvpn
@@ -253,7 +253,7 @@ route-ipv6 2001:db8:1::/64
 'EOF'
 ```
 
-Create the Client-Configuration-dir and declare the volatile route to the subnet behind the client R1:
+Create the client-configuration directory and declare the volatile route to the subnet behind the client R1:
 
 ```
 mkdir /usr/local/etc/openvpn/ccd
@@ -263,7 +263,7 @@ iroute-ipv6 2001:db8:1::/64
 'EOF'
 ```
 
-Enable and start openvpn and sshd (we will get certificates files by SCP later):
+Enable and start openvpn and sshd (we will fetch the certificate files via SCP later):
 
 ```
 service openvpn enable
@@ -272,7 +272,7 @@ service sshd enable
 service sshd start
 ```
 
-And set a password for root account (mandatory for next SCP file copy):
+And set a password for the root account (mandatory for the next SCP file copy):
 
 ```
 passwd
@@ -280,7 +280,7 @@ passwd
 
 ### R3: Second OpenVPN server
 
-Create the openvpn configuration file for server mode as /usr/local/etc/openvpn/openvpn.conf:
+Create the openvpn configuration file for server mode as `/usr/local/etc/openvpn/openvpn.conf`:
 
 ```
 mkdir /usr/local/etc/openvpn
@@ -303,7 +303,7 @@ route-ipv6 2001:db8:1::/64
 'EOF'
 ```
 
-Create the Client-Configuration-dir and declare the volatile route to the subnet behind the client R1:
+Create the client-configuration directory and declare the volatile route to the subnet behind the client R1:
 
 ```
 mkdir /usr/local/etc/openvpn/ccd
@@ -313,7 +313,7 @@ iroute-ipv6 2001:db8:1::/64
 'EOF'
 ```
 
-Then get CA and your own certificate from R2
+Then fetch the CA and the host's own certificate from R2:
 
 ```
 scp 192.168.25.2:/usr/local/etc/easy-rsa/pki/ca.crt /usr/local/etc/openvpn
@@ -331,7 +331,7 @@ service openvpn start
 
 ### R4: Third OpenVPN server
 
-Create the openvpn configuration file for server mode as /usr/local/etc/openvpn/openvpn.conf:
+Create the openvpn configuration file for server mode as `/usr/local/etc/openvpn/openvpn.conf`:
 
 ```
 mkdir /usr/local/etc/openvpn
@@ -354,7 +354,7 @@ route-ipv6 2001:db8:1::/64
 'EOF'
 ```
 
-Create the Client-Configuration-dir and declare the volatile route to the subnet behind the client R1:
+Create the client-configuration directory and declare the volatile route to the subnet behind the client R1:
 
 ```
 mkdir /usr/local/etc/openvpn/ccd
@@ -364,7 +364,7 @@ iroute-ipv6 2001:db8:1::/64
 'EOF'
 ```
 
-Then get CA and your own certificate from R2
+Then fetch the CA and the host's own certificate from R2:
 
 ```
 scp 192.168.25.2:/usr/local/etc/easy-rsa/pki/ca.crt /usr/local/etc/openvpn
@@ -382,13 +382,13 @@ service openvpn start
 
 ### R1: OpenVPN client
 
-As OpenVPN client, R1 should get these files from R2 and put them in /usr/local/etc/openvpn:
+As the OpenVPN client, R1 needs to fetch these files from R2 and place them in `/usr/local/etc/openvpn`:
 
 - ca.crt
 - R1.crt
 - R1.key
 
-On this lab, scp can be used for getting these files:
+In this lab, scp can be used to fetch the files:
 
 ```
 mkdir /usr/local/etc/openvpn
@@ -414,7 +414,7 @@ key R1.key
 'EOF'
 ```
 
-Check the latency of each servers (200ms, 100ms and less than 1 ms):
+Check the latency of each server (200 ms, 100 ms, and less than 1 ms):
 
 ```
 [root@R1]~# ping -c 2 192.168.25.2
@@ -454,9 +454,9 @@ service openvpn start
 
 ## Testing
 
-### unpatched OpenVPN
+### Unpatched OpenVPN
 
-Test the current setup by checking if with unpatched OpenVPN it’s works but connect only to the first declared OpenVPN server (192.168.25.2):
+Test the current setup. With unpatched OpenVPN it works, but the client connects only to the first declared OpenVPN server (192.168.25.2):
 
 ```
 [root@R1]# grep openvpn /var/log/messages
@@ -483,16 +483,16 @@ PING 10.0.2.2 (10.0.2.2): 56 data bytes
 round-trip min/avg/max/stddev = 199.854/199.906/199.925/0.030 ms
 ```
 
-### Compatibility Matrix
+### Compatibility matrix
 
 #### Methodology
 
-For this test, we start by:
+For this test:
 
-1.  upgrading OpenVPN on R2 (first server) and testing that unpatched R1 client reach to connect to patched OpenVPN server R2
-2.  upgrading OpenVPN on R1 and testing it can connect to patched OpenVPN server R2
-3.  modifying R1 unpatched OpenVPN configuration configuration by putting R3 (second unpatched OpenVPN server) in first position in the server list and checking that R1 (patched client) can connect to R3 (unpatched server)
-4.  At the end, reverting R1 configuration for reinstallating R2 first, R3 second and R4 in third position.
+1.  Upgrade OpenVPN on R2 (the first server) and verify that the unpatched R1 client can still connect to the patched R2 server.
+2.  Upgrade OpenVPN on R1 and verify that it can connect to the patched R2 server.
+3.  Modify R1's OpenVPN configuration to put R3 (the second, unpatched OpenVPN server) first in the server list, and verify that R1 (patched client) can connect to R3 (unpatched server).
+4.  Finally, revert R1's configuration so that R2 is first, R3 second, and R4 third.
 
 #### Results
 
@@ -501,16 +501,16 @@ For this test, we start by:
 | client unpatched | OK               | OK             |
 |  client patched  | OK               | OK             |
 
-### Testing new remote-best-latency option
+### Testing the new remote-best-latency option
 
-Now we still didn’t upgrade OpenVPN on the 2 last servers (R3 and R4) but we add remote-best-latency option on client:
+OpenVPN is still not upgraded on the last two servers (R3 and R4), but the `remote-best-latency` option is added on the client:
 
 ```
 service openvpn stop
 echo "remote-best-latency" >> /usr/local/etc/openvpn/openvpn.conf
 ```
 
-OpenVPN.conf should be like this one:
+`openvpn.conf` should look like this:
 
 ```
 client
@@ -526,7 +526,7 @@ key R1.key
 remote-best-latency
 ```
 
-Then we start openvpn for checking the new behavior:
+Then start openvpn to check the new behavior:
 
 ```
 [root@R1]/usr/local/etc/openvpn# openvpn openvpn.conf
@@ -557,9 +557,9 @@ add net 2001:db8:2::/64: gateway tun0 fib 0
 Fri Jun 17 07:04:56 2016 Initialization Sequence Completed
 ```
 
-We notice timeout message: 2 OpenVPN servers are still not upgraded and still didn’t support the OpenVPN-latency-ping packets, then they timeout. But the client no more connect to the first declared server but on R4 here (why?).
+Note the timeout messages: two OpenVPN servers are still not upgraded and do not support the OpenVPN latency-ping packets, so those probes time out. The client no longer connects to the first declared server but to R4 here (why?).
 
-Bug on last version:
+Bug on the latest version:
 
 ```
 [root@R1]/usr/local/etc/openvpn# openvpn openvpn.conf

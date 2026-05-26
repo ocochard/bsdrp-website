@@ -1,9 +1,9 @@
 ---
 title: DHCP Relay and Server lab
 ---
-This Labs show an example of IPv4 DHCP Relay and server with BSDRP (v1.51)
+This lab shows an example of an IPv4 DHCP relay and DHCP server with BSDRP (v1.51).
 
-## Presentation
+## Overview
 
 ### Network diagram
 
@@ -11,17 +11,17 @@ Here is the logical and physical view:
 
 ![bsdrp-dhcp-relay-server.png](../../assets/images/documentation/examples/bsdrp-dhcp-relay-server.png)
 
-## Setting-up the lab
+## Setting up the lab
 
 ### Downloading BSD Router Project images
 
-Download a BSDRP serial image (prevent to have to use an X display) on SourceForge.
+Download a BSDRP serial image (to avoid needing an X display) from SourceForge.
 
 ### Downloading BSDRP lab scripts and starting the lab
 
-More information on these BSDRP lab scripts available on [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
+More information on the BSDRP lab scripts is available in [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
 
-Start a lab with 3 routers full meshed (no common LAN), example with VirtualBox script:
+Start a lab with 3 full-meshed routers (no common LAN). Example with the VirtualBox script:
 
 ```
 # tools/BSDRP-lab-bhyve.sh -i BSDRP-1.903-full-amd64-serial.img.xz -n 3
@@ -48,7 +48,7 @@ For connecting to VM'serial console, you can use:
 - VM 3 : cu -l /dev/nmdm3B
 ```
 
-## Routers configuration
+## Router configuration
 
 ### VM3 (DHCP server)
 
@@ -79,7 +79,7 @@ service isc-dhcpd start
 config save
 ```
 
-### VM2 (Router and DHCP Relay)
+### VM2 (router and DHCP relay)
 
 ```
 sysrc hostname=VM2
@@ -112,7 +112,7 @@ config save
 
 ## Final testing
 
-Check data received by DHCP client on VM1:
+Check the data received by the DHCP client on VM1:
 
 ```
 [root@VM1]~# ifconfig vtnet0

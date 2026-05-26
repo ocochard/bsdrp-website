@@ -1,13 +1,13 @@
 ---
 title: Multi-tenant HA pf firewalls
 ---
-## Network Diagram
+## Network diagram
 
 ![multi-tenant-ha-pf-firewalls.png](../../assets/images/documentation/examples/multi-tenant-ha-pf-firewalls.png)
 
 ## Starting the lab
 
-More information on these BSDRP lab scripts available on [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
+More information on the BSDRP lab scripts is available in [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
 
 Example with the bhyve lab script:
 
@@ -64,17 +64,17 @@ For connecting to VM'serial console, you can use:
 - VM 5 : cu -l /dev/nmdm-BSDRP.5B
 ```
 
-## Configuring Routers
+## Configuring routers
 
-### With BSDRP’s labconfig
+### With BSDRP's labconfig
 
-All these routers can be rapidly configured with [BSDRP's labconfig tool](https://github.com/ocochard/BSDRP/blob/master/BSDRP/Files/usr/local/sbin/labconfig) (use it only on a lab, because it will replace your current running configuration). Notice this example is using [another BSDRP'shell](https://github.com/ocochard/BSDRP/blob/master/BSDRP/Files/usr/local/sbin/tenant) script to simplify nullfs jail creation on a nanobsd.
+All these routers can be quickly configured with [BSDRP's labconfig tool](https://github.com/ocochard/BSDRP/blob/master/BSDRP/Files/usr/local/sbin/labconfig) (only use it in a lab, because it will replace your current running configuration). This example uses [another BSDRP shell script](https://github.com/ocochard/BSDRP/blob/master/BSDRP/Files/usr/local/sbin/tenant) to simplify nullfs jail creation on a NanoBSD.
 
 ```
 labconfig jailpf_vm[VM-NUMBER]
 ```
 
-Or you can do it step-by-step like described.
+Or you can do it step by step as described below.
 
 ### Public server (VM3)
 
@@ -124,7 +124,7 @@ service routing restart
 config save
 ```
 
-### First Multi-tenant firewall (VM1)
+### First multi-tenant firewall (VM1)
 
 ```
 sysrc hostname=VM1
@@ -155,7 +155,7 @@ service kld start
 
 
 !!! note
-    Jails needs to use different CARP vid on the public shared LAN for avoid carp MAC address conflict
+    Jails must use different CARP vhids on the public shared LAN to avoid CARP MAC address conflicts.
 
 
 #### Customer 1 Firewall1 (jail11)
@@ -228,7 +228,7 @@ EOF
 service jail start
 ```
 
-### Second Multi-tenant firewall (VM2)
+### Second multi-tenant firewall (VM2)
 
 ```
 sysrc hostname=VM2
@@ -258,7 +258,7 @@ service kld start
 
 
 !!! note
-    Jails needs to use different CARP vid on the public shared LAN for avoid carp MAC address conflict
+    Jails must use different CARP vhids on the public shared LAN to avoid CARP MAC address conflicts.
 
 
 #### Customer 1 Firewall2 (jail21)
@@ -333,11 +333,11 @@ service jail start
 
 ## Checking firewalls status
 
-### carp state
+### CARP state
 
 #### Customer 1
 
-Check that on VM1 jail11 is in carp master state:
+Check that on VM1, jail11 is in CARP master state:
 
 ```
 [root@VM1]~# jexec jail11 ifconfig | grep carp
@@ -345,7 +345,7 @@ Check that on VM1 jail11 is in carp master state:
         carp: MASTER vhid 1 advbase 1 advskew 100
 ```
 
-And on VM2 that jail21 in backup state:
+And on VM2, jail21 is in backup state:
 
 ```
 [root@VM2]~# jexec jail21 ifconfig | grep carp
@@ -355,7 +355,7 @@ And on VM2 that jail21 in backup state:
 
 #### Customer 2
 
-Check on VM1 that jail12 is in carp backup state:
+Check that on VM1, jail12 is in CARP backup state:
 
 ```
 [root@VM1]~# jexec jail12 ifconfig | grep carp
@@ -363,7 +363,7 @@ Check on VM1 that jail12 is in carp backup state:
         carp: BACKUP vhid 1 advbase 1 advskew 200
 ```
 
-And on VM2 that jail22 in master state:
+And on VM2, jail22 is in master state:
 
 ```
 [root@VM2]~# jexec jail22 ifconfig | grep carp
@@ -386,7 +386,7 @@ echo
 echo
 ```
 
-And still connected, check state tables on jail11:
+While still connected, check the state tables on jail11:
 
 ```
 [root@VM1]~# jexec jail11 pfctl -ss
@@ -397,7 +397,7 @@ all tcp 2.2.2.3:7 <- 10.0.0.4:22829       ESTABLISHED:ESTABLISHED
 all tcp 2.2.2.1:64414 (10.0.0.4:22829) -> 2.2.2.3:7       ESTABLISHED:ESTABLISHED
 ```
 
-And state table should be synced on jail21 too:
+The state table should also be synced on jail21:
 
 ```
 [root@VM2]~# jexec jail21 pfctl -ss
@@ -421,7 +421,7 @@ echo
 echo
 ```
 
-And still connected, check state tables on VM2/jail22:
+While still connected, check the state tables on VM2/jail22:
 
 ```
 [root@VM2]~# jexec jail22 pfctl -ss
@@ -432,7 +432,7 @@ all tcp 2.2.2.3:7 <- 10.0.0.5:48257       ESTABLISHED:ESTABLISHED
 all tcp 2.2.2.2:55134 (10.0.0.5:48257) -> 2.2.2.3:7       ESTABLISHED:ESTABLISHED
 ```
 
-And state table should be synced on VM1/jail12 too:
+The state table should also be synced on VM1/jail12:
 
 ```
 [root@VM1]~# jexec jail12 pfctl -ss
@@ -448,7 +448,7 @@ all tcp 2.2.2.2:58530 (10.0.0.5:29481) -> 2.2.2.3:7       ESTABLISHED:ESTABLISHE
 
 #### Customer 1
 
-Check log file on customer 1 master firewall (after default 60 seconds timer flush):
+Check the log file on the customer 1 master firewall (after the default 60-second flush timer):
 
 ```
 [root@jail11]~# tcpdump -n -e -ttt -i pflog0
@@ -484,7 +484,7 @@ listening on pflog0, link-type PFLOG (OpenBSD pflog file), capture size 262144 b
 
 #### Customer 1
 
-Check log file on customer 1 master firewall jail11 (after default 60 seconds timer flush):
+Check the log file on the customer 1 master firewall jail11 (after the default 60-second flush timer):
 
 ```
 [root@jail11]~# tcpdump -r /var/log/pflog
@@ -503,7 +503,7 @@ pflog is running as pid 2267.
 
 #### Customer 2
 
-Check log file on customer 2 master firewall jail22 (after default 60 seconds timer flush):
+Check the log file on the customer 2 master firewall jail22 (after the default 60-second flush timer):
 
 ```
 [root@jail22]~# tcpdump -r /var/log/pflog
@@ -514,10 +514,10 @@ pflog is running as pid 2261.
 
 
 !!! note
-    pflogd seems to have a problem running inside a jail
+    pflogd seems to have a problem running inside a jail.
 
 
-Trying to stop pflogd for forcing a flush, but can’t stop it:
+Trying to stop pflogd to force a flush, but it cannot be stopped:
 
 ```
 [root@jail11]~# ps -auxww | grep pflogd

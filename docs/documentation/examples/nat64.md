@@ -1,9 +1,9 @@
 ---
 title: NAT64
 ---
-This lab show an NAT64 lab example using BSDPR with tayga (user space) and ipfw (kernel space).
+This lab shows a NAT64 example using BSDRP with tayga (user space) and ipfw (kernel space).
 
-## Presentation
+## Overview
 
 ### Network diagram
 
@@ -11,17 +11,17 @@ Here is the logical and physical view:
 
 ![labs.examples.nat64.png](../../assets/images/documentation/examples/labs.examples.nat64.png)
 
-## Setting-up the lab
+## Setting up the lab
 
 ### Downloading BSD Router Project images
 
-[Download BSDRP serial image](../../downloads.md) (prevent to have to use an X display).
+[Download the BSDRP serial image](../../downloads.md) (which avoids the need for an X display).
 
-### Download Lab scripts
+### Download lab scripts
 
-More information on these BSDRP lab scripts available on [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
+More information on the BSDRP lab scripts is available in [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
 
-Start the lab with 3 routers. With bhyve under FreeBSD:
+Start the lab with 3 routers, using bhyve on FreeBSD:
 
 ```
 user:~ # tools/BSDRP-lab-bhyve.sh -i BSDRP-1.93-full-amd64-serial.img.xz -n 3
@@ -52,7 +52,7 @@ To connect VM'serial console, you can use:
 
 ### VM 1 (client)
 
-VM1 is configured as a simple IPv6 only host:
+VM1 is configured as a simple IPv6-only host:
 
 ```
 sysrc hostname=VM1 \
@@ -68,7 +68,7 @@ config save
 
 ### Router 2
 
-VM2 is a router with one interface toward IPv6 network, and another toward IPv4 network.
+VM2 is a router with one interface toward the IPv6 network and another toward the IPv4 network.
 
 ```
 sysrc hostname=VM2 \
@@ -82,7 +82,7 @@ config save
 
 ### VM 3 (client)
 
-VM3 is configured as a simple IPv4 only host:
+VM3 is configured as a simple IPv4-only host:
 
 ```
 sysrc hostname=VM3 \
@@ -100,7 +100,7 @@ config save
 
 ### VM2
 
-Modify default default tayga’s configuration file and enable it:
+Modify the default tayga configuration file and enable the service:
 
 ```
 service tayga enable
@@ -109,7 +109,7 @@ sed -i "" 's/2001:db8:1:ffff::/64:ff9b::/g' /usr/local/etc/tayga.conf
 service tayga start
 ```
 
-Quick test from VM2 by pinging its IPv4 address from its IPv6 one, and same by targeting VM3:
+Quick test from VM2 by pinging its IPv4 address from its IPv6 one, then targeting VM3:
 
 ```
 [root@VM2]~# ping6 -c 3 64:ff9b::2.2.2.2
@@ -134,7 +134,7 @@ round-trip min/avg/max/std-dev = 0.157/0.183/0.228/0.032 ms
 
 ### Testing
 
-From VM4, start a tcpdump to check IPv4 source address seen by VM3:
+From VM3, start a tcpdump to check the IPv4 source address seen by VM3:
 
 ```
 [root@VM3]~# tcpdump -c 2 -pni vtnet1
@@ -143,7 +143,7 @@ listening on vtnet1, link-type EN10MB (Ethernet), capture size 262144 bytes
 ...
 ```
 
-From VM1 (IPv6 only host), ping NAT64 IPv6 address corresponding to VM3 IPv4 address:
+From VM1 (the IPv6-only host), ping the NAT64 IPv6 address corresponding to VM3's IPv4 address:
 
 ```
 [root@VM1]~# ping6 -c 3 64:ff9b::2.2.2.3
@@ -157,7 +157,7 @@ PING6(56=40+8+8 bytes) 2001:db8:12::1 --> 64:ff9b::202:203
 round-trip min/avg/max/std-dev = 0.257/0.272/0.298/0.018 ms
 ```
 
-From VM3, check source IP addresses of ICMP:
+On VM3, check the source IP addresses of the ICMP packets:
 
 ```
 ...
@@ -170,7 +170,7 @@ From VM3, check source IP addresses of ICMP:
 
 ## IPFW NAT64 (kernel space)
 
-IPFW NAT64 module supports both stateful (lsn) and stateless (stl) NAT64.
+The IPFW NAT64 module supports both stateful (lsn) and stateless (stl) NAT64.
 
 ### Stateful (lsn)
 
@@ -181,7 +181,7 @@ Configure a stateful NAT64 with ipfw:
 ```
 service ipfw enable
 sysrc firewall_script="/etc/ipfw.rules"
-echo "# Temporary fix to avoid panicing a 12-stable:" >> /etc/sysctl.conf
+echo "# Temporary fix to avoid panicking a 12-stable:" >> /etc/sysctl.conf
 echo "net.inet.ip.fw.nat64_direct_output=1" >> /etc/sysctl.conf
 cat > /etc/ipfw.rules <<'EOF'
 #!/bin/sh
@@ -201,7 +201,7 @@ sysctl net.inet.ip.fw.nat64_direct_output=1
 
 #### Testing
 
-From IPv6 only host, ping NAT64 IPv6 address corresponding to VM3 IPv4 address:
+From the IPv6-only host, ping the NAT64 IPv6 address corresponding to VM3's IPv4 address:
 
 ```
 [root@VM1]~# ping6 -c 3 64:ff9b::2.2.2.3
@@ -215,7 +215,7 @@ PING6(56=40+8+8 bytes) 2001:db8:12::1 --> 64:ff9b::202:203
 round-trip min/avg/max/std-dev = 0.248/0.292/0.369/0.055 ms
 ```
 
-Checking status on NAT64 router:
+Check the status on the NAT64 router:
 
 ```
 [root@VM2]~# ipfw nat64lsn NAT64 show states
@@ -231,7 +231,7 @@ Checking status on NAT64 router:
 
 #### VM2
 
-Configure a stateless NAT64 with ipfw, and enable logging:
+Configure a stateless NAT64 with ipfw and enable logging:
 
 ```
 service ipfw enable
@@ -258,7 +258,7 @@ service ipfw start
 
 #### Testing
 
-From IPv6 only host, ping NAT64 IPv6 address corresponding to VM3 IPv4 address:
+From the IPv6-only host, ping the NAT64 IPv6 address corresponding to VM3's IPv4 address:
 
 ```
 [root@VM1]~# ping6 -c 3 64:ff9b::2.2.2.3
@@ -272,7 +272,7 @@ PING6(56=40+8+8 bytes) 2001:db8:12::1 --> 64:ff9b::202:203
 round-trip min/avg/max/std-dev = 1.037/1.215/1.560/0.244 ms
 ```
 
-From IPv4 only host, ping NAT64 IPv4 address corresponding to VM3 IPv6 address:
+From the IPv4-only host, ping the NAT64 IPv4 address corresponding to VM3's IPv6 address:
 
 ```
 [root@VM3]~# ping -c 3 2.2.1.1
@@ -286,7 +286,7 @@ PING 2.2.1.1 (2.2.1.1): 56 data bytes
 round-trip min/avg/max/stddev = 1.409/7.858/17.147/6.732 ms
 ```
 
-And check on the NAT router VM2 some stats:
+And check some stats on the NAT router VM2:
 
 ```
 [root@VM2]~# ipfw nat64stl NAT64 stats

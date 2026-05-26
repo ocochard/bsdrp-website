@@ -1,30 +1,30 @@
 ---
-title: Strongswan IPSec mediation feature (NAT hole punching)
-description: IPSec tunnel between devices both behind NAT gateways
+title: strongSwan IPsec mediation feature (NAT hole punching)
+description: IPsec tunnel between devices both behind NAT gateways
 ---
-This lab shows an interesting feature of Strongswan: IPSec tunnel between devices, both behind NAT gateways.
+This lab shows an interesting feature of strongSwan: IPsec tunnel between devices, both behind NAT gateways.
 
-## Presentation
+## Overview
 
 ### Network diagram
 
-Lab build following [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md): 7 routers with full-meshed link and one shared LAN.
+Lab built following [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md): 7 routers with full-meshed links and one shared LAN.
 
 Here is the logical and physical view:
 
 ![strongswan-ipsec-mediation.png](../../assets/images/documentation/examples/strongswan-ipsec-mediation.png)
 
-### Setting-up the lab
+### Setting up the lab
 
 #### Downloading BSD Router Project images
 
-Download BSDRP serial image (prevent to have to use an X display) on Sourceforge.
+Download the BSDRP serial image (which avoids the need for an X display) from SourceForge.
 
-#### Download Lab scripts
+#### Download lab scripts
 
-More information on these BSDRP lab scripts available on [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
+More information on the BSDRP lab scripts is available in [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
 
-Start the lab with full-meshed 7 routers and one shared LAN, on this example using bhyve lab script on FreeBSD:
+Start the lab with 7 full-meshed routers and one shared LAN. This example uses the bhyve lab script on FreeBSD:
 
 ```
 [root@FreeBSD]~# BSDRP-lab-bhyve.sh -i BSDRP-1.903-full-amd64-serial.img.xz -n 7 -l 1
@@ -97,7 +97,7 @@ For connecting to VM'serial console, you can use:
 
 ## Configuration
 
-Router 1 and Router 7 as a simple workstation, Router 2 and 6 as IPSec gateway, Router 4 as IPSec mediation, Router 4 and 5 as NAT gateway.
+Router 1 and Router 7 act as simple workstations; Router 2 and Router 6 act as IPsec gateways; Router 4 acts as the IPsec mediation server; Router 3 and Router 5 act as NAT gateways.
 
 ### Router 1: Workstation
 
@@ -115,11 +115,11 @@ service routing restart
 config save
 ```
 
-### Router 2: IPSec gateway
+### Router 2: IPsec gateway
 
-Router 2 is an IPSec gateway behind a NAT gateway that need to be directly reachable from Router 6 (then need to use a mediation server).
+Router 2 is an IPsec gateway behind a NAT gateway that needs to be directly reachable from Router 6 (so it needs a mediation server).
 
-Enable debug mode for IKEv2 into file /var/log/charon.log.
+Enable debug mode for IKEv2 into the file `/var/log/charon.log`.
 
 ```
 sysrc hostname=R2
@@ -183,9 +183,9 @@ config save
 
 ### Router 3: NAT gateway
 
-Router 3 is configured as a NAT gateway (pf with NAT using static-port option).
+Router 3 is configured as a NAT gateway (pf with NAT using the `static-port` option).
 
-Option static-port is important with pf: Without this option, NAT UDP hole will not work.
+The `static-port` option is important with pf: without it, NAT UDP hole punching will not work.
 
 ```
 sysrc hostname=R3
@@ -208,9 +208,9 @@ service pf start
 config save
 ```
 
-### Router 4: IPSec mediation server
+### Router 4: IPsec mediation server
 
-Router 4 is an IPSec mediation server (and debug log enabled).
+Router 4 is an IPsec mediation server (with debug logging enabled).
 
 ```
 sysrc hostname=R4
@@ -265,7 +265,7 @@ config save
 
 ### Router 5: NAT gateway
 
-Router 5 has the same workstation mode configuration as R3.
+Router 5 has the same NAT gateway configuration as R3.
 
 ```
 sysrc hostname=R5
@@ -289,9 +289,9 @@ service pf start
 config save
 ```
 
-### Router 6: IPSec gateway
+### Router 6: IPsec gateway
 
-Router 6 is like R2, an IPSec gateway using a mediation server (and debug log enabled).
+Router 6, like R2, is an IPsec gateway using a mediation server (with debug logging enabled).
 
 ```
 sysrc hostname=R6
@@ -373,7 +373,7 @@ config save
 
 ## Testing
 
-Status of IPSec tunnel:
+Status of the IPsec tunnel:
 
 ```
 [root@R2]~# ipsec statusall
@@ -423,13 +423,13 @@ round-trip min/avg/max/stddev = 0.457/0.559/0.627/0.074 ms
 
 ## Limitations
 
-This mediation service works only if the NAT gateways try to preserve source UDP ports: Removing option “static-port” on pf configuration as example prevent to use this feature.
+This mediation service works only if the NAT gateways try to preserve source UDP ports: removing the “static-port” option from the pf configuration, for example, prevents this feature from working.
 
-## Testing others NAT engines
+## Testing other NAT engines
 
 ### FreeBSD ipfw (libalias)
 
-Replacing pf nat by ipfw kernel-in-nat.
+Replace pf NAT with ipfw kernel-in-nat.
 
 R3 modification:
 
@@ -477,7 +477,7 @@ service pf onestop
 service ipfw start
 ```
 
-ipfw is not able to display NAT session table, then we will check strongswan log on mediation server:
+ipfw is not able to display the NAT session table, so we check the strongswan log on the mediation server:
 
 ```
 [root@R4]~# tail -f /var/log/charon.log | grep ME_ENDPOINT
@@ -489,9 +489,9 @@ ipfw is not able to display NAT session table, then we will check strongswan log
 13[IKE] received SERVER_REFLEXIVE ME_ENDPOINT 2.2.2.5[4500]
 ```
 
-All peers reach to connect to mediation server using their original UDP source port 4500: ipfw seems to correctly keep original source port.
+All peers manage to connect to the mediation server using their original UDP source port 4500: ipfw seems to correctly preserve the original source port.
 
-But IPSec tunnel is down:
+But the IPsec tunnel is down:
 
 ```
 [root@R2]~# ipsec status peer
@@ -499,7 +499,7 @@ Security Associations (2 up, 0 connecting):
         peer[1]: CREATED, %any[%any]...%any[%any]
 ```
 
-Checking with tcpdump on one Internet interface:
+Check with tcpdump on one Internet interface:
 
 ```
 [root@R3]~# tcpdump -pni vtnet6 host 2.2.2.5 and not icmp
@@ -511,25 +511,25 @@ listening on vtnet6, link-type EN10MB (Ethernet), capture size 262144 bytes
 21:37:23.821481 IP 2.2.2.5.4500 > 2.2.2.3.4500: NONESP-encap: isakmp: child_sa  inf2[I]
 ```
 
-ipfw nat engine is correctly keeping source port for packet going from:
+The ipfw NAT engine correctly preserves the source port for packets going from:
 
 - R6 to R4
 - R6 to R2
 - R2 to R4
 
-But it change source port for packet going from R2 to R6, and this broke mediation feature. 
+But it changes the source port for packets going from R2 to R6, and this breaks the mediation feature.
+
 !!! note
-    There is a problem here: ipfw didn’t reach to keept the “same_ports” because. The only cause it’s because it’s already used, but by what???
+    There is a problem here: ipfw fails to keep the “same_ports”. The only possible cause is that the port is already in use, but by what?
 
+Digging further, we find that strongSwan generates IPsec packets using all addresses configured on R2, and the first try uses:
 
-Digging further we found that Strongswan is generating IPSec packets using all addresses configured on R2, and the first try is using the :
+1.  The first packet generated by strongSwan uses source IP 192.168.1.2/24 (the first interface, vtnet0), which consumes the first NAT entry on R3 (R2, source port 4500 toward R6, destination port 4500).
+2.  The second packet generated by strongSwan uses source IP 10.0.0.2/24 (the second interface, vtnet1), and R3 cannot keep the same source port.
 
-1.  The first packet generated by Strongswan is using source IP 192.168.1.2/24 (first interface, vtnet0), then consume on R3 the first NAT entry (R2, source port 4500 toward R6, destination port 4500)
-2.  The second packet generated by Strongswan is using source IP 10.0.0.2/24 (second interface, vnet1), then when R3 can’t keept the same source port
+On R6, the first interface it tries is vtnet4 (with IP 10.0.0.6/24) before vtnet6 (192.168.7.6/24), so there is no “already an entry in the NAT table” problem.
 
-On R6, the first interface it tried is vtnet4 (with IP 10.0.0.6/24) before vtnet6 (192.168.7.6/24), then there is no problem of “already an entry into the NAT table”.
-
-For fixing this problem we need to accept only local network address to ipfw configuration on R3 (same behavior as line “nat … from \$localnet” on pf configuration:
+To fix this, accept only local network addresses in the ipfw configuration on R3 (same behavior as the “nat ... from \$localnet” line in the pf configuration):
 
 ```
 cat > /etc/ipfw.rules <<'EOF'
@@ -546,7 +546,7 @@ ${fwcmd} add nat 1 ip from any to any recv ${ext_if}
 'EOF'
 ```
 
-And this fix this Strongswan bug:
+And this fixes the strongSwan bug:
 
 ```
 [root@R2]~# ipsec status peer
@@ -560,12 +560,12 @@ Security Associations (2 up, 0 connecting):
 
 For this test:
 
-1.  we insert 2 new Cisco router (named C3 and C5, emulated by dynamips) in parrallel of existing R3 and R5.
-2.  We modify R2 and R6 to uses the new C3 and C5 as default gateway
+1.  We insert two new Cisco routers (named C3 and C5, emulated by dynamips) in parallel with the existing R3 and R5.
+2.  We modify R2 and R6 to use the new C3 and C5 as their default gateways.
 
-Example if we are using the bhyve lab script (then on a FreeBSD hypervisor).
+Example assuming the bhyve lab script (on a FreeBSD hypervisor).
 
-First, need to found bridge interface used for the shared LAN (Internet):
+First, find the bridge interface used for the shared LAN (Internet):
 
 ```
 # ifconfig -a | egrep -B 1 'LAN_1$'
@@ -573,9 +573,9 @@ bridge6: flags=8843<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> metric 0 mtu 1500
         description: LAN_1
 ```
 
-=\> We need to create 2 new TAP interfaces and add them it to this bridge6: They will be used on C3 and C5 as “Internet facing” interface
+=\> Create two new TAP interfaces and add them to bridge6: they will be used on C3 and C5 as the “Internet-facing” interface.
 
-Second, need to found LAN between R2 and R3. BSDRP lab script policy uses descrition name with “MESH_lower-router-id - higher-router-id”. Then we need to found bridge with description “MESH_2-3”:
+Second, find the LAN between R2 and R3. The BSDRP lab script naming policy uses descriptions of the form “MESH_lower-router-id - higher-router-id”, so look for the bridge with description “MESH_2-3”:
 
 ```
 # ifconfig -a | grep -B 1 'MESH_2-3$'
@@ -583,9 +583,9 @@ bridge7: flags=8843<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> metric 0 mtu 1500
         description: MESH_2-3
 ```
 
-=\> We need to create a new TAP interface and add it to bridge7: It will be used on C3 as “Internal” interface.
+=\> Create a new TAP interface and add it to bridge7: it will be used on C3 as the “Internal” interface.
 
-And same for R5-R6 bridge:
+Same for the R5-R6 bridge:
 
 ```
 # ifconfig -a | grep -B 1 'MESH_5-6$'
@@ -593,9 +593,9 @@ bridge19: flags=8843<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> metric 0 mtu 1500
         description: MESH_5-6
 ```
 
-=\> We need to create the last TAP interface and add it to bridge19: It will be used on C5 as “Internal” interface.
+=\> Create the last TAP interface and add it to bridge19: it will be used on C5 as the “Internal” interface.
 
-Once done we start 2 dynamips instance (version 0.2.16 minimum for a working tap interface) emulating Cisco 3725 routers. Start dynamips on different tmux console.
+Once done, start two dynamips instances (version 0.2.16 minimum for a working tap interface) emulating Cisco 3725 routers. Start each dynamips in a different tmux console.
 
 ```
 set C3_INT=`ifconfig tap create`
@@ -610,7 +610,7 @@ dynamips -P 3725 --idle-pc 0x602467a4 -r 256 -j -i 1 -s 0:0:tap:$C3_INT -s 0:1:t
 dynamips -P 3725 --idle-pc 0x602467a4 -r 256 -j -i 2 -s 0:0:tap:$C5_INT -s 0:1:tap:$C5_EXT c3725-adventerprisek9-mz.124-25d.bin
 ```
 
-Configuring dynamips instance 1 (C3):
+Configure dynamips instance 1 (C3):
 
 ```
 en
@@ -628,7 +628,7 @@ int fastEthernet 0/1
  no shutdown
 ```
 
-Configuring dynamips instance 2 (C5):
+Configure dynamips instance 2 (C5):
 
 ```
 en
@@ -646,7 +646,7 @@ int fastEthernet 0/1
  no shutdown
 ```
 
-Change R2 default route for using C3:
+Change R2's default route to use C3:
 
 ```
 service strongswan stop
@@ -655,7 +655,7 @@ service routing restart
 service strongswan start
 ```
 
-Change R6 default route for using C5:
+Change R6's default route to use C5:
 
 ```
 service strongswan stop
@@ -664,7 +664,7 @@ service routing restart
 service strongswan start
 ```
 
-And testing:
+And test:
 
 ```
 [root@R2]~# ipsec status peer
@@ -677,9 +677,9 @@ Security Associations (3 up, 0 connecting):
         peer{1}:   192.168.1.0/24 === 192.168.7.0/24
 ```
 
-**It’s working: The Cisco IOS nat engine try to preserve packet original source port.**
+**It’s working: the Cisco IOS NAT engine tries to preserve the original source port of the packet.**
 
-And NAT translations table of C3 and C5 confirm it:
+And the NAT translation tables of C3 and C5 confirm it:
 
 ```
 C3#sh ip nat translations

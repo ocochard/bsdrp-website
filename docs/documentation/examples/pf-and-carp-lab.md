@@ -1,15 +1,15 @@
 ---
 title: pf, pfsync, pflog and carp lab
 ---
-## Network Diagram
+## Network diagram
 
 ![bsdrp.labs.pf-carp.png](../../assets/images/documentation/examples/bsdrp.labs.pf-carp.png)
 
 ## Starting the lab
 
-More information on these BSDRP lab scripts available on [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
+More information on the BSDRP lab scripts is available in [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
 
-Example with the bhyve lab script (notice that FreeBSD 10.1 virtIO drivers had a bug with carp):
+Example with the bhyve lab script (note that FreeBSD 10.1 virtio drivers had a bug with carp):
 
 ```
 # ./BSDRP-lab-bhyve.sh -i /usr/obj/BSDRP.amd64/BSDRP-1.54-full-amd64-vga.img -n 4 -l 2
@@ -52,7 +52,7 @@ To connect VM'serial console, you can use:
 - VM 4 : cu -l /dev/nmdm-BSDRP.4B
 ```
 
-## Configuring Routers
+## Configuring routers
 
 ### Inside host (VM1)
 
@@ -70,7 +70,7 @@ service netif restart
 service routing restart
 ```
 
-### Master Firewall (VM2)
+### Master firewall (VM2)
 
 ```
 sysrc hostname=VM2
@@ -120,7 +120,7 @@ service pfsync start
 service pflog start
 ```
 
-### Backup Firewall (VM3)
+### Backup firewall (VM3)
 
 ```
 sysrc hostname=VM3
@@ -191,9 +191,9 @@ config save
 
 ## Checking configuration
 
-### carp state
+### CARP state
 
-Check that VM2 is in carp master state:
+Check that VM2 is in CARP master state:
 
 ```
 [root@VM2]~# ifconfig vtnet3
@@ -226,7 +226,7 @@ vtnet4: flags=8863<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> metric 0 mtu 1500
         nd6 options=21<PERFORMNUD,AUTO_LINKLOCAL>
 ```
 
-And VM3 in backup state:
+And VM3 is in backup state:
 
 ```
 [root@VM3]~# ifconfig vtnet3
@@ -261,7 +261,7 @@ vtnet4: flags=8863<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> metric 0 mtu 1500
 
 ### pf state
 
-Check the current rules applied:
+Check the rules currently applied:
 
 ```
 [root@VM2]~# pfctl -sr
@@ -281,16 +281,16 @@ pass log on lo0 inet6 from fe80::1 to any flags S/SA keep state
 pass log inet from <__automatic_8a1ff95a_0> to any flags S/SA keep state
 ```
 
-## Creating 2 flows from VM1 to VM4
+## Creating two flows from VM1 to VM4
 
-Open a tmux session on R1 and generate 2 flows:
+Open a tmux session on R1 and generate two flows:
 
-1.   A continous ping: ping 2.2.2.4
-2.   A echo session: telnet 2.2.2.4 7
+1.   A continuous ping: `ping 2.2.2.4`
+2.   An echo session: `telnet 2.2.2.4 7`
 
 ### pf synchronisation
 
-Now check there are 4 news states (one for each direction) on the Master firewall:
+Check that there are four new states (one per direction) on the master firewall:
 
 ```
 [root@VM2]~# pfctl -ss
@@ -304,7 +304,7 @@ all tcp 2.2.2.4:7 <- 192.168.10.1:11636       ESTABLISHED:ESTABLISHED
 all tcp 192.168.10.1:11636 -> 2.2.2.4:7       ESTABLISHED:ESTABLISHED
 ```
 
-And these entries are synced to backup firewall:
+And these entries are synced to the backup firewall:
 
 ```
 [root@VM3]~# pfctl -ss
@@ -321,7 +321,7 @@ all tcp 192.168.10.1:11636 -> 2.2.2.4:7       ESTABLISHED:ESTABLISHED
 
 ### pf log
 
-Wait for the default 60seconds flush timer of pflogd on the MASTER carp firewall, then check log file:
+Wait for the default 60-second flush timer of pflogd on the MASTER CARP firewall, then check the log file:
 
 ```
 [root@VM2]~# tcpdump -r /var/log/pflog
@@ -334,7 +334,7 @@ reading from file /var/log/pflog, link-type PFLOG (OpenBSD pflog file)
 
 ### Testing failover
 
-Halt master firewall and check:
+Halt the master firewall and check:
 
-1.  on VM1: no ping lost neither TCP echo session
-2.  on VM3: It became carp master
+1.  On VM1: no lost pings, and the TCP echo session is preserved.
+2.  On VM3: it has become the CARP master.

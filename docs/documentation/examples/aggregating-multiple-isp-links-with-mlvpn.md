@@ -13,13 +13,13 @@ And here is this lab detailed diagram:
 
 ![bsdrp-lab-mlvpn-details.png](../../assets/images/documentation/examples/bsdrp-lab-mlvpn-details.png)
 
-## Virtual Lab setup
+## Virtual lab setup
 
-This chapter will describe how to start each routers and configuring the 4 centrals routers.
+This section describes how to start each router and configure the four central routers.
 
-More information on these BSDRP lab scripts available on [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
+More information on the BSDRP lab scripts is available in [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
 
-Start the Virtual lab (example using bhyve):
+Start the virtual lab (example using bhyve):
 
 ```
 # ./tools/BSDRP-lab-bhyve.sh -n 6
@@ -79,7 +79,7 @@ To connect VM'serial console, you can use:
 
 #### Router 2
 
-Router 2 is configured for rate-limiting traffic at 10 Mb/s on interface to/from VM1.
+Router 2 is configured to rate-limit traffic at 10 Mb/s on the interface to/from VM1.
 
 ```
 sysrc hostname=VM2 \
@@ -113,7 +113,7 @@ config save
 
 #### Router 3
 
-Router 3 is configured for rate-limiting traffic at 10 Mb/s on interface to/from VM1.
+Router 3 is configured to rate-limit traffic at 10 Mb/s on the interface to/from VM1.
 
 ```
 sysrc hostname=VM3 \
@@ -148,7 +148,7 @@ config save
 
 #### Router 4
 
-Router 4 is configured for rate-limiting traffic at 10 Mb/s on interface to/from VM1.
+Router 4 is configured to rate-limit traffic at 10 Mb/s on the interface to/from VM1.
 
 ```
 sysrc hostname=VM4 \
@@ -201,11 +201,11 @@ hostname VM5
 config save
 ```
 
-### Router 1 : MLVPN client
+### Router 1: MLVPN client
 
-Router 1 is configured as a MLVPN client router connected to 3 different Internet links.
+Router 1 is configured as an MLVPN client router connected to 3 different Internet links.
 
-We need a default routes for each ISP links, then a minimum of 4 different routing tables.
+We need a default route for each ISP link, hence a minimum of 4 different routing tables.
 
 ```
 sysrc hostname=VM1 \
@@ -261,9 +261,9 @@ hostname VM1
 config save
 ```
 
-### Router 6 : MLVPN server
+### Router 6: MLVPN server
 
-Router 6 is configured as a aggregating server.
+Router 6 is configured as the aggregating server.
 
 ```
 sysrc hostname=VM6 \
@@ -306,11 +306,11 @@ hostname VM6
 config save
 ```
 
-## Basic Tests
+## Basic tests
 
 ### FIB test
 
-Start by checking that R5 is reacheable from each R1’s fib (2, 3):
+Start by checking that R5 is reachable from each R1 FIB (2, 3, 4):
 
 ```
 [root@VM1]~# setfib 2 ping -c 2 10.0.56.6
@@ -339,15 +339,15 @@ PING 10.0.56.6 (10.0.56.6): 56 data bytes
 round-trip min/avg/max/stddev = 10.973/12.719/14.465/1.746 ms
 ```
 
-### Links bandwidth
+### Link bandwidth
 
-Test bandwidth of each link by starting an iperf on MLVPN server:
+Test the bandwidth of each link by starting iperf on the MLVPN server:
 
 ```
 [root@VM6]# iperf3 -s
 ```
 
-Then from the MLVPN client, test bandwidth for each ISP links:
+Then, from the MLVPN client, test the bandwidth of each ISP link:
 
 
 ```
@@ -373,7 +373,7 @@ Connecting to host 10.0.56.6, port 5201
 
 ## MLVPN tests
 
-### tunnel
+### Tunnel
 
 MLVPN can be started in debug mode:
 
@@ -392,7 +392,7 @@ MLVPN can be started in debug mode:
 2020-02-21T21:25:12 [INFO/protocol] dsl4 authenticated
 ```
 
-tun interface need to be check (correct IP address and non-1500 MTU):
+The tun interface needs to be checked (correct IP address and non-1500 MTU):
 
 ```
 [root@VM1]~# ifconfig tun0
@@ -405,7 +405,7 @@ tun0: flags=8051<UP,POINTOPOINT,RUNNING,MULTICAST> metric 0 mtu 1452
         Opened by PID 92891
 ```
 
-And static route(s) needs to be installed (10.5.5.5/32 in this example):
+The static route(s) need to be installed (10.6.6.6/32 in this example):
 
 ```
 [root@VM1]~# route get 10.6.6.6
@@ -422,7 +422,7 @@ destination: 10.6.6.6
 
 ### Aggregated bandwidth
 
-Check that aggregated bandwitdh is 10+10+10 = 30Mbit/s on this lab.
+Check that the aggregated bandwidth is 10+10+10 = 30 Mbit/s in this lab.
 
 ```
 [root@VM1]~# iperf3 -B 10.1.1.1 -c 10.6.6.6
@@ -432,4 +432,4 @@ Check that aggregated bandwitdh is 10+10+10 = 30Mbit/s on this lab.
 [  5]   0.00-10.01  sec  7.85 MBytes  6.58 Mbits/sec                  receiver
 ```
 
-Ouch, not the expected performance :-(
+Ouch, not the expected performance.
