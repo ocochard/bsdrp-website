@@ -1,14 +1,14 @@
 ---
 title: Multicast with PIM-DM
 ---
-This lab show a multicast routing example using PIM Dense Mode.
+This lab shows a multicast routing example using PIM Dense Mode.
 
 
 !!! warning
-    pimdd is broken: Need to Debug it one day
+    pimdd is broken and needs to be debugged.
 
 
-## Presentation
+## Overview
 
 ### Network diagram
 
@@ -16,17 +16,17 @@ Here is the logical and physical view:
 
 ![labs.multicast-pim-dm.png](../../assets/images/documentation/examples/labs.multicast-pim-dm.png)
 
-## Setting-up the lab
+## Setting up the lab
 
 ### Downloading BSD Router Project images
 
-Download BSDRP serial image (prevent to have to use an X display) on Sourceforge.
+Download the BSDRP serial image (to avoid needing an X display) from SourceForge.
 
-### Download Lab scripts
+### Download lab scripts
 
-More information on these BSDRP lab scripts available on [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
+More information on the BSDRP lab scripts is available in [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
 
-Start the lab with 4 routers using emulated e1000 NIC (vtnet interfaces didn’t support multicast-routing on FreeBSD):
+Start the lab with 4 routers using emulated e1000 NICs (vtnet interfaces do not support multicast routing on FreeBSD):
 
 ```
 tools/BSDRP-lab-bhyve.sh -i /usr/obj/BSDRP.amd64/BSDRP-1.702-full-amd64-serial.img.xz -n 4 -e
@@ -61,11 +61,11 @@ For connecting to VM'serial console, you can use:
 - VM 4 : cu -l /dev/nmdm4B
 ```
 
-## Routers configuration
+## Router configuration
 
 ### Router 1
 
-Configurating, applying changes and saving configuration:
+Configure, apply changes, and save the configuration:
 
 ```
 sysrc hostname=VM1 \
@@ -127,9 +127,9 @@ config save
 
 ## Checking pimdd behavior
 
-### Generating VIF
+### VIF generation
 
-Does the pimdd had correctly generated VIF ?
+Did pimdd correctly generate the VIFs?
 
 ```
 [root@R2]~# netstat -g
@@ -159,11 +159,11 @@ IPv6 Multicast Interface Table is empty
 IPv6 Multicast Forwarding Table is empty
 ```
 
-=\> There are VIF for all PIM-DM enabled interface
+A VIF exists for every PIM-DM-enabled interface.
 
-### Does PIM daemon locally register to PIM mcast group ?
+### Does the PIM daemon register to the PIM multicast group?
 
-PIM router need to register to 224.0.0.13 mcast group, check if all PIM routers correctly display this group on their enabled interfaces:
+A PIM router must register to the 224.0.0.13 multicast group. Check that all PIM routers list this group on their enabled interfaces:
 
 ```
 [root@R2]~# ifmcstat
@@ -263,13 +263,13 @@ em2:
                         mcast-macaddr 01:00:5e:00:00:01
 ```
 
-We correctly sees mcast group 224.0.0.13 subscribed on PIM enabled interfaces.
+The multicast group 224.0.0.13 is correctly subscribed on PIM-enabled interfaces.
 
 ## Testing
 
-### Enable IPerf server on R4 (mcast receiver)
+### Enable iperf server on R4 (multicast receiver)
 
-This IPerf server will listen the 239.1.1.1 multicast group
+This iperf server listens on multicast group 239.1.1.1:
 
 ```
 [root@R4]~# iperf -s -u -B 239.1.1.1 -i 1
@@ -282,9 +282,9 @@ UDP buffer size: 41.1 KByte (default)
 ------------------------------------------------------------
 ```
 
-### IPerf client on R1 (mcast sender)
+### iperf client on R1 (multicast sender)
 
-Start an iperf client to 239.1.1.1.
+Start an iperf client toward 239.1.1.1:
 
 ```
 [root@R1]~# iperf -c 239.1.1.1 -u -T 32 -t 300 -i 1
@@ -303,7 +303,7 @@ UDP buffer size: 9.00 KByte (default)
 [  3] Sent 268 datagrams
 ```
 
-Now check than R4 receive the iperf trafic send by R1:
+Now check whether R4 receives the iperf traffic sent by R1:
 
 ```
 Nothing !?
@@ -313,7 +313,7 @@ Nothing !?
 
 #### Multicast table on R2
 
-What’s the status of multicast table of the first router:
+Check the multicast table of the first router:
 
 ```
 [root@router]~# netstat -g
@@ -332,13 +332,13 @@ IPv6 Multicast Interface Table is empty
 IPv6 Multicast Forwarding Table is empty
 ```
 
-=\> it correctly detect a multicast source comming from VIF 0 (em0) but didn’t forward packet toward R3: Why ?
+R2 correctly detects a multicast source on VIF 0 (em0), but does not forward the packet toward R3. Why?
 
 #### Using R3 as a subscriber
 
-Starting an iperf receiver on R3 and check if it received mcast traffic by re-starting ipferf on R1.
+Start an iperf receiver on R3 and check if it receives multicast traffic by restarting iperf on R1.
 
-Status of mcast routing table on R2:
+Status of the multicast routing table on R2:
 
 ```
 [root@R2]~# netstat -g
@@ -357,9 +357,9 @@ IPv6 Multicast Interface Table is empty
 IPv6 Multicast Forwarding Table is empty
 ```
 
-=\> R2 correctly received AND forward mcast traffic from VIF0 (em0) to VIF1 (em1)
+R2 correctly receives and forwards multicast traffic from VIF 0 (em0) to VIF 1 (em1).
 
-and R3 correctly receive mcast traffic:
+R3 correctly receives the multicast traffic:
 
 ```
 ------------------------------------------------------------
@@ -375,9 +375,9 @@ and R3 correctly receive mcast traffic:
 [  3]  7.0- 8.0 sec   128 KBytes  1.05 Mbits/sec   0.187 ms    0/   89 (0%)
 ```
 
-=\> Need to found why R2 didn’t forward traffic to a next-hop-PIM router.
+We still need to find out why R2 does not forward traffic to a next-hop PIM router.
 
-To dig, error on R2 pimd daemon:
+Errors logged by the R2 pimd daemon:
 
 ```
 Jun  7 09:22:48 router pimdd[1483]: warning - sendto from 10.0.12.2 to 224.0.0.13: Invalid argument
@@ -388,4 +388,4 @@ Jun  7 09:23:17 router pimdd[1483]: warning - sendto from 10.0.12.2 to 224.0.0.1
 Jun  7 09:23:17 router pimdd[1483]: warning - sendto from 10.0.23.2 to 224.0.0.13: Invalid argument
 ```
 
-This problem is linked to the [FreeBSD SOCK_RAW recent changes](https://wiki.freebsd.org/SOCK_RAW).
+This problem is linked to the recent [FreeBSD SOCK_RAW changes](https://wiki.freebsd.org/SOCK_RAW).

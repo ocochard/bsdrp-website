@@ -1,9 +1,9 @@
 ---
 title: BGP/OSPF/RIP/ISIS/BABEL lab with FRRouting
 ---
-This Labs is done with BSDRP under qemu and it explains how to use BSDRP using FRRouting (Quagga fork).
+This lab is run with BSDRP under QEMU and shows how to use BSDRP with FRRouting (a fork of Quagga).
 
-## Presentation
+## Overview
 
 ### Network diagram
 
@@ -11,23 +11,23 @@ Here is the logical and physical view:
 
 ![simple_bgp-rip-ospf_lab.png](../../assets/images/documentation/examples/simple_bgp-rip-ospf_lab.png)
 
-## Setting-up the lab
+## Setting up the lab
 
 ### Downloading BSD Router Project images
 
-Download BSDRP serial image (prevent to have to use an X display) on Sourceforge.
+Download the BSDRP serial image (which avoids needing an X display) from SourceForge.
 
-### Download Lab scripts
+### Download lab scripts
 
-More information on these BSDRP lab scripts available on [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
+More information on the BSDRP lab scripts is available in [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
 
-## Routers configuration
+## Router configuration
 
 #### VM mode: 7 VMs
 
-All these routers can be configured with labconfig tool (use it only on a lab, because it will replace your current running configuration):
+All these routers can be configured with the `labconfig` tool (use it only on a lab, since it replaces the current running configuration):
 
-Start the lab with 7 routers, here is an example with VirtualBox:
+Start the lab with 7 routers. Here is an example with VirtualBox:
 
 ```
 ./BSDRP-lab-vbox.sh -i BSDRP-1.97-full-amd64-serial.img.xz -n 7
@@ -41,13 +41,13 @@ labconfig frr_vm[VM-NUMBER]
 
 #### Jail mode: 1 VM running 7 jails
 
-Or just using one router:
+Or, using just one router:
 
 ```
 ./BSDRP-lab-vbox.sh -i BSDRP-1.97-full-amd64-serial.img.xz -n 1
 ```
 
-Then you can use the jail/vnet version with command:
+Then use the jail/vnet version with:
 
 ```
 labconfig frr_jails
@@ -454,4 +454,4 @@ PING6(56=40+8+8 bytes) 2001:db8:10::1 --> 2001:db8:70::7
 round-trip min/avg/max/std-dev = 0.526/0.565/0.607/0.029 ms
 ```
 
-Don’t forget to “force” the source IP address to use the loopback, otherwise router1 will use the output NIC IP address as source.
+Don’t forget to "force" the source IP address to use the loopback; otherwise, router1 will use the outgoing NIC’s IP address as the source.

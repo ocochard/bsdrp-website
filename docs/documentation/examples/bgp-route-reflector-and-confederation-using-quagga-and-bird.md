@@ -1,7 +1,7 @@
 ---
 title: BGP Route reflector and Confederation using FRRouting and Bird
 ---
-## Presentation
+## Overview
 
 ### Network diagram
 
@@ -9,17 +9,15 @@ Here is the BGP and logical view:
 
 ![bgp_route_reflector_and_confederation_using_quagga_and_bird.png](../../assets/images/documentation/examples/bgp_route_reflector_and_confederation_using_quagga_and_bird.png)
 
-## Preparing
+## Preparing the lab
 
-This chapter will describe how to start the lab.
+### Setting up the lab
 
-### Setting-up the lab
-
-See instruction on [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
+See [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
 
 ### Starting the lab
 
-Start this lab with with one of the script corresponding to your needs (vbox, qemu, bhyve) The output should be like that:
+Start this lab with the script that fits your needs (VirtualBox, QEMU, or bhyve). The output should look like this:
 
 ```
 root@lab:~ # BSDRP-lab-bhyve.sh -i BSDRP-1.52-full-amd64-serial.img.xz -n 7 -l 1
@@ -95,9 +93,9 @@ For connecting to VM'serial console, you can use:
 - VM 7 : cu -l /dev/nmdm7B
 ```
 
-## Routers configuration
+## Router configuration
 
-All these routers can be configured with labconfig tool (use it only on a lab, because it will replace your current running configuration):
+All these routers can be configured with the labconfig tool (use it only on a lab, since it will replace your current running configuration):
 
 ```
 labconfig bgp_vm[VM-NUMBER]
@@ -244,7 +242,7 @@ protocol bgp R2inet6 {
 service bird start
 ```
 
-And last save config:
+Finally, save the configuration:
 
 ```
 config save
@@ -260,7 +258,7 @@ hostname R2
 service netif restart
 ```
 
-Bird v1.X configuration style:
+Bird v1.x configuration style:
 
 ```
 sysrc bird_enable=YES
@@ -355,7 +353,7 @@ service bird start
 service bird6 start
 ```
 
-Bird v2.X configuration style:
+Bird v2.x configuration style:
 
 ```
 sysrc bird_enable=YES
@@ -436,13 +434,13 @@ protocol bgp R3inet6 {
 service bird start
 ```
 
-And writing configuration:
+Save the configuration:
 
 ```
 config save
 ```
 
-And check that it learn IPv4 route from R1:
+Check that it learns the IPv4 route from R1:
 
 ```
 [root@R2]~# birdc show protocols all R1inet4
@@ -493,7 +491,7 @@ Table master4:
         via 10.0.6.1 on vtnet6
 ```
 
-And check that it learn IPv6 route from R1:
+And check that it learns the IPv6 route from R1:
 
 ```
 [root@R2]~# birdc show protocols all R1inet6
@@ -658,7 +656,7 @@ protocol bgp R4 {
 service bird6 start
 ```
 
-bird v2 configuration style:
+Bird v2.x configuration style:
 
 ```
 sysrc bird_enable=YES
@@ -747,13 +745,13 @@ EOF
 service bird start
 ```
 
-And write configuration:
+Save the configuration:
 
 ```
 config save
 ```
 
-And check that it learn IPv4 route:
+Check that it learns the IPv4 route:
 
 ```
 [root@R3]~# birdcl show protocols all R2inet4
@@ -804,7 +802,7 @@ Table master4:
         via 10.0.6.1 on vtnet6
 ```
 
-and check that it learn IPv6 route:
+And check that it learns the IPv6 route:
 
 ```
 [root@R3]~# birdc show protocols all R2inet6
@@ -912,7 +910,7 @@ service frr start
 config save
 ```
 
-Check that BGP IPv4 and IPV6 peers are UP between R4 and R3:
+Check that the BGP IPv4 and IPv6 peers are up between R4 and R3:
 
 ```
 [root@R4]~# cli
@@ -947,7 +945,7 @@ Neighbor        V         AS MsgRcvd MsgSent   TblVer  InQ OutQ  Up/Down State/P
 Total number of neighbors 2
 ```
 
-And check that R4 learn the IPv4/IPv6 routes from AS100:
+And check that R4 learns the IPv4/IPv6 routes from AS100:
 
 ```
 R4# show ip route 10.0.1.0/24
@@ -1013,7 +1011,7 @@ service frr start
 config save
 ```
 
-Check that BGP IPv4 and IPV6 peers are UP between R5 and R4:
+Check that the BGP IPv4 and IPv6 peers are up between R5 and R4:
 
 ```
 [root@R5]~# cli
@@ -1046,7 +1044,7 @@ Neighbor        V         AS MsgRcvd MsgSent   TblVer  InQ OutQ  Up/Down State/P
 Total number of neighbors 2
 ```
 
-And check that R5 learn the IPv4/IPv6 routes advertised by R4 from AS100:
+And check that R5 learns the IPv4/IPv6 routes advertised by R4 from AS100:
 
 ```
 R5# show ip route 10.0.1.0/24
@@ -1122,7 +1120,7 @@ service frr start
 config save
 ```
 
-Check that BGP IPv4 and IPV6 peers are UP between R6 and R5:
+Check that the BGP IPv4 and IPv6 peers are up between R6 and R5:
 
 ```
 [root@R6]~# cli
@@ -1157,7 +1155,7 @@ Neighbor        V         AS MsgRcvd MsgSent   TblVer  InQ OutQ  Up/Down State/P
 Total number of neighbors 2
 ```
 
-And check that R6 learn the IPv4/IPv6 routes advertised by R5:
+And check that R6 learns the IPv4/IPv6 routes advertised by R5:
 
 ```
 R6# sh ip route 10.0.1.0/24
@@ -1175,7 +1173,7 @@ Routing entry for 2001:db8:1::/64
 
 ### Router 7
 
-Configure router hostname and ipsec.conf for the BGP TCP-MD5 session:
+Configure the router hostname and `ipsec.conf` for the BGP TCP-MD5 session:
 
 ```
 sysrc hostname=R7
@@ -1228,7 +1226,7 @@ service frr start
 config save
 ```
 
-Check that BGP IPv4 and IPV6 peers are UP between R7 and R6:
+Check that the BGP IPv4 and IPv6 peers are up between R7 and R6:
 
 ```
 [root@R7]~# cli
@@ -1280,7 +1278,7 @@ Routing entry for 2001:db8:1::/64
 
 ## Final testing
 
-Verifying route between from R7 to R1 using source IP 10.0.7.7/2001:db8:7::7
+Verify the route from R7 to R1 using source IP 10.0.7.7 / 2001:db8:7::7:
 
 ```
 R7# exit

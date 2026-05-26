@@ -1,11 +1,11 @@
 ---
 title: Equal-cost multi-path routing (ECMP)
 ---
-## Presentation
+## Overview
 
 
 !!! warning
-    Bhyve doesn’t support emulating multiqueue NIC, so RSS flow-id could not be tested using a bhyve based lab: Had to use physical lab
+    bhyve does not emulate multiqueue NICs, so RSS flow-id cannot be tested in a bhyve-based lab; a physical lab is required.
 
 
 ### Network diagram
@@ -14,11 +14,11 @@ Here is the logical and physical view:
 
 ![bsdrp-lab-mpath.png](../../assets/images/documentation/examples/bsdrp-lab-mpath.png)
 
-## Setting-up the lab
+## Setting up the lab
 
 ### Downloading BSD Router Project images
 
-Download BSDRP serial image on Sourceforge and upload them to the 2 ECMP routers.
+Download the BSDRP serial image from SourceForge and upload it to the two ECMP routers.
 
 ## Static routing setup
 
@@ -44,7 +44,7 @@ config save
 
 ### R1 (ECMP router)
 
-R1 is a router with ECMP: 2 static routes toward the same destination but using 2 different next-hop.
+R1 is an ECMP router: two static routes toward the same destination, each using a different next-hop.
 
 
 ```
@@ -69,7 +69,7 @@ service routing restart
 config save
 ```
 
-Checking static route with multiple next-hop:
+Check the static route with multiple next-hops:
 
 ```
 root@R1:~ # netstat -rn4 | grep 10.0.0.0/16
@@ -112,7 +112,7 @@ Idx   Type         IFA                           Gateway                        
 
 ### R2 (ECMP router)
 
-R2 is like R1, a router with ECMP: 2 static routing toward the same destination but using 2 different next-hop..
+R2 is another ECMP router, like R1: two static routes toward the same destination, each using a different next-hop.
 
 ```
 sysrc hostname=R2 \
@@ -138,7 +138,7 @@ config save
 
 ### Server
 
-A simple host with some static routes:
+Another simple host with static routes:
 
 ```
 sysrc hostname=server \
@@ -158,11 +158,11 @@ config save
 
 ## FRR Multipath setup
 
-Replacing static routes by FRR (OSPF) compiled with MULTIPATH option.
+Replace static routes with FRR (OSPF) compiled with the MULTIPATH option.
 
 ### R1 (ECMP router)
 
-In place of static routes, OSPF with FRR is used:
+Replace static routes with OSPF using FRR:
 
 ```
 sysrc frr_vtysh_boot="YES" \
@@ -207,7 +207,7 @@ service watchfrr start
 
 ### R2 (ECMP router)
 
-Same as R1 with OSPF and FRR:
+Same as R1, with OSPF and FRR:
 
 ```
 sysrc frr_vtysh_boot="YES" \
@@ -255,7 +255,7 @@ service frr start
 service watchfrr start
 ```
 
-### Checking routes installed
+### Checking the installed routes
 
 On R1:
 
@@ -279,9 +279,9 @@ Routing entry for 2001:db8::/32
   * fe80::20d:b9ff:fe45:7ad6, via igb2, weight 1
 ```
 
-## Test Load balancing IP packets
+## Testing load-balancing of IP packets
 
-Flows from the client to the server should be “flow-id shared” between the 2 paths. Let’s check using multiple sources and destination IP addresses using pkt-gen on client and server, then using systat on R1 and R2 to check their load-distribution.
+Flows from the client to the server should be flow-id-shared across the two paths. Verify this using multiple source and destination IP addresses with pkt-gen on the client and server, then use systat on R1 and R2 to check their load distribution.
 
 On server:
 
@@ -315,7 +315,7 @@ systat -ifstat -match igb0,igb1,igb2 -pps
                  
 ```
 
-=\> We confirm that 20 Kps entering igb0 and are equally split by exiting by igb1 and igb2
+This confirms that 20 Kpps enter igb0 and are evenly split between igb1 and igb2.
 
 On R2:
 
@@ -336,4 +336,4 @@ systat -ifstat -match igb0,igb1,igb2 -pps
                  out    19.530 Kp/s         19.531 Kp/s          601.615 Kp
 ```
 
-=\> R2 has no choice than receiving packets from igb1 and igb2, and forwarding them through igb0.
+R2 receives the packets on igb1 and igb2 and forwards them out igb0.

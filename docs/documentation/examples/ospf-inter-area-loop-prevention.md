@@ -1,31 +1,31 @@
 ---
 title: OSPF inter-area loop prevention
 ---
-## Presentation
+## Overview
 
-This lab show a non optimum route selection because of inter-area loop prevention feature of OSPF.
+This lab shows a non-optimal route selection caused by OSPF’s inter-area loop-prevention feature.
 
 ### Network diagram
 
-Here is the OSPF and logical view:
+Here is the OSPF logical view:
 
 ![ospf-loop-prevention.png](../../assets/images/documentation/examples/ospf-loop-prevention.png)
 
-## Preparing
+## Preparing the lab
 
-This chapter will describe how to start the lab.
+This chapter describes how to start the lab.
 
 ### Downloading BSD Router Project images
 
 [Download a BSDRP image](../../downloads.md).
 
-### Download Qemu-KVM/Virtualbox Lab scripts
+### Download QEMU/KVM/VirtualBox lab scripts
 
-More information on these BSDRP lab scripts available on [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
+More information on the BSDRP lab scripts is available in [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
 
 ### Starting the lab
 
-If you would to use Virtualbox, start this lab with:
+If you want to use VirtualBox, start this lab with:
 
 ```
 virtualbox.sh -i BSDRP_1.93_full_amd64_vga.img -n 4 -c
@@ -187,7 +187,7 @@ config save
 
 ## The problem
 
-What route will R4 take for joining network 192.168.1.0/24 ?
+Which route does R4 take to reach network 192.168.1.0/24?
 
 ```
 R4.bsdrp.net# sh ip route 192.168.1.0/24
@@ -197,9 +197,9 @@ Routing entry for 192.168.1.0/24
   * 10.0.0.13, via em2
 ```
 
-Notice the OSPF metric for this route: 4, this mean the route should be: R4 -\> R3 -\> R2 -\> R1.
+Notice the OSPF metric for this route: 4. This means the route should be R4 -\> R3 -\> R2 -\> R1.
 
-Great, how about a traceroute:
+Now check with a traceroute:
 
 ```
 R4.bsdrp.net# traceroute ip 192.168.1.1
@@ -208,9 +208,9 @@ traceroute to 192.168.1.1 (192.168.1.1), 64 hops max, 52 byte packets
  2  192.168.1.1 (192.168.1.1)  1.169 ms  0.574 ms  0.742 ms
 ```
 
-**Where is R2 hop ??**
+**Where is the R2 hop?**
 
-Verifying the 192.168.1.0/24 route on R3:
+Verify the 192.168.1.0/24 route on R3:
 
 ```
 R3.bsdrp.net# sh ip route 192.168.1.0
@@ -220,7 +220,7 @@ Routing entry for 192.168.1.0/24
   * 10.0.0.5, via em0
 ```
 
-**R3 didn’t choose the “best” path** for reach 192.168.1.0/24: The installed route have a metric of 101. How about its OSPF database state:
+**R3 didn’t choose the “best” path** to reach 192.168.1.0/24: the installed route has a metric of 101. Check its OSPF database state:
 
 ```
 R3.bsdrp.net# sh ip ospf database summary 192.168.1.0
@@ -270,4 +270,4 @@ R3.bsdrp.net# sh ip ospf database summary 192.168.1.0
 
 
 !!! info "Important"
-    ABR (R3) expects summary LSAs from Area 0 only. Then R3 ignore summary LSA received from R2 (area 2)
+    The ABR (R3) expects summary LSAs from Area 0 only, so R3 ignores the summary LSA received from R2 (area 2).

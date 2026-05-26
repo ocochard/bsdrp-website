@@ -1,9 +1,9 @@
 ---
 title: Multicast with PIM-SM
 ---
-This lab show a multicast routing example using PIM in Sparse Mode.
+This lab shows a multicast routing example using PIM in Sparse Mode.
 
-## Presentation
+## Overview
 
 ### Network diagram
 
@@ -11,15 +11,15 @@ Here is the logical and physical view:
 
 ![bsdrp.lab.pim-sm.png](../../assets/images/documentation/examples/bsdrp.lab.pim-sm.png)
 
-## Setting-up the lab
+## Setting up the lab
 
 ### Downloading BSD Router Project images
 
-Download BSDRP serial image (prevent to have to use an X display) on Sourceforge.
+Download the BSDRP serial image (to avoid needing an X display) from SourceForge.
 
-### Download Lab scripts
+### Download lab scripts
 
-More information on these BSDRP lab scripts available on [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
+More information on the BSDRP lab scripts is available in [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
 
 Start the lab with 4 routers:
 
@@ -57,7 +57,7 @@ To connect VM'serial console, you can use:
 - VM 4 : sudo cu -l /dev/nmdm-BSDRP.4B
 ```
 
-## Routers configuration
+## Router configuration
 
 ### Router 1
 
@@ -77,7 +77,7 @@ config save
 
 ### Router 2
 
-VM2 is a PIM router that announce itself (10.0.23.2) as Canditate RP with and adv period of 10 seconds and high priority (will be the rendez-vous point).
+VM2 is a PIM router that announces itself (10.0.23.2) as Candidate RP with an advertisement period of 10 seconds and high priority (it will be the rendezvous point).
 
 ```
 sysrc hostname=VM2 \
@@ -101,7 +101,7 @@ config save
 
 ### Router 3
 
-We would VM3 annonces hitself (10.0.23.3) as a Canditate BootStrap Router with high priority.
+VM3 announces itself (10.0.23.3) as a Candidate Bootstrap Router with high priority.
 
 ```
 sysrc hostname=VM3 \
@@ -136,11 +136,11 @@ service routing restart
 config save
 ```
 
-## Checking NIC drivers and Bhyve compatibility with multicast
+## Checking NIC drivers and bhyve compatibility with multicast
 
-Before to star with advanced routing setup, just start to test simple multicast between 2 relatives host: Some NIC (vtnet) or some hypervisors network setup aren’t compliant with very simple multicast.
+Before moving to the advanced routing setup, test simple multicast between two directly connected hosts. Some NICs (such as vtnet) or hypervisor network setups do not handle even basic multicast correctly.
 
-On VM1, start a mcast generator (client emitting mcast):
+On VM1, start a multicast generator (an iperf client emitting multicast):
 
 ```
 [root@VM1]~# iperf -c 239.1.1.1 -u -T 32 -t 3000 -i 1
@@ -160,7 +160,7 @@ UDP buffer size: 9.00 KByte (default)
 (...)
 ```
 
-On the direct connected VM2, start to check if in non-promiscious mode it sees mcast packets comming:
+On the directly connected VM2, check whether it sees multicast packets in non-promiscuous mode:
 
 ```
 [root@VM2]~# tcpdump -pni vtnet0 -c 2
@@ -173,7 +173,7 @@ listening on vtnet0, link-type EN10MB (Ethernet), capture size 262144 bytes
 0 packets dropped by kernel
 ```
 
-=\> VM2 is receiving mcast packets from 10.0.12.1 to mcast group 239.1.1.1. Now on VM2 start a mcast listener (server receiving), it should receive multicast flow
+VM2 receives multicast packets from 10.0.12.1 to multicast group 239.1.1.1. Now start a multicast listener on VM2 (an iperf server); it should receive the multicast flow:
 
 ```
 [root@VM2]~# iperf -s -u -B 239.1.1.1%vtnet0 -i 1
@@ -196,9 +196,9 @@ UDP buffer size: 41.1 KByte (default)
 (...)
 ```
 
-=\> Notice the mcast receiver is correctly receiving at 1Mb/s.
+The multicast receiver is correctly receiving at 1 Mb/s.
 
-Here is a non working example (here because source interface not given, and it uses the other one):
+Here is a non-working example (the source interface is not given, so iperf binds to the other one):
 
 ```
 [root@VM2]~# iperf -s -u -B 239.1.1.1 -i 1
@@ -212,13 +212,13 @@ UDP buffer size: 41.1 KByte (default)
 (...)
 ```
 
-###### \> Here it doesn’t receive traffic and stay in “waiting” mode forever.
+No traffic is received and the server stays in “waiting” mode forever.
 
-Checking pimd behavior =====
+## Checking pimd behavior
 
 ### PIM neighbors
 
-Does the PIM routers see each others ?
+Do the PIM routers see each other?
 
 
 ```
@@ -253,7 +253,7 @@ Group Address     RP Address       Prio  Holdtime  Type
 224.0.0.0/4       10.0.23.2           1       105  Dynamic
 ```
 
-=\> VM2 sees VM3 as PIM neighbor
+VM2 sees VM3 as a PIM neighbor.
 
 ```
 root@VM3:~ # pimctl show
@@ -286,11 +286,11 @@ Group Address     RP Address       Prio  Holdtime  Type
 224.0.0.0/4       10.0.23.2           1       145  Dynamic
 ```
 
-###### \> VM3 sees VM2 as PIM Designated Router neighbor.
+VM3 sees VM2 as a PIM Designated Router neighbor.
 
-Does PIM daemon locally register to PIM mcast group ? ====
+### Does the PIM daemon register to the PIM multicast group?
 
-PIM router need to register to 224.0.0.13 mcast group, check if all PIM routers correctly display this group on their enabled interfaces:
+A PIM router must register to the 224.0.0.13 multicast group. Check that all PIM routers list this group on their enabled interfaces:
 
 ```
 [root@VM2]~# ifmcstat
@@ -391,13 +391,13 @@ em2:
                         mcast-macaddr 33:33:ff:03:03:03 refcnt 1
 ```
 
-We correctly sees mcast group 224.0.0.13 subscribed on PIM enabled interfaces.
+The multicast group 224.0.0.13 is correctly subscribed on PIM-enabled interfaces.
 
 ## Testing
 
-### 1. Sart a mcast generator (IPerf client) on VM1
+### 1. Start a multicast generator (iperf client) on VM1
 
-Start an iperf client to 239.1.1.1.
+Start an iperf client toward 239.1.1.1:
 
 ```
 [root@VM1]~# iperf -c 239.1.1.1 -u -T 32 -t 3000 -i 1
@@ -415,9 +415,9 @@ UDP buffer size: 9.00 KByte (default)
 [  3]  3.0- 4.0 sec   128 KBytes  1.05 Mbits/sec
 ```
 
-### 2. Check VM2 updates its mrouting table with discovered mcast source
+### 2. Check that VM2 updates its mroute table with the discovered multicast source
 
-PIM daemon should be updated:
+The PIM daemon should be updated:
 
 ```
 [root@VM2]~# pimctl -r
@@ -452,7 +452,7 @@ Group Address     RP Address       Prio  Holdtime  Type
 224.0.0.0/4       10.0.23.2           1       120  Dynamic
 ```
 
-And mcast routing table too:
+And the multicast routing table too:
 
 ```
 [root@VM2]~# netstat -g
@@ -472,11 +472,11 @@ IPv6 Multicast Interface Table is empty
 IPv6 Multicast Forwarding Table is empty
 ```
 
-VM2 had update its mroute table for adding a source for group 239.1.1.1 coming from ‘65535’??.
+VM2 has updated its mroute table to add a source for group 239.1.1.1 coming from ‘65535’ (?).
 
-### 3. Start a mcast receiver (IPerf server) on VM4
+### 3. Start a multicast receiver (iperf server) on VM4
 
-IPerf server will subscribe to 239.1.1.1 multicast group and receiving mcast traffic:
+The iperf server subscribes to multicast group 239.1.1.1 and receives the multicast traffic:
 
 ```
 [root@VM4]~# iperf -s -u -B 239.1.1.1 -i 1
@@ -503,9 +503,9 @@ UDP buffer size: 41.1 KByte (default)
 [  3] 11.0-12.0 sec   129 KBytes  1.06 Mbits/sec   0.309 ms    0/   90 (0%)
 ```
 
-### 4. Check VM3 correctly notice this mcast subscriber
+### 4. Check that VM3 correctly notices this multicast subscriber
 
-Now the mrouting table of VM3 is updated and know it has a customer:
+VM3’s mroute table is updated and knows it has a customer:
 
 ```
 [root@VM3]~# pimctl -d
@@ -541,7 +541,7 @@ Group Address     RP Address       Prio  Holdtime  Type
 224.0.0.0/4       10.0.23.2           1       145  Dynamic                                                                                                               
 ```
 
-And its mcast routing is updated too:
+And its multicast routing table is updated too:
 
 ```
 [root@VM3]~# netstat -g
@@ -560,4 +560,4 @@ IPv6 Multicast Interface Table is empty
 IPv6 Multicast Forwarding Table is empty
 ```
 
-VM3 correctly learn that there is a subscriber to group 239.1.1.1 on interface vif1 (toward VM4) and the source is on vif0 (toward VM2).
+VM3 correctly learns that there is a subscriber to group 239.1.1.1 on vif1 (toward VM4) and that the source is on vif0 (toward VM2).

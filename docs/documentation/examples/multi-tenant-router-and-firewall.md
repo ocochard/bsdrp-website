@@ -2,29 +2,29 @@
 title: Multi-tenant router or firewall
 description: Multi-tenant router and firewall example
 ---
-This lab shows how to create multi-tenant router or firewall using jail/vnet (available since BSDRP 1.80).
+This lab shows how to create a multi-tenant router or firewall using jail/vnet (available since BSDRP 1.80).
 
-## Presentation
+## Overview
 
 ### Network diagram
 
-Lab build following [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md): 5 routers with full-meshed link and one shared LAN.
+The lab is built following [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md): 5 routers with full-meshed links and one shared LAN.
 
 Here is the logical and physical view:
 
 ![multi-tenant-router-firewall.png](../../assets/images/documentation/examples/multi-tenant-router-firewall.png)
 
-### Setting-up a virtual lab
+### Setting up a virtual lab
 
 #### Downloading BSD Router Project images
 
-Download BSDRP serial image (prevent to have to use an X display) on Sourceforge.
+Download the BSDRP serial image (which avoids needing an X display) from SourceForge.
 
-#### Download Lab scripts
+#### Download lab scripts
 
-More information on these BSDRP lab scripts available on [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
+More information on the BSDRP lab scripts is available in [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
 
-Start the lab with full-meshed 5 routers and one shared LAN, on this example using bhyve lab script on FreeBSD:
+Start the lab with five full-meshed routers and one shared LAN. This example uses the bhyve lab script on FreeBSD:
 
 ```
 [root@FreeBSD]~# tools/BSDRP-lab-bhyve.sh -i BSDRP-1.71-full-amd64-serial.img.xz -n 5 -l 1
@@ -75,13 +75,13 @@ For connecting to VM'serial console, you can use:
 
 ## Configuration
 
-- Router 4 (R4) hosts the 3 routers/firewalls for each 3 customers.
-- Router 1 (R1) belongs to customer 1, router 2 (R2) to customer 2 and router 3 (R3) to customer 3.
+- Router 4 (R4) hosts the three routers/firewalls, one for each of three customers.
+- Router 1 (R1) belongs to customer 1, router 2 (R2) to customer 2, and router 3 (R3) to customer 3.
 - Router 5 (R5) simulates a simple Internet host.
 
-### Router 5: Simple Internet host
+### Router 5: simple Internet host
 
-R5 simulate a simple Internet host:
+R5 simulates a simple Internet host:
 
 ```
 sysrc hostname=R5
@@ -94,9 +94,9 @@ service routing restart
 config save
 ```
 
-### Router 1: Customer 1 workstation
+### Router 1: customer 1 workstation
 
-R1 simulate customer 1‘s workstation, generate customer 1’ SSH keys:
+R1 simulates customer 1’s workstation. Generate customer 1’s SSH keys:
 
 ```
 sysrc hostname=R1
@@ -113,16 +113,16 @@ ssh-keygen -f /root/.ssh/id_rsa -N ''
 config save
 ```
 
-Then display the public SSH key (need to declare it into the customer 1’s firewall):
+Then display the public SSH key (it must be declared on customer 1’s firewall):
 
 ```
 cat .ssh/id_rsa.pub
 ssh-rsa (...) root@R1
 ```
 
-### Router 2: Customer 2 workstation
+### Router 2: customer 2 workstation
 
-R2 simulate customer 2’s workstation, and host customer 2 SSH keys too.
+R2 simulates customer 2’s workstation and also holds customer 2’s SSH keys.
 
 ```
 sysrc hostname=R2
@@ -139,16 +139,16 @@ ssh-keygen -f /root/.ssh/id_rsa -N ''
 config save
 ```
 
-Then display the public SSH key (need to declare it into the customer 2’s firewall):
+Then display the public SSH key (it must be declared on customer 2’s firewall):
 
 ```
 cat .ssh/id_rsa.pub
 ssh-rsa (...) root@R2
 ```
 
-### Router 3: Customer 3 workstation
+### Router 3: customer 3 workstation
 
-R3 simulate customer 3’s workstation, and host customer 3 SSH keys too.
+R3 simulates customer 3’s workstation and also holds customer 3’s SSH keys.
 
 ```
 sysrc hostname=R3
@@ -165,7 +165,7 @@ ssh-keygen -f /root/.ssh/id_rsa -N ''
 config save
 ```
 
-Then display the public SSH key (need to declare it into the customer 3’s firewall):
+Then display the public SSH key (it must be declared on customer 3’s firewall):
 
 ```
 cat .ssh/id_rsa.pub
@@ -174,12 +174,12 @@ ssh-rsa (...) root@R3
 
 ### Router 4: multi-tenant ipfw firewall
 
-Router 4 is a multi-tenant ipfw firewall: It hosts 3 firewalls for each customer.
+Router 4 is a multi-tenant ipfw firewall: it hosts one firewall for each of the three customers.
 
-Then we will configure:
+We will configure:
 
 - Bridge and VLAN interfaces
-- Enable ipfw (firewall modules needs to be loaded on the host for being available into jails)
+- ipfw enabled (firewall modules must be loaded on the host so they are available inside jails)
 
 <!-- -->
 
@@ -202,7 +202,7 @@ service ipfw start
 config save
 ```
 
-Then install the customers SSH public keys:
+Then install the customers’ SSH public keys:
 
 ```
 echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABA... root@R1" > /tmp/cust1.ssh.pub
@@ -210,7 +210,7 @@ echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABA... root@R2" > /tmp/cust2.ssh.pub
 echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABA... root@R3" > /tmp/cust3.ssh.pub
 ```
 
-Create 3 jailed firewalls, one for each customers:
+Create three jailed firewalls, one per customer:
 
 ```
 tenant -c -j customer1 -f /tmp/cust1.ssh.pub -i bridge0/10.254.254.1/24,vtnet4.1/10.0.0.254/24 -g 10.254.254.5
@@ -218,7 +218,7 @@ tenant -c -j customer2 -f /tmp/cust2.ssh.pub -i bridge0/10.254.254.2/24,vtnet4.2
 tenant -c -j customer3 -f /tmp/cust3.ssh.pub -i bridge0/10.254.254.3/24,vtnet4.3/10.0.0.254/24 -g 10.254.254.5
 ```
 
-Last step, because they are virtual firewalls and not simple routers, we will enable firewall in open mode into their internal rc.conf for allowing customers to SSH into them:
+As a final step, because these are virtual firewalls and not simple routers, enable the firewall in open mode in each jail’s internal `rc.conf` so customers can SSH into them:
 
 ```
 sysrc -f /etc/jails/customer1/rc.conf firewall_enable="YES" 
@@ -232,17 +232,17 @@ sysrc -f /etc/jails/customer3/rc.conf firewall_nat_enable="YES"
 sysrc -f /etc/jails/customer3/rc.conf firewall_type="open"
 ```
 
-Configuration will be now automatically saved when changed detected into /etc, then you do not need to use “config save” on the host once a jail is created.
+Configuration is now saved automatically whenever changes are detected in `/etc`, so you no longer need to run `config save` on the host once a jail has been created.
 
-Then to start the jails:
+Start the jails:
 
 ```
 service jail start
 ```
 
-## Customers firewalls configuration
+## Customer firewall configuration
 
-Each customer should be able to ssh into their new firewalls using their SSH keys.
+Each customer should be able to SSH into their new firewall using their SSH keys.
 
 ### Customer 1
 
@@ -269,7 +269,7 @@ root has logged on pts/0 from 10.0.0.1.
 [root@customer1]~#
 ```
 
-Now connected to his firewall, this customer can configure its own firewall rules:
+Now connected to his firewall, the customer can configure his own firewall rules:
 
 ```
 sysrc -x firewall_type
@@ -300,7 +300,7 @@ Check firewall rules:
 65535  0    0 deny ip from any to any
 ```
 
-Now, from R1, try to reach public Internet server R5:
+From R1, try to reach the public Internet server R5:
 
 ```
 [root@R1]~# ping -c 3 10.254.254.5
@@ -316,7 +316,7 @@ round-trip min/avg/max/stddev = 0.181/0.193/0.211/0.013 ms
 
 ### Customer 2
 
-From customer 2’s workstation R1:
+From customer 2’s workstation R2:
 
 ```
 [root@R2]~# ssh 10.0.0.254
@@ -339,7 +339,7 @@ root has logged on pts/0 from 10.0.0.1.
 [root@customer2]~#
 ```
 
-Now connected to his firewall, this customer can configure its own firewall rules:
+Now connected to his firewall, the customer can configure his own firewall rules:
 
 ```
 sysrc -x firewall_type
@@ -370,7 +370,7 @@ Check firewall rules:
 65535  0    0 deny ip from any to any
 ```
 
-Now, from R2, try to public Internet server R5:
+From R2, try to reach the public Internet server R5:
 
 ```
 [root@R2]~# ping -c 3 10.254.254.5
@@ -386,7 +386,7 @@ round-trip min/avg/max/stddev = 0.181/0.193/0.211/0.013 ms
 
 ### Customer 3
 
-From customer 3’s workstation R1:
+From customer 3’s workstation R3:
 
 ```
 [root@R3]~# ssh 10.0.0.254
@@ -454,15 +454,15 @@ PING 10.254.254.5 (10.254.254.5): 56 data bytes
 round-trip min/avg/max/stddev = 0.181/0.193/0.211/0.013 ms
 ```
 
-## Using pf firewall in place of ipfw
+## Using pf instead of ipfw
 
-pf need a little more configuration because by default /dev/pf is hidden from jail.
+pf requires a little more configuration because, by default, `/dev/pf` is hidden from jails.
 
-Then, on the host we need to:
+On the host we need to:
 
-1.  In place of loading the ipfw/ipfw-nat modules we need to load the pf module (but still disabling pf on our host for this example)
-2.  Modify default devd rules for allowing jails to see /dev/pf (if you want to use tcpdump inside your jail, you should use bpf device too)
-3.  Replacing nojail tag by nojailvnet tag into /etc/rc.d/pf ([already done into BSDRP](https://github.com/ocochard/BSDRP/blob/master/BSDRP/patches/freebsd.rc.jailvnet.patch) and into [FreeBSD -head](https://svnweb.freebsd.org/baseview=revision&revision=320802))
+1.  Load the `pf` module instead of the `ipfw`/`ipfw-nat` modules (while still keeping pf disabled on the host for this example).
+2.  Modify the default devfs rules to let jails see `/dev/pf` (and the `bpf` device too, if you want to use tcpdump inside the jail).
+3.  Replace the `nojail` tag with `nojailvnet` in `/etc/rc.d/pf` ([already done in BSDRP](https://github.com/ocochard/BSDRP/blob/master/BSDRP/patches/freebsd.rc.jailvnet.patch) and in [FreeBSD -head](https://svnweb.freebsd.org/baseview=revision&revision=320802)).
 
 Preparing configuration:
 
@@ -479,14 +479,14 @@ pf_flags="-d"
 echo "set skip on {lo1 vtnet4}" > /etc/pf.conf
 ```
 
-Now reloading devd and loading pf module:
+Reload devfs and load the pf module:
 
 ```
 service pf start
 service devfs restart
 ```
 
-You can now declare pf in place of ipfw into your jails rc.conf:
+You can now declare pf instead of ipfw in each jail’s `rc.conf`:
 
 ```
 sysrc -f /etc/jails/customer1/rc.conf pf_enable="YES"
@@ -497,30 +497,30 @@ sysrc -f /etc/jails/customer3/rc.conf pf_enable="YES"
 echo "pass all" > /etc/jails/customer3/pf.conf
 ```
 
-Now you can start customers jails, and let customers SSH into their firewalls and configure their own rules:
+You can now start the customer jails and let customers SSH into their firewalls and configure their own rules:
 
 ```
 [root@customer2]~# pfctl -s rules
 pass all flags S/SA keep state
 ```
 
-## Under the hood: jails-on-nanobsd
+## Under the hood: jails on NanoBSD
 
-[BSDRP's tenant shell script](https://github.com/ocochard/BSDRP/blob/master/BSDRP/Files/usr/local/sbin/tenant) creates jail configuration compliant with a host running nanobsd.
+[BSDRP’s tenant shell script](https://github.com/ocochard/BSDRP/blob/master/BSDRP/Files/usr/local/sbin/tenant) creates jail configurations compatible with a NanoBSD host.
 
-Then these jails need to be configured for a nanobsd:
+These jails must be configured for NanoBSD:
 
-1.  Being nullfs based for being hosted on a read-only root filesystem
-2.  Have their /etc and /var into tmpfs disks (then we need to populate these directory before each start)
-3.  Configuration changes need to be saved with nanobsd configuration tools, like “config save” on BSDRP
+1.  Use nullfs so they can run on a read-only root filesystem.
+2.  Mount `/etc` and `/var` on tmpfs (which means we have to populate these directories before each start).
+3.  Configuration changes must be saved using NanoBSD configuration tools, such as BSDRP’s `config save`.
 
 And on the host:
 
-1.  [autosave daemon](https://github.com/ocochard/BSDRP/blob/master/BSDRP/Files/usr/local/sbin/autosave) need to be enabled: Each time a customer will issue a “config save” inside a jail, his configuration diffs will be save into host’s /etc/jails/. And this directory is a RAM disk too, then we need to automatically save hosts configuration on changes.
+1.  The [autosave daemon](https://github.com/ocochard/BSDRP/blob/master/BSDRP/Files/usr/local/sbin/autosave) must be enabled: each time a customer runs `config save` inside a jail, the configuration diff is saved to the host’s `/etc/jails/` directory. Since that directory is also a RAM disk, host configuration must be saved automatically whenever it changes.
 
-Here are examples of configuration files generated:
+Here are examples of the generated configuration files.
 
-host jail.conf:
+Host `jail.conf`:
 
 ```
 customer1 {
@@ -582,7 +582,7 @@ customer1 {
 }
 ```
 
-/etc/fstab.customer1:
+`/etc/fstab.customer1`:
 
 ```
 tmpfs /var/jails/customer1/etc tmpfs rw,size=16000000 0 0
