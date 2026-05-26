@@ -14,6 +14,38 @@ Here is the logical and physical view:
 
 ![multi-tenant-router-firewall.png](../../assets/images/documentation/examples/multi-tenant-router-firewall.png)
 
+Same topology as a logical graph:
+
+```mermaid
+flowchart TB
+    R5["R5 - Internet host<br/>vtnet3: 10.254.254.5/24"]
+
+    subgraph R4box["R4 host"]
+        VTNET3["vtnet3"]
+        BR0(("bridge0<br/>10.254.254.4/24"))
+        FW1["customer1 firewall jail"]
+        FW2["customer2 firewall jail"]
+        FW3["customer3 firewall jail"]
+
+        VTNET3 --- BR0
+        BR0 -- "epair1: 10.254.254.1/24" --- FW1
+        BR0 -- "epair2: 10.254.254.2/24" --- FW2
+        BR0 -- "epair3: 10.254.254.3/24" --- FW3
+    end
+
+    R5 --- VTNET3
+
+    R1["R1 - customer 1<br/>vtnet4.1: 10.0.0.1/24"]
+    R2["R2 - customer 2<br/>vtnet4.2: 10.0.0.1/24"]
+    R3["R3 - customer 3<br/>vtnet4.3: 10.0.0.1/24"]
+
+    FW1 -- "vtnet4.1 (VLAN 1): 10.0.0.254/24" --- R1
+    FW2 -- "vtnet4.2 (VLAN 2): 10.0.0.254/24" --- R2
+    FW3 -- "vtnet4.3 (VLAN 3): 10.0.0.254/24" --- R3
+```
+
+Each `customerN firewall jail` is a full vnet jail that the corresponding customer manages on their own: they SSH in as root, write their own `ipfw` (or `pf`) ruleset, and `config save` it. R4 only provides the bridge, VLANs, and the jail itself; everything inside is the customer's responsibility.
+
 ### Setting up a virtual lab
 
 #### Downloading BSD Router Project images
