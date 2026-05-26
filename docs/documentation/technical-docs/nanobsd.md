@@ -9,7 +9,7 @@ Here are a list of docs and tutorials about NanoBSD:
 -  [Introduction to NanoBSD](http://www.freebsd.org/doc/en/articles/nanobsd/index.html) : Official presentation page on FreeBSD website
 -  [Building a FreeBSD Appliance With NanoBSD](http://www.bsdcan.org/2006/papers/nanobsd.pdf) (pdf) : Presentation during the BSD Can 2006
 -  [NanoBSD man page](http://www.freebsd.org/cgi/man.cgiquery=nanobsd&apropos=0&sektion=0&manpath=FreeBSD+8-current&format=html) : The man page
--  [Gitoyen NanoBSD quagga router](http://www.gitoyen.net/Howto-NanoBSD-quagga-router) (french only) : One of the most close project to this, with a very smart idea of manage configuration by an external svn server and most interressing: A patch for adding ports compilation support
+-  [Gitoyen NanoBSD quagga router](http://www.gitoyen.net/Howto-NanoBSD-quagga-router) (french only) : One of the most close project to this, with a very smart idea of manage configuration by an external svn server and most interressing: A patch for adding ports compilation support
 
 # Understanding NanoBSD
 
@@ -81,13 +81,13 @@ FIXME
 | NANO_CUSTOMIZE |  | Customize commands |
 | NANO_DATASIZE | 2048 | Size of data file system in 512 bytes sectors |
 | NANO_DISKIMGDIR | /usr/obj/nanobsd.BSDRP.{ARCH} | The directory to put the final images |
-| NANO_DRIVE | ad0 (TO ADD in BSDRP make!) | The drive name of the media at runtime |
+| NANO_DRIVE | ad0 (TO ADD in BSDRP make!) | The drive name of the media at runtime |
 | NANO_GLABEL_SYS | BSDRP | glabel name for system partition |
 | NANO_GLABEL_CFG | cfg | glabel name for configuration partition |
 | NANO_GLABEL_DATA | data | glabel name for data partition |
 | NANO_IMAGES | 2 | Number of code images on media (1 or 2) |
 | NANO_IMGNAME | BSDRP.img | The default name for any image we create |
-| NANO_INIT_IMG2 | 0  | What to do with the second image partition: 0 (empty), 1 (copy twice the image) |
+| NANO_INIT_IMG2 | 0  | What to do with the second image partition: 0 (empty), 1 (copy twice the image) |
 | NANO_KERNEL | BSDRP-I386 / BSDRP-AMD64 | Name of the kernel config file |
 | NANO_LATE_CUSTOMIZE |  | Late customize commands |
 | NANO_MAKE_CONF_INSTALL | /usr/obj/nanobsd.BSDRP.{ARCH}/make.conf.install |  |

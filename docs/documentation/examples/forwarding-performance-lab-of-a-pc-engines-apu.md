@@ -261,7 +261,7 @@ Receiving from netmap:re1: 1 queues, 1 threads and 2 cpus.
 903.204329 main_thread [1438] 577499 pps (578655 pkts in 1002001 usec)
 ```
 
-Netmap usage improve the receiving packet rate to about 580Kpps only: It’s strange that it didn’t reach the maximum Ethernet frame rate (1.48Mpps) with netmap.
+Netmap usage improve the receiving packet rate to about 580Kpps only: It’s strange that it didn’t reach the maximum Ethernet frame rate (1.48Mpps) with netmap.
 
 As a packet generator:
 

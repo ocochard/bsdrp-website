@@ -68,7 +68,7 @@ config save
 
 ### Router 2
 
-VM2 is a router with one interface toward IPv6 network, and another toward IPv4 network.
+VM2 is a router with one interface toward IPv6 network, and another toward IPv4 network.
 
 ```
 sysrc hostname=VM2 \

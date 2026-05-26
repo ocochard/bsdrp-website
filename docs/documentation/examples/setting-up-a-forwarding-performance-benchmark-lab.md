@@ -154,7 +154,7 @@ set protocols lldp-med interface xe-0/0/0 disable
 
 ### Hardware
 
-NIC supported by [netmap](http://www.freebsd.org/cgi/man.cgiquery=netmap) are mandatory on the server used as packet generator/receiver: Chelsio (the best one!), Intel (em, ixgbe). RealTek (re) NIC are supported but avoid them at all cost!
+NIC supported by [netmap](http://www.freebsd.org/cgi/man.cgiquery=netmap) are mandatory on the server used as packet generator/receiver: Chelsio (the best one!), Intel (em, ixgbe). RealTek (re) NIC are supported but avoid them at all cost!
 
 ### Static ARP
 

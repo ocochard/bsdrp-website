@@ -51,7 +51,7 @@ sysctl hw.em.1.fc=0
 
 ### Static ARP entries
 
-Here is the modified value of the default BSDRP /etc/rc.conf for static ARP:
+Here is the modified value of the default BSDRP /etc/rc.conf for static ARP:
 
 ```
 ifconfig_em0="inet 1.1.1.3/24"
@@ -231,7 +231,7 @@ Receiver results in Kpps for 5 tests (with a reboot between them):
 404.98
 ```
 
-=\> Throughput increase to 405Kpps: A small 5Kpps gain.
+=\> Throughput increase to 405Kpps: A small 5Kpps gain.
 
 Some router counters:
 
@@ -371,7 +371,7 @@ Receiver results in Kpps for 5 tests (with a reboot between them):
 320.52
 ```
 
-=\> Throughput reduced to 320Kpps: Enabling ipfw add an impact of about 80Kpps on this server. Router still respond perfectly on the CLI.
+=\> Throughput reduced to 320Kpps: Enabling ipfw add an impact of about 80Kpps on this server. Router still respond perfectly on the CLI.
 
 ### PF
 

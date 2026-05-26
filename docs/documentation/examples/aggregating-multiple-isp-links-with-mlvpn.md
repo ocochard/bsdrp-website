@@ -261,7 +261,7 @@ hostname VM1
 config save
 ```
 
-### Router 6 : MLVPN server
+### Router 6 : MLVPN server
 
 Router 6 is configured as a aggregating server.
 

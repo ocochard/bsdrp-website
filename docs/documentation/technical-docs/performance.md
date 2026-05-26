@@ -29,7 +29,7 @@ A clear definition of the relationship between bandwidth and frame rate is neces
 - [Routing performance of Cisco routers](http://www.cisco.com/web/partners/downloads/765/tools/quickreference/routerperformance.pdf) (PDF)
 - [Pushing the Limits of Kernel Networking](http://rhelblog.redhat.com/2015/09/29/pushing-the-limits-of-kernel-networking/) (2015, September) : Linux RedHat 7.2: 1.3Mpps/core and “Beyond the ninth CPU we see some gain but all results are pretty much fixed at 12.4Mpps as this is the limit of the PCIe bandwidth for the device.”
 - [RFC2544 Performance Evaluation for a Linux Based Open Router](http://www.telematica.polito.it/oldsite/courmayeur06/papers/06-A.2.1.pdf) (2006, June)
-- [Towards 10Gb/s open-source routing](http://data.guug.de/slides/lk2008/10G_preso_lk2008.pdf) (2008): Include an hardware comparison between a “real” router and a PC.
+- [Towards 10Gb/s open-source routing](http://data.guug.de/slides/lk2008/10G_preso_lk2008.pdf) (2008): Include an hardware comparison between a “real” router and a PC.
 - [Performance consideration for packet processing on Intel Architecture (ppt)](https://wiki.fd.io/images/7/7b/Performance_Consideration_for_packet_processing_on_Intel_Architecture.pptx)
 
 ### FreeBSD
@@ -38,7 +38,7 @@ Here are some benchmarks regarding FreeBSD network forwarding performance, condu
 
 - AsiaBSDCon 2018 - Tuning FreeBSD for routing and firewalling ([paper](https://people.freebsd.org/~olivier/talks/2018_AsiaBSDCon_Tuning_FreeBSD_for_routing_and_firewalling-Paper.pdf),[slides](https://people.freebsd.org/~olivier/talks/2018_AsiaBSDCon_Tuning_FreeBSD_for_routing_and_firewalling-Slides.pdf) and [video](https://www.youtube.com/watchv=SLlzep0IxVY))
 - [Recipe for building a 10Mpps FreeBSD based router](http://blog.cochard.me/2015/09/receipt-for-building-10mpps-freebsd.html)
-- [Impact of enabling ipfw or pf on fastforwarding performance with 8 cores Xeon E5-2650](https://github.com/ocochard/netbenches/blob/master/Xeon_E5-2650-8Cores-Chelsio_T540-CR/forwarding-pf-ipfw/results/fbsd11-routing.r287531/README.md): 9.5Mpps
+- [Impact of enabling ipfw or pf on fastforwarding performance with 8 cores Xeon E5-2650](https://github.com/ocochard/netbenches/blob/master/Xeon_E5-2650-8Cores-Chelsio_T540-CR/forwarding-pf-ipfw/results/fbsd11-routing.r287531/README.md): 9.5Mpps
 - [Impact of enabling ipfw or pf on fastforwarding performance with 4 cores Xeon L5630](https://github.com/ocochard/netbenches/blob/master/Xeon_L5630-4Cores-Intel_82599EB/forwarding-pf-ipfw/results/fbsd11-routing.r287531/README.md) : Gigabit line-rate (1.48Mpps) even with few ipfw or pf rules enabled
 - [Impact of enabling ipfw or pf on fastforwarding performance with 4 cores Atom C2558E (Netgate RCC-VE 4860)](https://github.com/ocochard/netbenches/blob/master/Atom_C2558_4Cores-Intel_i350/forwarding-pf-ipfw/results/fbsd11-routing.r287531/README.md) : Small device perfect for 1Gb/s of IMIX traffic
 - [Impact of enabling ipfw or pf on fastforwarding performance with 2 cores AMD G-T40E (PC Engines APU)](https://github.com/ocochard/netbenches/blob/master/AMD_G-T40E_2Cores_RTL8111E/forwarding-pf-ipfw/results/fbsd11-routing.r287531/README.md): Another cheap router that reach about 400Mb/s of IMIX
@@ -264,16 +264,16 @@ Using the FreeBSD “projects/routing” branch, this impact is a lot’s more i
 
 ### NIC drivers tuning
 
-#### RX & TX descriptor (queue) size on igb
+#### RX & TX descriptor (queue) size on igb
 
 Received (hw.igb.rxd) and transmit (hw.igb.txd) internal buffer size of igb/em NIC can be increased, but it’s not a good idea.
 
 Here are some examples that decrease performance when buffer increased:
 
 ```
-x PC-Engine-APU2-igb, 1024 (default): inet4 packets-per-second
-+ PC-Engine-APU2-igb, 2048: inet4 packets-per-second
-* PC-Engine-APU2-igb, 4096: inet4 packets-per-second
+x PC-Engine-APU2-igb, 1024 (default): inet4 packets-per-second
++ PC-Engine-APU2-igb, 2048: inet4 packets-per-second
+* PC-Engine-APU2-igb, 4096: inet4 packets-per-second
 +--------------------------------------------------------------------------+
 |*                                                                         |
 |* ***                  + +  +++                                      xx xx|
@@ -298,9 +298,9 @@ Difference at 95.0% confidence
 On a PC Engines APU2, increasing rx&tx buffers badly impact forwarding perfomance to about 20%.
 
 ```
-x Netgate-igb, 1024 (default): inet4 packets-per-second
-+ Netgate-igb, 2048: inet4 packets-per-second
-* Netaget-igb, 4096: inet4 packets-per-second
+x Netgate-igb, 1024 (default): inet4 packets-per-second
++ Netgate-igb, 2048: inet4 packets-per-second
+* Netaget-igb, 4096: inet4 packets-per-second
 +--------------------------------------------------------------------------+
 |*      *       *    *   *+   ++      +    +               x   x x      x x|
 |                                                           |____MA______| |
@@ -445,7 +445,7 @@ Tools:
 
 - [MeetBSD 2014 - Brendan Gregg's performance analysis presentation](http://www.slideshare.net/brendangregg/meetbsd2014-performance-analysis) : The ultimate guide for performance analysis on FreeBSD
 - [netstat](http://www.freebsd.org/cgi/man.cgiquery=netstat): show network status
-- [vmstat](http://www.freebsd.org/cgi/man.cgiquery=vmstat): report virtual memory statistics
+- [vmstat](http://www.freebsd.org/cgi/man.cgiquery=vmstat): report virtual memory statistics
 - [top](http://www.freebsd.org/cgi/man.cgiquery=top): display and update information about the top cpu processes
 - [pmcstat](https://www.freebsd.org/cgi/man.cgiquery=pmcstat): Measuring performance using hardward counter
 
@@ -667,7 +667,7 @@ Now you can display the most time consumed process with:
 
 - AMD: ls_not_halted_cyc
 - Intel: cpu_clk_unhalted.thread_p
-- ARM: CPU_CYCLES
+- ARM: CPU_CYCLES
 
 <!-- -->
 

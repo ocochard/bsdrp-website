@@ -202,7 +202,7 @@ hostname R5
 config save
 ```
 
-### Router 6 : L2TP MLPPP server
+### Router 6 : L2TP MLPPP server
 
 Router 6 is configured as a L2TP server.
 
@@ -346,7 +346,7 @@ Server listening on 5201
 
 Now check the correct limited bandwitdh for each different links:
 
-- Link to R6 across R2: 1Mb/s
+- Link to R6 across R2: 1Mb/s
 - Link to R6 across R3: 2Mb/s
 - Link to R6 across R4: 3Mb/s
 

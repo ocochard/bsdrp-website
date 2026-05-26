@@ -32,7 +32,7 @@ BSDRP-amd64 v1.51 (FreeBSD 10.0-BETA2 with autotune mbuf patch) is used on the D
 +-----------------------------------+      +----------------------------------+
 ```
 
-The generator **MUST** generate lot’s of smallest IP flows (multiple source/destination IP addresses and/or UDP src/dst port).
+The generator **MUST** generate lot’s of smallest IP flows (multiple source/destination IP addresses and/or UDP src/dst port).
 
 Here is an example for generating 2000 flows (100 different source IP * 20 different destination IP):
 

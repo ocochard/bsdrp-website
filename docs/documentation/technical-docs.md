@@ -33,7 +33,7 @@ make
 
 The FreeBSD code include all architecture and limited cross-compiling tools: You can generate an i386 BSDRP image from a FreeBSD amd64, but you can’t generate a sparc64 image from an i386/amd64 host.
 
-Once you download the code, you can kept your BSDRP sources up-to-date with these commands:
+Once you download the code, you can kept your BSDRP sources up-to-date with these commands:
 
 ```
 make upstream-sync
@@ -106,7 +106,7 @@ All files put in the Files/ directory will be copied to the BSDRP image. Pay att
 
 Here is a little example (minimum modification) for building a new project based on BSDRP, but for a web server appliance: This project will be a child project of BSDRP.
 
-Start by downloading BSDRP source code (refers to getting BSDRP source code chapter) and go in the BSDRP directory.
+Start by downloading BSDRP source code (refers to getting BSDRP source code chapter) and go in the BSDRP directory.
 
 Then create a new directory using your project name:
 

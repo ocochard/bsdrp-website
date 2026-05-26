@@ -69,7 +69,7 @@ Same configuration as on [forwarding performance benchmark lab](setting-up-a-for
 
 A detailed example of configuration can be found on [IPSec performance lab of an IBM System x3550 M3 with Intel 82580](ipsec-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md).
 
-We need to measure the performance of “Reference Device” by setting up a bench lab with 2 identical devices as DUT if possible. Or using a powerfull “reference” device if only one DUT is available.
+We need to measure the performance of “Reference Device” by setting up a bench lab with 2 identical devices as DUT if possible. Or using a powerfull “reference” device if only one DUT is available.
 
 If CPU supports [AES-NI feature](http://www.intel.com/content/dam/www/public/us/en/documents/white-papers/aes-ipsec-performance-linux-paper.pdf), the [aesni kernel module](https://www.freebsd.org/cgi/man.cgiquery=aesni&sektion=4) need to be loaded.
 

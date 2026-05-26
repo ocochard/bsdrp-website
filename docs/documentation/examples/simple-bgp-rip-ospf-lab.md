@@ -23,7 +23,7 @@ More information on these BSDRP lab scripts available on [How to build a BSDRP r
 
 ## Routers configuration
 
-#### VM mode: 7 VMs
+#### VM mode: 7 VMs
 
 All these routers can be configured with labconfig tool (use it only on a lab, because it will replace your current running configuration):
 

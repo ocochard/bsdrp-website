@@ -318,7 +318,7 @@ This bench method is using 100 differents destinations IP addressess from 198.19
 3.  198.19.10.64/27 (64 to 95)
 4.  198.19.10.96/27 (96 to 127)
 
-then with 8 routes:
+then with 8 routes:
 
 ```
 -198.19.10.0/28

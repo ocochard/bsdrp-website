@@ -41,11 +41,11 @@ Usage: ./BSDRP-lab-bhyve.sh [-dhp] -i FreeBSD-disk-image.img [-n vm-number] [-l 
 Patched release of Qemu can be found:
 
 - FreeBSD: Included (GNS3 option)
-- Windows: [GNS3's qemu 0.13.0](https://sourceforge.net/projects/gns-3/files/Qemu/qemu-0.13.0.patched.win32.zip/download)
+- Windows: [GNS3's qemu 0.13.0](https://sourceforge.net/projects/gns-3/files/Qemu/qemu-0.13.0.patched.win32.zip/download)
 
 #### Under FreeBSD or Linux
 
-If you want to use Qemu or KVM, here is the [BSDRP qemu/kvm lab shell script](https://raw.githubusercontent.com/ocochard/BSDRP/master/tools/BSDRP-lab-qemu.sh).
+If you want to use Qemu or KVM, here is the [BSDRP qemu/kvm lab shell script](https://raw.githubusercontent.com/ocochard/BSDRP/master/tools/BSDRP-lab-qemu.sh).
 
 ```
 fetch -o BSDRP-lab-qemu.sh "https://raw.githubusercontent.com/ocochard/BSDRP/master/tools/BSDRP-lab-qemu.sh"
@@ -142,7 +142,7 @@ Usage: /usr/local/BSDRP/tools/BSDRP-lab-vbox.sh [-hdsv] [-a i386|amd64] [-i BSDR
   -l Y       Number of LAN between 0 and 9 (default: 0)
   -m         RAM (in MB) for each VM (default: 192)
   -n X       Number of router (between 1 and 9) full meshed (default: 1)
-  -o CONS    Force console: vga (default if -a) or serial
+  -o CONS    Force console: vga (default if -a) or serial
   -s         Stop all VM
   -v         Enable virtio drivers
 ```
@@ -241,7 +241,7 @@ Now start VirtualBox and create a new VM:
 
 Then, only if you are using the “serial” BSDRP image, edit your VM:
 
-- Serial Port: Port 1
+- Serial Port: Port 1
   - Enable
   - Mode: Host pipe
   - Check the case: Create pipe
@@ -271,7 +271,7 @@ Use Qemu only if you can use the KVM acceleration feature (GNS3 under GNU/Linux 
 
 Download a full i386 BSDRP VGA and un-xz it (using 7-zip)… you should obtain a .img file (not a .xz file!).
 
-Don’t use a 64bit image: GNS3’s Qemu is configured for running 32bits guest only.
+Don’t use a 64bit image: GNS3’s Qemu is configured for running 32bits guest only.
 
 #### Declaring a Qemu Guest
 

@@ -184,7 +184,7 @@ And checking ARP cache:
 
 
 !!! note
-    The MAC address of the virtual CARP IP is the real MAC of the interface in MASTER state (and not a virtual MAC adress) due to the IP alias creation on the MASTER node: Gratious ARP is needed when switching carp state between two node
+    The MAC address of the virtual CARP IP is the real MAC of the interface in MASTER state (and not a virtual MAC adress) due to the IP alias creation on the MASTER node: Gratious ARP is needed when switching carp state between two node
 
 
 ### Testing uCarp failover

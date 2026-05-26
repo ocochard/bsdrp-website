@@ -336,5 +336,5 @@ reading from file /var/log/pflog, link-type PFLOG (OpenBSD pflog file)
 
 Halt master firewall and check:
 
-1.  on VM1: no ping lost neither TCP echo session
+1.  on VM1: no ping lost neither TCP echo session
 2.  on VM3: It became carp master

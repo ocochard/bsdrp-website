@@ -67,7 +67,7 @@ For connecting to VM'serial console, you can use:
 
 ## Base routers configuration
 
-Router 1 and Router 5 as a simple workstation, Router 3 as a simple router.
+Router 1 and Router 5 as a simple workstation, Router 3 as a simple router.
 
 All these routers can be pre-configured with labconfig tool (use it only on a lab, because it will replace your current running configuration):
 

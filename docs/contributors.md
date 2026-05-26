@@ -27,7 +27,7 @@ BSDRP is based on, and includes, various free software packages, listed below. T
 - [uCARP](http://www.ucarp.org/): Frank Denis
 - [fprobe](http://sourceforge.net/projects/fprobe): Slava Astashonok
 - [OpenLLDP](http://sourceforge.net/projects/openlldp/): Terry Simons and Jason Peterson
-- [DHCP](http://www.isc.org/software/dhcp): Internet Systems Consortium
+- [DHCP](http://www.isc.org/software/dhcp): Internet Systems Consortium
 - [SSMTP](http://packages.debian.org/stable/mail/ssmtp)
 - mcast-tools: Copyright (c) 2002 The Board of Trustees of the Leland Stanford Junior University, Copyright (c) 1999 WIDE Project, Copyright (c)1998-2001 The University of Southern California/Information Sciences Institute.
 - mrouted: Copyright (c) 2002 The Board of Trustees of the Leland Stanford Junior University,

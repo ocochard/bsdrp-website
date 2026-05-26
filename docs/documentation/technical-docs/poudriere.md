@@ -30,7 +30,7 @@ Poudriere can generate multiple “image” types (default is iso+zmfs):
 
 - iso: ISO 9660 format image
   - iso+mfs: ISO 9660 variant where the root filesystem is MFS mounted
-  - iso+zmfs (default): ISO 9660 variant where the root filesystem is LZ77 compressed and is MFS mounted.
+  - iso+zmfs (default): ISO 9660 variant where the root filesystem is LZ77 compressed and is MFS mounted.
 - usb: GPT-layout prepared UFS2 image containing a UEFI boot loader.
   - usb+mfs : variant where the root filesystem is MFS mounted
   - usb+zmfs: variant where the root filesystem is LZ77 compressed and is MFS mounted.
@@ -202,7 +202,7 @@ We need to start creating a set of configuration files, named prefixed with the 
 
 - poudriere.d/BSDRPj-src.conf : Include all src.conf parameters used for reference jail buildworld/installworld
 - poudriere.d/BSDRPj-make.conf : Include all common ports parameters (and ports build options)
-- poudriere.d/image-BSDRPj-src.conf : parameters added for installworld (followed by a delete-old)
+- poudriere.d/image-BSDRPj-src.conf : parameters added for installworld (followed by a delete-old)
 
 Then need other configuration files:
 

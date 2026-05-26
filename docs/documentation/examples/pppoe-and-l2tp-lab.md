@@ -82,7 +82,7 @@ service mpd5 start
 config save
 ```
 
-### Router 3 : LNS (L2TP server)
+### Router 3 : LNS (L2TP server)
 
 ```
 sysrc hostname=R3

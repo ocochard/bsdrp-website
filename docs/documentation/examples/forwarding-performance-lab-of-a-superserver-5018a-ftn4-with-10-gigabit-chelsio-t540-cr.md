@@ -6,7 +6,7 @@ description: Forwarding performance lab of a 8 cores Atom C2758 at 2.41GHz with 
 
 This lab will test a [SuperMicro](http://www.supermicro.com/products/system/1U/5018/SYS-5018A-FTN4.cfm) [SuperServer 5018A-FTN4](superserver-5018a-ftn4.md):
 
-- Intel Rangeley: [Atom C2758 (8 cores) at 2.4GHz](http://ark.intel.com/products/77988/Intel-Atom-Processor-C2758-4M-Cache-2_40-GHz)
+- Intel Rangeley: [Atom C2758 (8 cores) at 2.4GHz](http://ark.intel.com/products/77988/Intel-Atom-Processor-C2758-4M-Cache-2_40-GHz)
 - 8Gb of RAM
 - Quad port Chelsio 10-Gigabit T540-CR and OPT SFP (SFP-10G-LR)
 

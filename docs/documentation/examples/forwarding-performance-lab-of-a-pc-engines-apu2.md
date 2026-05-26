@@ -137,7 +137,7 @@ harvest_mask="351"
 
 We start the first test by starting one packet generator at gigabit line-rate (1.488Mpps) and found:
 
-- APU2 is not responsive during this test: NIC multiqueue correcly distribute load to all cores;
+- APU2 is not responsive during this test: NIC multiqueue correcly distribute load to all cores;
 - About 794Kpps are accepted by the igb(4) Ethernet interface.
 
 <!-- -->

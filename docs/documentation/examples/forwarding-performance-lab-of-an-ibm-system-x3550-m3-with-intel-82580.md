@@ -302,7 +302,7 @@ Difference at 95.0% confidence
 
 ## Firewall impact
 
-Multi-queue is re-enabled for this test, and best value from the previous tests used:
+Multi-queue is re-enabled for this test, and best value from the previous tests used:
 
 - hw.igb.rxd=2048
 - hw.igb.txd=2048
