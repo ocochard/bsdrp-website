@@ -90,9 +90,9 @@ VLANs definition:
 - 3: management
 - 2: benches
 
-### Devices access
+### Device access
 
-Once logged into the management server (bastion), you can access the devices by
+Once logged into the management server (bastion), you can access the devices in two ways:
 
 #### SSH
 
@@ -113,15 +113,15 @@ ssh root@HOSTNAME
 
 ### Usage example
 
-Objective: Start a traffic flow arccos the “netgate” device using “ibm3” as packet source&receiver:
+Objective: send a traffic flow across the `netgate` device, using `ibm3` as both packet source and receiver:
 
-1.  Open a tmux with 3 windows
-2.  On the first window, ssh to ibm3 and start packet receiver
+1.  Open a tmux session with three windows.
+2.  In the first window, SSH to ibm3 and start the packet receiver:
         ssh root@ibm3
         pkt-gen -N -f rx -i igb3 -w 4
-3.  On the second window, ssh into ibm3 and start a packet generator
+3.  In the second window, SSH to ibm3 and start the packet generator:
         ssh root@ibm3
         pkt-gen -N -f tx -w 4 -i igb2 -n 300000000 -l 60 -4 -U -S 00:1b:21:c4:95:7a -s 198.18.10.1:2000-198.18.10.20 -D 00:08:a2:09:33:da -d 198.19.10.1:2000-198.19.10.100
-4.  On the third window, ssh or connect to console of netgate for checking throughput
+4.  In the third window, SSH or connect to the netgate console to monitor throughput:
         ssh root@netgate
         netstat -ihw 1

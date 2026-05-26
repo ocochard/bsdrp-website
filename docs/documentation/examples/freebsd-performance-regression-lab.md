@@ -62,7 +62,7 @@ This is the setup used for a VPN benchmark:
 
 The objective is to generate BSDRP nanobsd images regarding a list of FreeBSD’s code SVN revision number.
 
-You need to [download BSDRP source code](../technical-docs.md#getting-bsdrp-source-code) on a FreeBSD machine.
+You need to [download BSDRP source code](../technical-docs.md#getting-the-bsdrp-source-code) on a FreeBSD machine.
 
 Then you have to create or customize a BSDRP project for obtaining a small image: Try to remove maximum [FreeBSD options](http://svnweb.freebsd.org/base/head/tools/build/options/) and no ports for improving the image generation speed. The BSDRP’s [TESTING project](https://github.com/ocochard/BSDRP/tree/master/TESTING) is a good example for this step.
 

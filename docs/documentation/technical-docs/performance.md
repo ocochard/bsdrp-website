@@ -1,14 +1,14 @@
 ---
-title: FreeBSD Forwarding Performance
+title: FreeBSD forwarding performance
 description: Tips and information about FreeBSD forwarding performance
 ---
-There are lots of guides about [tuning FreeBSD TCP performance](http://serverfault.com/questions/64356/freebsd-performance-tuning-sysctls-loader-conf-kernel) (where the FreeBSD host is an endpoint of the TCP session), but it’s not the same as tuning forwarding (where the FreeBSD host does not need to read the TCP information of the packets being forwarded) or firewalling performance.
+There are many guides on [tuning FreeBSD TCP performance](http://serverfault.com/questions/64356/freebsd-performance-tuning-sysctls-loader-conf-kernel) (where the FreeBSD host is an endpoint of the TCP session), but this is not the same as tuning forwarding (where the FreeBSD host does not need to read the TCP information of the packets it forwards) or firewalling performance.
 
 ## Concepts
 
-### How to bench a router
+### How to benchmark a router
 
-Benchmarking a router **is not** about measuring the maximum bandwidth crossing the router; it’s about measuring the network throughput in packets-per-second (pps):
+Benchmarking a router **is not** about measuring the maximum bandwidth crossing it; it is about measuring the network throughput in packets per second (pps):
 
 - [RFC1242: Benchmarking Terminology for Network Interconnection Devices](http://www.ietf.org/rfc/rfc1242.txt)
 - [RFC2544: Benchmarking Methodology for Network Interconnect Devices](http://www.ietf.org/rfc/rfc2544.txt)
@@ -20,65 +20,65 @@ Benchmarking a router **is not** about measuring the maximum bandwidth crossing 
 A clear definition of the relationship between bandwidth and frame rate is necessary:
 
 - [Bandwidth, Packets Per Second, and Other Network Performance Metrics](http://www.cisco.com/web/about/security/intelligence/network_performance_metrics.html): The relationship of bandwidth and packet forwarding rate
-- [LAN Ethernet Maximum Rates, Generation, Capturing & Monitoring](http://wiki.networksecuritytoolkit.org/nstwiki/index.php/LAN_Ethernet_Maximum_Rates,_Generation,_Capturing_%26_Monitoring) : Give another good explanation of the Ethernet maximum rates
+- [LAN Ethernet Maximum Rates, Generation, Capturing & Monitoring](http://wiki.networksecuritytoolkit.org/nstwiki/index.php/LAN_Ethernet_Maximum_Rates,_Generation,_Capturing_%26_Monitoring): another good explanation of the Ethernet maximum rates
 
 ## Benchmarks
 
 ### Cisco or Linux
 
 - [Routing performance of Cisco routers](http://www.cisco.com/web/partners/downloads/765/tools/quickreference/routerperformance.pdf) (PDF)
-- [Pushing the Limits of Kernel Networking](http://rhelblog.redhat.com/2015/09/29/pushing-the-limits-of-kernel-networking/) (2015, September) : Linux RedHat 7.2: 1.3Mpps/core and “Beyond the ninth CPU we see some gain but all results are pretty much fixed at 12.4Mpps as this is the limit of the PCIe bandwidth for the device.”
-- [RFC2544 Performance Evaluation for a Linux Based Open Router](http://www.telematica.polito.it/oldsite/courmayeur06/papers/06-A.2.1.pdf) (2006, June)
-- [Towards 10Gb/s open-source routing](http://data.guug.de/slides/lk2008/10G_preso_lk2008.pdf) (2008): Include an hardware comparison between a “real” router and a PC.
+- [Pushing the Limits of Kernel Networking](http://rhelblog.redhat.com/2015/09/29/pushing-the-limits-of-kernel-networking/) (September 2015): Linux RedHat 7.2: 1.3 Mpps per core, and "Beyond the ninth CPU we see some gain but all results are pretty much fixed at 12.4Mpps as this is the limit of the PCIe bandwidth for the device."
+- [RFC2544 Performance Evaluation for a Linux Based Open Router](http://www.telematica.polito.it/oldsite/courmayeur06/papers/06-A.2.1.pdf) (June 2006)
+- [Towards 10Gb/s open-source routing](http://data.guug.de/slides/lk2008/10G_preso_lk2008.pdf) (2008): includes a hardware comparison between a "real" router and a PC.
 - [Performance consideration for packet processing on Intel Architecture (ppt)](https://wiki.fd.io/images/7/7b/Performance_Consideration_for_packet_processing_on_Intel_Architecture.pptx)
 
 ### FreeBSD
 
-Here are some benchmarks regarding FreeBSD network forwarding performance, conducted by the BSDRP team:
+Benchmarks of FreeBSD network forwarding performance, conducted by the BSDRP team:
 
-- AsiaBSDCon 2018 - Tuning FreeBSD for routing and firewalling ([paper](https://people.freebsd.org/~olivier/talks/2018_AsiaBSDCon_Tuning_FreeBSD_for_routing_and_firewalling-Paper.pdf),[slides](https://people.freebsd.org/~olivier/talks/2018_AsiaBSDCon_Tuning_FreeBSD_for_routing_and_firewalling-Slides.pdf) and [video](https://www.youtube.com/watchv=SLlzep0IxVY))
-- [Recipe for building a 10Mpps FreeBSD based router](http://blog.cochard.me/2015/09/receipt-for-building-10mpps-freebsd.html)
-- [Impact of enabling ipfw or pf on fastforwarding performance with 8 cores Xeon E5-2650](https://github.com/ocochard/netbenches/blob/master/Xeon_E5-2650-8Cores-Chelsio_T540-CR/forwarding-pf-ipfw/results/fbsd11-routing.r287531/README.md): 9.5Mpps
-- [Impact of enabling ipfw or pf on fastforwarding performance with 4 cores Xeon L5630](https://github.com/ocochard/netbenches/blob/master/Xeon_L5630-4Cores-Intel_82599EB/forwarding-pf-ipfw/results/fbsd11-routing.r287531/README.md) : Gigabit line-rate (1.48Mpps) even with few ipfw or pf rules enabled
-- [Impact of enabling ipfw or pf on fastforwarding performance with 4 cores Atom C2558E (Netgate RCC-VE 4860)](https://github.com/ocochard/netbenches/blob/master/Atom_C2558_4Cores-Intel_i350/forwarding-pf-ipfw/results/fbsd11-routing.r287531/README.md) : Small device perfect for 1Gb/s of IMIX traffic
-- [Impact of enabling ipfw or pf on fastforwarding performance with 2 cores AMD G-T40E (PC Engines APU)](https://github.com/ocochard/netbenches/blob/master/AMD_G-T40E_2Cores_RTL8111E/forwarding-pf-ipfw/results/fbsd11-routing.r287531/README.md): Another cheap router that reach about 400Mb/s of IMIX
+- AsiaBSDCon 2018 - Tuning FreeBSD for routing and firewalling ([paper](https://people.freebsd.org/~olivier/talks/2018_AsiaBSDCon_Tuning_FreeBSD_for_routing_and_firewalling-Paper.pdf), [slides](https://people.freebsd.org/~olivier/talks/2018_AsiaBSDCon_Tuning_FreeBSD_for_routing_and_firewalling-Slides.pdf), and [video](https://www.youtube.com/watchv=SLlzep0IxVY))
+- [Recipe for building a 10 Mpps FreeBSD-based router](http://blog.cochard.me/2015/09/receipt-for-building-10mpps-freebsd.html)
+- [Impact of enabling ipfw or pf on fastforwarding performance with an 8-core Xeon E5-2650](https://github.com/ocochard/netbenches/blob/master/Xeon_E5-2650-8Cores-Chelsio_T540-CR/forwarding-pf-ipfw/results/fbsd11-routing.r287531/README.md): 9.5 Mpps
+- [Impact of enabling ipfw or pf on fastforwarding performance with a 4-core Xeon L5630](https://github.com/ocochard/netbenches/blob/master/Xeon_L5630-4Cores-Intel_82599EB/forwarding-pf-ipfw/results/fbsd11-routing.r287531/README.md): gigabit line-rate (1.48 Mpps) even with a few ipfw or pf rules enabled
+- [Impact of enabling ipfw or pf on fastforwarding performance with a 4-core Atom C2558E (Netgate RCC-VE 4860)](https://github.com/ocochard/netbenches/blob/master/Atom_C2558_4Cores-Intel_i350/forwarding-pf-ipfw/results/fbsd11-routing.r287531/README.md): small device, ideal for 1 Gb/s of IMIX traffic
+- [Impact of enabling ipfw or pf on fastforwarding performance with a 2-core AMD G-T40E (PC Engines APU)](https://github.com/ocochard/netbenches/blob/master/AMD_G-T40E_2Cores_RTL8111E/forwarding-pf-ipfw/results/fbsd11-routing.r287531/README.md): another cheap router that reaches about 400 Mb/s of IMIX
 
 ## Bench lab
 
-The [bench lab](bench-lab.md) should be set to measure pps. For obtaining accurate results the [RFC 2544 (Benchmarking Methodology for Network Interconnect Devices)](http://www.ietf.org/rfc/rfc2544.txt) is a good reference. If switches are used, they need to have proper configuration, refers to the [BSDRP performance lab](../examples/setting-up-a-forwarding-performance-benchmark-lab.md) for examples.
+The [bench lab](bench-lab.md) should be set up to measure pps. For accurate results, [RFC 2544 (Benchmarking Methodology for Network Interconnect Devices)](http://www.ietf.org/rfc/rfc2544.txt) is a good reference. If switches are used, they must be configured properly; see the [BSDRP performance lab](../examples/setting-up-a-forwarding-performance-benchmark-lab.md) for examples.
 
 ## Tuning
 
 ### Literature
 
-Here is a list of sources for optimizing and analysis forwarding performance under FreeBSD.
+A list of resources for optimizing and analyzing forwarding performance under FreeBSD.
 
-How to benchmark or tune the network stack:
+Benchmarking and tuning the network stack:
 
-- [FreeBSD Network Performance Tuning](http://wiki.freebsd.org/NetworkPerformanceTuning): What need to be done to tune networking stack
-- [Brendan Gregg's Performance analysis presentation](http://www.slideshare.net/brendangregg/meetbsd2014-performance-analysis): The “must read” HOW TO
+- [FreeBSD Network Performance Tuning](http://wiki.freebsd.org/NetworkPerformanceTuning): what needs to be done to tune the networking stack
+- [Brendan Gregg's performance analysis presentation](http://www.slideshare.net/brendangregg/meetbsd2014-performance-analysis): the "must-read" how-to
 - [FreeBSD Network Performance Project (netperf)](http://www.freebsd.org/projects/netperf/index.html)
 - [Introduction to Multithreading and Multiprocessing in the FreeBSD SMPng Network Stack](http://www.watson.org/~robert/freebsd/netperf/20051027-eurobsdcon2005-netperf.pdf), EuroBSDCon 2005 (PDF)
-- [man tuning](http://www.freebsd.org/cgi/man.cgiquery=tuning&apropos=0&sektion=0&manpath=FreeBSD+8.2-RELEASE&arch=default&format=html) : performance tuning under FreeBSD
+- [man tuning](http://www.freebsd.org/cgi/man.cgiquery=tuning&apropos=0&sektion=0&manpath=FreeBSD+8.2-RELEASE&arch=default&format=html): performance tuning under FreeBSD
 - [Improving Memory and Interrupt Processing in FreeBSD Network Stack](http://wwwx.cs.unc.edu/~krishnan/classes/spring_07/os_impl/report.pdf) (PDF)
 - [Optimizing the BSD Routing System for Parallel Processing](http://conferences.sigcomm.org/sigcomm/2009/workshops/presto/papers/p37.pdf) (PDF)
-- [Using netstat and vmstat for performance analysis](https://people.sunyit.edu/~sengupta/CSC521/systemperformance.ppt) (Powerpoint))
-- [polling man page](http://www.freebsd.org/cgi/man.cgiquery=polling&sektion=4) (Warning: enabling polling is not a good idea with the new generation of Ethernet controller that include interruption control)
-- [Device Polling support for FreeBSD](http://info.iet.unipi.it/~luigi/polling/), the original presentation of polling implementation
-- [Tuning Kernel Limits](http://www.freebsd.org/doc/en_US.ISO8859-1/books/handbook/configtuning-kernel-limits.html) on the FreeBSD Handbook
+- [Using netstat and vmstat for performance analysis](https://people.sunyit.edu/~sengupta/CSC521/systemperformance.ppt) (PowerPoint)
+- [polling man page](http://www.freebsd.org/cgi/man.cgiquery=polling&sektion=4) (warning: enabling polling is not a good idea with modern Ethernet controllers that include interrupt moderation)
+- [Device Polling support for FreeBSD](http://info.iet.unipi.it/~luigi/polling/): the original presentation of the polling implementation
+- [Tuning Kernel Limits](http://www.freebsd.org/doc/en_US.ISO8859-1/books/handbook/configtuning-kernel-limits.html) in the FreeBSD Handbook
 
-FreeBSD Experimental high-performance network stacks:
+Experimental high-performance FreeBSD network stacks:
 
-- [Netmap - memory mapping of network devices](http://info.iet.unipi.it/~luigi/netmap/) *“(…)a single core running at 1.33GHz can generate the 14.8Mpps that saturate a 10GigE interface.”*
-- [Network Stack Specialization for Performance](http://conferences.sigcomm.org/hotnets/2013/papers/hotnets-final43.pdf) This paper presents Sandstorm, a clean-slate userspace network stack based on Netmap
+- [Netmap - memory mapping of network devices](http://info.iet.unipi.it/~luigi/netmap/) *"(...) a single core running at 1.33 GHz can generate the 14.8 Mpps that saturate a 10 GigE interface."*
+- [Network Stack Specialization for Performance](http://conferences.sigcomm.org/hotnets/2013/papers/hotnets-final43.pdf): this paper presents Sandstorm, a clean-slate userspace network stack based on Netmap
 
 ### Multiple flows
 
-Do not try to benchmark a router with only one flow (same source and destination address, and same source and destination port): You need to generate multiples flows. Multi-queue NIC uses feature like the [Toeplitz Hash Algorithm](https://en.wikipedia.org/wiki/Toeplitz_Hash_Algorithm) that balance multiples flows across all cores. Generating only one flow will use only a single NIC queue and core.
+Do not benchmark a router with only one flow (same source and destination address, same source and destination port). You need to generate multiple flows. Multi-queue NICs use features like the [Toeplitz hash algorithm](https://en.wikipedia.org/wiki/Toeplitz_Hash_Algorithm) to balance multiple flows across all cores. Generating only one flow will use only a single NIC queue and a single core.
 
-During your load test, check that each queue is used with sysctl or a [python script like this one](https://github.com/ocochard/BSDRP/blob/master/BSDRP/Files/usr/local/bin/nic-queue-usage) that displays real-time queue usage.
+During the load test, check that every queue is in use, either with sysctl or with a [Python script like this one](https://github.com/ocochard/BSDRP/blob/master/BSDRP/Files/usr/local/bin/nic-queue-usage) that displays real-time queue usage.
 
-In this example, all flows are correctly shared between the 8 queues (about 340K paquets-per-seconds for each):
+In the following example all flows are correctly spread across the 8 queues (about 340K packets per second on each):
 
 
 ```
@@ -93,43 +93,43 @@ In this example, all flows are correctly shared between the 8 queues (about 340K
 
 
 !!! warning
-    Beware of configurations that prevent multi-queueing, such as GRE, GIF, and IPSec tunnels or PPPoE (which use the same source/destination address). If you must use PPPoE usage on your Gigabit Internet link, using small hardware like a 4-cores AMD GX (PC Engines APU2) will prevent you from reaching Gigabit speed.
+    Beware of configurations that defeat multi-queueing, such as GRE, GIF, and IPsec tunnels, or PPPoE (which uses the same source and destination address). If you must run PPPoE on your gigabit internet link, small hardware such as a 4-core AMD GX (PC Engines APU2) will not be able to reach gigabit speed.
 
 
 ### Choosing hardware
 
 #### CPU
 
-Avoid NUMA architecture and instead prefer a CPU in a single package with maximum number of cores. If you are using NUMA, you need to check that inbound and outbound NIC queues are correctly bound to their local domain to avoid unnecessary QPI crossing.
+Avoid NUMA architectures; prefer a CPU in a single package with the maximum number of cores. If you do use NUMA, make sure inbound and outbound NIC queues are pinned to their local domain to avoid unnecessary QPI traffic.
 
-#### Network Interface Card
+#### Network interface card
 
-Mellanox or Chelsio, which combine good chipsets and excellent drivers, are an excellent choice.
+Mellanox and Chelsio combine good chipsets with excellent drivers and are an excellent choice.
 
-Intel seems to have problems managing a large number of PPS (interrupts) and they developers team seems to lack FreeBSD developers.
+Intel cards seem to have trouble handling a large number of PPS (interrupts), and their team appears to be short on FreeBSD developers.
 
-Avoid “embedded” NICs on common Dell/HP servers, as they perform very poorly in terms of maximum packets-per-second performance:
+Avoid the "embedded" NICs on common Dell and HP servers; they perform very poorly in terms of maximum packets-per-second throughput:
 
 - 10G Emulex OneConnect (be3)
 - 10G Broadcom NetXtreme II BCM57810
 
 ### Choosing the right FreeBSD release
 
-Before tuning, you need to use the good FreeBSD version, which mean a recent FreeBSD (main branch advised).
+Before tuning, make sure you are running a recent FreeBSD release; the main branch is recommended.
 
-BSDRP follows the FreeBSD main branch to strike a balance between recent features and stability (yes, it is quiet stable).
+BSDRP follows the FreeBSD main branch to strike a balance between recent features and stability (and yes, it is quite stable).
 
 ### Disabling Hyper-Threading (on specific CPUs only)
 
-By default, a multi-queue NIC drivers create one queue per core. However, on some older CPUs (like Xeon E5-2650 V1), these logical cores do not help at all with managing interrupts generated by a high-speed NIC.
+By default, a multi-queue NIC driver creates one queue per core. However, on some older CPUs (such as the Xeon E5-2650 v1), the logical cores do not help at all with handling interrupts from a high-speed NIC.
 
-HT can be disabled with this command:
+HT can be disabled with:
 
 ```
 echo 'machdep.hyperthreading_allowed="0"' >> /boot/loader.conf
 ```
 
-Here is an example on a Xeon E5 2650 (8c,16t) with a 10G Chelsio NIC, where disabling HT improve performance:
+Here is an example on a Xeon E5-2650 (8c/16t) with a 10G Chelsio NIC, where disabling HT improves performance:
 
 ```
 x HT-enabled-8rxq(default): inet packets-per-second forwarded
@@ -156,9 +156,9 @@ Difference at 95.0% confidence
         (Student's t, pooled s = 67554.4)
 ```
 
-There is a benefit of about 24% to disable hyper threading on this old CPU.
+Disabling Hyper-Threading on this old CPU gives a benefit of about 24%.
 
-However, here is another example on a Xeon E5 2650L (10c, 20t) where it is a beneficial to kept HT enabled and configure the NIC to use all threads:
+By contrast, on a Xeon E5-2650L (10c/20t) it is beneficial to keep HT enabled and configure the NIC to use all threads:
 
 ```
 x HT on, 8q (default): inet4 packets-per-second forwarded
@@ -183,11 +183,11 @@ Difference at 95.0% confidence
         (Student's t, pooled s = 118987)
 ```
 
-### fastforwarding
+### Fastforwarding
 
 #### FreeBSD 12.0 or newer
 
-You should enable tryforward by disabling ICMP redirect:
+Enable tryforward by disabling ICMP redirects:
 
 ```
 echo "net.inet.ip.redirect=0"  >> /etc/sysctl.conf
@@ -197,12 +197,12 @@ service sysctl restart
 
 ### Entropy harvest impact
 
-Many tuning guide suggest disabling:
+Many tuning guides suggest disabling:
 
 - kern.random.sys.harvest.ethernet
 - kern.random.sys.harvest.interrupt
 
-By default the binary mask 511 select almost all these source as entropy sources:
+By default, the binary mask 511 selects almost every source as an entropy source:
 
 ```
 kern.random.harvest.mask_symbolic: [UMA],[FS_ATIME],SWI,INTERRUPT,NET_NG,NET_ETHER,NET_TUN,MOUSE,KEYBOARD,ATTACH,CACHED
@@ -210,7 +210,7 @@ kern.random.harvest.mask_bin: 00111111111
 kern.random.harvest.mask: 511
 ```
 
-By replacing this mask by 351, we exclude INTERRUPT and NET_ETHER:
+Replacing this mask with 351 excludes INTERRUPT and NET_ETHER:
 
 ```
 kern.random.harvest.mask_symbolic: [UMA],[FS_ATIME],SWI,[INTERRUPT],NET_NG,[NET_ETHER],NET_TUN,MOUSE,KEYBOARD,ATTACH,CACHED
@@ -218,7 +218,7 @@ kern.random.harvest.mask_bin: 00101011111
 kern.random.harvest.mask: 351
 ```
 
-On a FreeBSD 11.1, we can see the impact on forwarding performance:
+On FreeBSD 11.1, the impact on forwarding performance is visible:
 
 ```
 x PC-Engines-APU2-igb, 511 (default): inet4 packets-per-second
@@ -237,7 +237,7 @@ Difference at 95.0% confidence
         (Student's t, pooled s = 3469.77
 ```
 
-On a PC Engines APU2, there is +3% performance benefit
+On a PC Engines APU2 the performance benefit is about 3%.
 
 ```
 x Netgate-igb, 511 (default): inet4 packets-per-second
@@ -256,19 +256,19 @@ Difference at 95.0% confidence
         (Student's t, pooled s = 6800.93)
 ```
 
-On a Netgate RCC-VE 4860 there is about 4.7% performance benefit.
+On a Netgate RCC-VE 4860 the benefit is about 4.7%.
 
-Using the FreeBSD “projects/routing” branch, this impact is a lot’s more important:
+On the FreeBSD `projects/routing` branch the impact is much larger:
 
 ![Impact of disabling some entropy source on FreeBSD forwarding performance](../../assets/images/documentation/technical_docs/entropy_source_impact.png)
 
-### NIC drivers tuning
+### NIC driver tuning
 
-#### RX & TX descriptor (queue) size on igb
+#### RX and TX descriptor (queue) size on igb
 
-Received (hw.igb.rxd) and transmit (hw.igb.txd) internal buffer size of igb/em NIC can be increased, but it’s not a good idea.
+The receive (`hw.igb.rxd`) and transmit (`hw.igb.txd`) internal buffer sizes of the igb and em drivers can be increased, but doing so is not a good idea.
 
-Here are some examples that decrease performance when buffer increased:
+The following examples show performance decreasing as the buffer size increases:
 
 ```
 x PC-Engine-APU2-igb, 1024 (default): inet4 packets-per-second
@@ -295,7 +295,7 @@ Difference at 95.0% confidence
         (Student's t, pooled s = 3216.4)
 ```
 
-On a PC Engines APU2, increasing rx&tx buffers badly impact forwarding perfomance to about 20%.
+On a PC Engines APU2, increasing the RX and TX buffers hurts forwarding performance by about 20%.
 
 ```
 x Netgate-igb, 1024 (default): inet4 packets-per-second
@@ -321,13 +321,13 @@ Difference at 95.0% confidence
         (Student's t, pooled s = 9302.68)
 ```
 
-On a Netgate RCC-VE 4860 performance decrease to about 6%.
+On a Netgate RCC-VE 4860 performance drops by about 6%.
 
 #### Maximum number of received packets to process at a time (Intel)
 
-By default Intel drivers (em\|igb) limit the maximum number of received packets to process at a time (hw.igb.rx_process_limit=100).
+By default, Intel drivers (em and igb) limit the number of received packets processed in one pass (`hw.igb.rx_process_limit=100`).
 
-Disabling this limit can improve a little bit the overall performance:
+Disabling this limit gives a small improvement in overall performance:
 
 ```
 x PC-Engines-APU2-igb, 100 (default): inet4 packets-per-second
@@ -369,9 +369,9 @@ Almost same improvement, 1.7% on a Netgate.
 
 #### Increasing maximum interrupts per second
 
-By default igb\|em limit the maximum number of interrupts per second to 8000.
+By default, the `igb` and `em` drivers limit the maximum number of interrupts per second to 8000.
 
-What result by increasing this number:
+The effect of increasing this number:
 
 ```
 x PC-Engine-APU2-igb, max_interrupt_rate=8000 (default): inet4 pps
@@ -414,16 +414,16 @@ Difference at 95.0% confidence
 No difference proven at 95.0% confidence
 ```
 
-A little 1% benefit if doubled form the default (8000 to 16000), but no benefit after.
+A small 1% benefit when doubled from the default (8000 to 16000), but no further benefit after that.
 
 #### Disabling LRO and TSO
 
-All modern NIC support [LRO](http://en.wikipedia.org/wiki/Large_receive_offload) and [TSO](http://en.wikipedia.org/wiki/Large_segment_offload) features that needs to be disabled on a router:
+All modern NICs support [LRO](http://en.wikipedia.org/wiki/Large_receive_offload) and [TSO](http://en.wikipedia.org/wiki/Large_segment_offload), but both features must be disabled on a router:
 
-1.  By waiting to store multiple packets at the NIC level before to hand them up to the stack: This add latency, and because all packets need to be sending out again, the stack have to split in different packets again before to hand them down to the NIC. [Intel drivers readme](http://downloadmirror.intel.com/22919/eng/README.txt) include this note “The result of not disabling LRO when combined with ip forwarding or bridging can be low throughput or even a kernel panic.”
-2.  This break the [End-to-end principle](http://en.wikipedia.org/wiki/End-to-end_principle)
+1.  They buffer multiple packets at the NIC level before handing them up the stack. This adds latency, and because the packets must be sent out again, the stack has to split them back into separate packets before handing them down to the NIC. The [Intel drivers readme](http://downloadmirror.intel.com/22919/eng/README.txt) includes this note: "The result of not disabling LRO when combined with ip forwarding or bridging can be low throughput or even a kernel panic."
+2.  They break the [end-to-end principle](http://en.wikipedia.org/wiki/End-to-end_principle).
 
-There is no real impact of disabling these features on PPS performance:
+Disabling these features has no real impact on PPS performance:
 
 ```
 x Xeon_E5-2650-8Cores-Chelsio_T540, TSO-LRO-enabled (default): inet4 packets-per-second
@@ -439,21 +439,21 @@ x   5       5727360     5806270.5       5773573     5773454.5     31394.005
 No difference proven at 95.0% confidence
 ```
 
-### Where is the bottleneck ?
+### Where is the bottleneck?
 
 Tools:
 
-- [MeetBSD 2014 - Brendan Gregg's performance analysis presentation](http://www.slideshare.net/brendangregg/meetbsd2014-performance-analysis) : The ultimate guide for performance analysis on FreeBSD
+- [MeetBSD 2014 - Brendan Gregg's performance analysis presentation](http://www.slideshare.net/brendangregg/meetbsd2014-performance-analysis): the ultimate guide to performance analysis on FreeBSD
 - [netstat](http://www.freebsd.org/cgi/man.cgiquery=netstat): show network status
 - [vmstat](http://www.freebsd.org/cgi/man.cgiquery=vmstat): report virtual memory statistics
-- [top](http://www.freebsd.org/cgi/man.cgiquery=top): display and update information about the top cpu processes
-- [pmcstat](https://www.freebsd.org/cgi/man.cgiquery=pmcstat): Measuring performance using hardward counter
+- [top](http://www.freebsd.org/cgi/man.cgiquery=top): display and update information about the top CPU processes
+- [pmcstat](https://www.freebsd.org/cgi/man.cgiquery=pmcstat): measure performance using hardware counters
 
-#### Packets load
+#### Packet load
 
-Display the information regarding packet traffic, with refresh each second.
+Display packet-traffic information, refreshed every second.
 
-Here is a first example:
+Here is an example:
 
 ```
 [root@hp]~# netstat -ihw1
@@ -468,11 +468,11 @@ Here is a first example:
        14M     0  7.9M       838M       5.8M     0       352M     0
 ```
 
-=\> This system is receiving 14Mpps (10G line-rate) and reach to forwarding only at 5.8Mpps rate then need to drop about 8Mpps.
+This system is receiving 14 Mpps (10G line rate) but only manages to forward 5.8 Mpps, so it has to drop about 8 Mpps.
 
-#### Traffic distribution between each queues
+#### Traffic distribution across queues
 
-Check the input queues are equally distributed. BSDRP include a sysctl parser script for that:
+Check that the input queues are evenly loaded. BSDRP includes a sysctl parser script for this:
 
 ```
 [root@hp]~# nic-queue-usage cxl0
@@ -487,13 +487,13 @@ Check the input queues are equally distributed. BSDRP include a sysctl parser sc
 [Q0   864K/s] [Q1   873K/s] [Q2   853K/s] [Q3   852K/s] [Q4   854K/s] [Q5   856K/s] [Q6   874K/s] [Q7   868K/s] [QT  6897K/s 16413K/s ->     1K/s]
 ```
 
-=\> All 8 receive queues are correctly used here.
+All 8 receive queues are used correctly here.
 
 #### Interrupt usage
 
-Report on the number of interrupts taken by each device since system startup,
+Report the number of interrupts taken by each device since system startup.
 
-Here is a first example:
+Here is an example:
 
 ```
 [root@hp]~# vmstat -i
@@ -539,11 +539,11 @@ irq301: t5nex0:1a7                102177         79
 Total                           11978149       9318
 ```
 
-=\> There is no IRQ sharing here, and each queue have correctly their own IRQ (thanks MSI-X).
+There is no IRQ sharing here, and each queue has its own IRQ (thanks to MSI-X).
 
-#### Memory Buffer
+#### Memory buffers
 
-Show statistics recorded by the memory management routines. The network manages a private pool of memory buffers.
+Show statistics recorded by the memory-management routines. The network stack manages its own private pool of memory buffers.
 
 ```
 [root@hp]~# vmstat -z | head -1 ; vmstat -z | grep -i mbuf
@@ -556,11 +556,11 @@ mbuf_jumbo_9k:         9216, 605045,       0,       0,       0,   0,   0
 mbuf_jumbo_16k:       16384, 340337,     128,       0,     128,   0,   0
 ```
 
-=\> No “failed” here.
+No "failed" entries here.
 
 #### CPU / NIC
 
-top can give very useful information regarding the CPU/NIC affinity:
+`top` provides useful information about CPU/NIC affinity:
 
 ```
 [root@hp]~# top -CHIPS
@@ -623,7 +623,7 @@ Swap:
 
 #### Drivers
 
-Depending the NIC drivers used, there are some counters available:
+Depending on the NIC driver in use, several counters are available:
 
 ```
 [root@hp]~# sysctl dev.cxl.0.stats.
@@ -651,11 +651,11 @@ dev.cxl.0.stats.rx_frames_64: 12522860904
 dev.cxl.0.stats.rx_ovflow0: # drops due to buffer-group 0 overflows
 ```
 
-=\> Notice the high level of “drops du to buffer-group 0 overflows”. It’s a problem regarding global performance of the system (on this example, the packet generator send smallest packet at a rate about 14Mpps).
+Notice the high number of "drops due to buffer-group 0 overflows". This is a global performance problem on this system (in this example, the packet generator is sending the smallest packets at about 14 Mpps).
 
 #### pmcstat
 
-During high-load of your router/firewall, load the [hwpmc(4)](https://www.freebsd.org/cgi/man.cgiquery=hwpmc&sektion=4) module:
+While the router/firewall is under high load, load the [hwpmc(4)](https://www.freebsd.org/cgi/man.cgiquery=hwpmc&sektion=4) module:
 
 ```
 kldload hwpmc
@@ -663,7 +663,7 @@ kldload hwpmc
 
 ##### Time used by process
 
-Now you can display the most time consumed process with:
+You can display the most time-consuming processes with:
 
 - AMD: ls_not_halted_cyc
 - Intel: cpu_clk_unhalted.thread_p
@@ -675,7 +675,7 @@ Now you can display the most time consumed process with:
 pmcstat -TS cpu_clk_unhalted.thread_p -w1
 ```
 
-That will display this output:
+This produces output like:
 
 ```
 PMC: [INSTR_RETIRED_ANY] Samples: 56877 (100.0%) , 0 unresolved
@@ -724,18 +724,18 @@ PMC: [INSTR_RETIRED_ANY] Samples: 56877 (100.0%) , 0 unresolved
   0.6 kernel     critical_exit
 ```
 
-On this case the bootleneck is just the network stack (most of the time spend into function ip_findroute called by ip_tryforward).
+In this case, the bottleneck is the network stack (most of the time is spent in `ip_findroute`, called by `ip_tryforward`).
 
 ##### CPU cycles spent
 
-For displaying where the most cpu cycles are being spent with. We first need a partition with about 200MB that include the debug kernel:
+To see where CPU cycles are being spent, you first need a partition of about 200 MB that includes the debug kernel:
 
 ```
 system expand-data-slice
 mount /data
 ```
 
-Then, under high-load, start collecting during about 20 seconds:
+Then, under high load, collect samples for about 20 seconds:
 
 ```
 pmcstat -z 50 -S cpu_clk_unhalted.thread -l 20 -O /data/pmc.out
@@ -745,11 +745,12 @@ less /data/pmc.stacks
 
 #### Lock contention source
 
-To identifying lock contention source (like if function lock_delay or __mtx_lock_sleep was quite high from the pcm output), you can try to search which lock is contended and why with lockstat.
+To identify the source of lock contention (for example, if `lock_delay` or `__mtx_lock_sleep` appears high in the pmcstat output), use `lockstat` to find which lock is contended and why.
 
-You can generate 2 output:
+You can generate two outputs:
 
-- contented locks broken down by type:
+- Contended locks broken down by type:
       lockstat -x aggsize=4m sleep 10 > lock-type.txt
-- stacks associated with the lock contention to identify the source:
-      lockstat -x aggsize=4m -s 10 sleep 10 > lock-stacks.txt 
+- Stacks associated with the lock contention, to identify the source:
+      lockstat -x aggsize=4m -s 10 sleep 10 > lock-stacks.txt
+
