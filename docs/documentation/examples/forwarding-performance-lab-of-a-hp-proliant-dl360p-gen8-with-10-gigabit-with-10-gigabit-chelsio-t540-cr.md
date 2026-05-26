@@ -6,7 +6,7 @@ description: Forwarding performance lab of a quad cores Xeon 2.13GHz and quad-po
 
 ### Hardware detail
 
-This lab will test an [HP ProLiant DL360p Gen8](hp-proliant-dl360p-gen8.md) with **eight** cores (Intel Xeon E5-2650 @ 2.60GHz), quad port Chelsio 10-Gigabit T540-CR and OPT SFP (SFP-10G-LR).
+This lab tests an [HP ProLiant DL360p Gen8](hp-proliant-dl360p-gen8.md) with **eight** cores (Intel Xeon E5-2650 @ 2.60GHz), a quad-port Chelsio 10-Gigabit T540-CR, and OPT SFPs (SFP-10G-LR).
 
 The lab is detailed here: [Setting up a forwarding performance benchmark lab](setting-up-a-forwarding-performance-benchmark-lab.md).
 
@@ -39,9 +39,9 @@ The lab is detailed here: [Setting up a forwarding performance benchmark lab](se
 +------------------------------------------+           +------------------------------+
 ```
 
-The generator **MUST** generate lot’s of smallest IP flows (multiple source/destination IP addresses and/or UDP src/dst port).
+The generator **MUST** generate lots of small IP flows (multiple source/destination IP addresses and/or UDP src/dst ports).
 
-Here is an example for generating 5000 flows (different source IP * different destination IP) at line-rate by using 2 threads:
+Here is an example for generating 5000 flows (different source IPs x different destination IPs) at line rate using two threads:
 
 ```
 pkt-gen -N -f tx -w 2 -i vcxl0 -n 1000000000 -l 60 -4 -p 2 -S 00:07:43:2f:fe:b2 -s 198.18.10.1:2001-198.18.10.71 -D 00:07:43:2e:e4:70 -d 198.19.10.1:2001-198.19.10.70
@@ -55,8 +55,9 @@ pkt-gen -N -f tx -w 2 -i vcxl0 -n 1000000000 -l 62 -6 -p 2 -S 00:07:43:2f:fe:b2 
 
 
 !!! warning
-    Netmap disable hardware checksum on the NIC, if you can’t re-enable hardware checksum in netmap mode (like with Intel NIC), you need to use a FreeBSD -head with svn revision of 257758 minimum with the[pkt-gen software-checksum patch](https://bugs.freebsd.org/bugzilla/show_bug.cgiid=187149) for using multiple src/dst IP or port with netmap’s pkt-gen. But this software checksum patch will reduce performance from line-rate to about 10Mpps.
- Receiver will use this command:
+    Netmap disables hardware checksum on the NIC. If you can't re-enable hardware checksum in netmap mode (as is the case with Intel NICs), you need to use a FreeBSD -head with SVN revision 257758 or later plus the [pkt-gen software-checksum patch](https://bugs.freebsd.org/bugzilla/show_bug.cgiid=187149) to use multiple src/dst IPs or ports with netmap's pkt-gen. This software checksum patch will reduce performance from line rate to about 10 Mpps.
+
+The receiver will use this command:
 
 ```
 pkt-gen -i vcxl1 -f rx -w 2

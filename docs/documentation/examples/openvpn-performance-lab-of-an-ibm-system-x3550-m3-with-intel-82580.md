@@ -1,12 +1,12 @@
 ---
 title: OpenVPN performance lab of an IBM System x3550 M3 with Intel 82580
-description: OPenVPN performance lab of a quad cores Xeon 2.13GHz and quad-port gigabit Intel 82580
+description: OpenVPN performance lab of a quad-core Xeon 2.13 GHz and quad-port Gigabit Intel 82580
 ---
 ## Hardware detail
 
-This lab will test an [IBM System x3550 M3](ibm-system-x3550-m3.md) with **quad** cores (Intel Xeon L5630 2.13GHz, hyper-threading disabled) and a quad NIC 82580 connected to the PCI-Express Bus.
+This lab tests an [IBM System x3550 M3](ibm-system-x3550-m3.md) with **quad** cores (Intel Xeon L5630 2.13 GHz, hyper-threading disabled) and a quad-port 82580 NIC connected to the PCI-Express bus.
 
-This CPU includes AES-NI: AES-CBC,AES-XTS,AES-GCM,AES-ICM.
+This CPU includes AES-NI: AES-CBC, AES-XTS, AES-GCM, AES-ICM.
 
 ## Method used
 
@@ -44,11 +44,11 @@ The benchmarking method used here is detailed in [Setting up a VPN IPSec, GRE, e
 
 ## Devices configuration
 
-Almost the same as on the forwarding performance lab but with fastforwarding disabled (not compatible with IPsec).
+Almost the same as the forwarding performance lab, but with fastforwarding disabled (not compatible with IPsec).
 
 ### R2 (DUT)
 
-Disable fastforwarding (not compliant with IPSec), configure IP address, routes and static IPSec.
+Disable fastforwarding (not compatible with IPsec), then configure IP addresses, routes, and OpenVPN.
 
 /etc/rc.conf:
 
@@ -99,7 +99,7 @@ fast-io
 
 ### R3 (reference)
 
-Disable fastforwarding (not compliant with IPSec), configure IP address, routes and static IPSec:
+Disable fastforwarding (not compatible with IPsec), then configure IP addresses, routes, and OpenVPN:
 
 ```
 # IPv4 router
@@ -156,9 +156,9 @@ fast-io
 
 ## Equilibrium throughput benchmark methodology
 
-Once done, we start using a fast method for measuring the “equilibrium throughput” of the DUT.
+Once that is done, we use a fast method to measure the "equilibrium throughput" of the DUT.
 
-From the packet generator/receiver a simple script that use netmap-pktgen will do the job:
+From the packet generator/receiver, a simple script that uses netmap-pktgen will do the job:
 
 ```
 [root@R1]/tmp# equilibrium -u -d 00:1b:21:d3:8f:3e -t igb2 -r igb3 -o 0.001
@@ -214,7 +214,7 @@ Iteration 9
 Estimated Equilibrium Ethernet throughput= 543 Mb/s (maximum value seen: 545 Mb/s)
 ```
 
-=\> OpenVPN (userspace) reach about 454Mb/s which is about half IPSec performance (kernel space)
+OpenVPN (userspace) reaches about 454 Mb/s, which is about half of IPsec performance (kernel space).
 
 ### Encryption algorithms
 

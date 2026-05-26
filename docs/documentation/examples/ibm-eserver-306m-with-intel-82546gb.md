@@ -4,7 +4,7 @@ description: Forwarding performance lab of an one core IBM server and dual-port 
 ---
 ## Hardware detail
 
-This lab will test an [IBM eServer xSeries 306m](ibm-eserver-xseries-306m.md) with **one** core (Intel Pentium4 3.00GHz, hyper-threading disabled) and a dual NIC 82546GB connected to the PCI-X Bus. Overloading a one core server should be easy.
+This lab tests an [IBM eServer xSeries 306m](ibm-eserver-xseries-306m.md) with **one** core (Intel Pentium 4 at 3.00 GHz, hyper-threading disabled) and a dual-port 82546GB NIC connected to the PCI-X bus. Overloading a one-core server should be easy.
 
 ## Lab set-up
 
@@ -22,13 +22,13 @@ BSDRP-amd64 v1.4 (FreeBSD 9.1) is used on the router.
 +-------------------+      +----------------------------------------+      +-------------------+
 ```
 
-Generator will use this command:
+The generator will use this command:
 
 ```
 pkt-gen -i em0 -t 0 -l 42 -d 1.1.1.1 -D 00:0e:0c:de:45:df -s 2.2.2.2 -w 10
 ```
 
-Receiver will use this command:
+The receiver will use this command:
 
 ```
 pkt-gen -i em0 -w 10
@@ -38,9 +38,9 @@ pkt-gen -i em0 -w 10
 
 For this small lab, we will configure the router.
 
-### Disabling Ethernet flow-control
+### Disabling Ethernet flow control
 
-First, disable Ethernet flow-control:
+First, disable Ethernet flow control:
 
 ```
 echo "hw.em.0.fc=0" >> /etc/sysctl.conf
@@ -61,13 +61,13 @@ static_arp_receiver="1.1.1.1 00:1b:21:d5:66:0e"
 static_arp_generator="2.2.2.2 00:1b:21:d5:66:15"
 ```
 
-## em(4) drivers tunning with 82546GB
+## em(4) driver tuning with 82546GB
 
 ### Default FreeBSD values
 
 Default FreeBSD NIC parameters are used for this first test.
 
-Edit BSDRP /boot/loader.conf.local and comment all NIC tunning, then reboot.
+Edit BSDRP /boot/loader.conf.local and comment out all NIC tuning, then reboot.
 
 ```
 [root@BSDRP]~# sysctl hw.em.
@@ -76,7 +76,7 @@ hw.em.txd: 1024
 hw.em.rxd: 1024
 ```
 
-The generator will push packet at 1.4Mpps:
+The generator will push packets at 1.4 Mpps:
 
 ```
 root@generator:~ # pkt-gen -i em0 -t 0 -l 42 -d 1.1.1.1 -D 00:0e:0c:de:45:df -s 2.2.2.2 -w 10
@@ -98,7 +98,7 @@ main [1085] 1405242 pps
 ...
 ```
 
-Meanwhile the receiver show this:
+Meanwhile, the receiver shows this:
 
 ```
 root@receiver:~ # pkt-gen -i em0 -w 10
@@ -137,9 +137,9 @@ Receiver results in Kpps for 5 tests (with a reboot between them):
 399.93
 ```
 
-=\> the receiver measure 400Kpps.
+The receiver measures 400 Kpps.
 
-Now what about the router stats:
+Now check the router stats:
 
 ```
 [root@BSDRP]~# netstat -ihw 1
@@ -182,9 +182,9 @@ mbuf_jumbo_16k:       16384,   3200,       0,       0,       0,   0,   0
 mbuf_ext_refcnt:          4,      0,       0,       0,       0,   0,   0
 ```
 
-=\> The router is still very well responding, but it display a forwarding rate of 390Kpps. The receiver measured 400Kpps, there is a 10Kpps gap between them.
+The router is still very responsive, but it shows a forwarding rate of 390 Kpps. The receiver measured 400 Kpps, so there is a 10 Kpps gap between them.
 
-We need to check the switch stats for a tie:
+We need to check the switch stats to break the tie:
 
 ```
 switch>sh int Gi0/10
@@ -198,19 +198,19 @@ GigabitEthernet0/10 is up, line protocol is up
   30 second output rate 204464000 bits/sec, 399348 packets/sec
 ```
 
-=\> Switch stats confirm the number of 400Kpps received: There is a problem with FreeBSD self-counters that misses about 10Kpps in this case.
+Switch stats confirm the 400 Kpps figure: there is a problem with FreeBSD self-counters, which miss about 10 Kpps in this case.
 
 
 !!! note
-    We need to use the receiver stats and not the router stats.
+    We need to use the receiver stats, not the router stats.
 
 
 ### Default BSDRP values
 
-BSDRP NIC parameters are used for this first test:
+BSDRP NIC parameters are used for this test:
 
-- Maximum number of received packets to process at a time is increase to 500
-- Number of transmit/received descriptors per queue are increase to their maxium (4096)
+- The maximum number of received packets to process at a time is increased to 500
+- The number of transmit/receive descriptors per queue is increased to its maximum (4096)
 
 <!-- -->
 
@@ -231,7 +231,7 @@ Receiver results in Kpps for 5 tests (with a reboot between them):
 404.98
 ```
 
-=\> Throughput increase to 405Kpps: A small 5Kpps gain.
+Throughput increases to 405 Kpps: a small 5 Kpps gain.
 
 Some router counters:
 
@@ -263,13 +263,13 @@ mbuf_jumbo_16k:       16384,   3200,       0,       0,       0,   0,   0
 mbuf_ext_refcnt:          4,      0,       0,       0,       0,   0,   0
 ```
 
-=\> The server is still very well responding.
+The server is still very responsive.
 
-There is no IRQ storm neither mbuf problem: It’s taskq em that consume all CPU resources.
+There is no IRQ storm and no mbuf problem: it is the em taskq that consumes all the CPU resources.
 
 ### Removing rx limit
 
-For this test we completely disable the maximum number of received packets to process at a time (-1):
+For this test, we completely disable the maximum number of received packets processed at a time (-1):
 
 ```
 [root@BSDRP]~# sysctl hw.em.
@@ -288,9 +288,9 @@ Receiver results in Kpps for 5 tests (with a reboot between them):
 410.52
 ```
 
-=\> Performance increased to 410Kpps (10Kpps gain regarding default value, and 5Kpps gain regarding tuned-but-still-limited value).
+Performance increases to 410 Kpps (a 10 Kpps gain over the default value, and a 5 Kpps gain over the tuned-but-still-limited value).
 
-What’s about the router stats now:
+Now check the router stats:
 
 ```
 [root@BSDRP3]~# vmstat -i | head -1 ; vmstat -i | grep em
@@ -308,11 +308,11 @@ Swap:
     0 root     -92    0     0K   176K -       17:02 100.00% kernel{em1 taskq}
 ```
 
-=\> The router is very very slow to respond, almost unusable. Receiving packet consume all its CPU.
+The router is very slow to respond, almost unusable. Receiving packets consumes all its CPU.
 
 
 !!! note
-    Disabling the limit regarding the maximum number of received packets to process at a time is a bad idea on this server
+    Disabling the limit on the maximum number of received packets processed at a time is a bad idea on this server.
 
 
 ### Results
@@ -346,7 +346,7 @@ Difference at 95.0% confidence
 
 ### IPFW
 
-Now we will test the impact of enabling a simple IPFW rules:
+Test the impact of enabling a simple IPFW rule:
 
 ```
 cat > /etc/ipfw.rules <<'EOF'
@@ -371,7 +371,7 @@ Receiver results in Kpps for 5 tests (with a reboot between them):
 320.52
 ```
 
-=\> Throughput reduced to 320Kpps: Enabling ipfw add an impact of about 80Kpps on this server. Router still respond perfectly on the CLI.
+Throughput is reduced to 320 Kpps: enabling ipfw has an impact of about 80 Kpps on this server. The router still responds perfectly on the CLI.
 
 ### PF
 
@@ -394,11 +394,11 @@ Receiver results in Kpps for 5 tests (with a reboot between them):
 274.51
 ```
 
-=\> Very big performance impact here ! Drop to 274Kpps and router is not responsive at all: If watchdog is enabled It will trigger a reboot of the router.
+A very big performance impact here. Drops to 274 Kpps and the router is not responsive at all: if the watchdog is enabled, it will trigger a reboot of the router.
 
 ### Results
 
-ministat graphs:
+Ministat graphs:
 
 ```
 x ipfw

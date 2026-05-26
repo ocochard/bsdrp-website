@@ -6,7 +6,7 @@ description: Forwarding performance lab of a quad cores Xeon 2.13GHz and dual-po
 
 ### Hardware detail
 
-This lab will test an [IBM System x3550 M3](ibm-system-x3550-m3.md) with **quad** cores (Intel Xeon L5630 2.13GHz, hyper-threading disabled), dual port Intel 82599EB 10-Gigabit and OPT SFP (SFP-10G-LR).
+This lab tests an [IBM System x3550 M3](ibm-system-x3550-m3.md) with **quad** cores (Intel Xeon L5630 2.13 GHz, hyper-threading disabled), a dual-port Intel 82599EB 10-Gigabit, and OPT SFPs (SFP-10G-LR).
 
 NIC details:
 
@@ -68,9 +68,9 @@ The lab is detailed here: [Setting up a forwarding performance benchmark lab](se
 +------------------------------------------+           +------------------------------+
 ```
 
-The generator **MUST** generate lot’s of smallest IP flows (multiple source/destination IP addresses and/or UDP src/dst port).
+The generator **MUST** generate lots of small IP flows (multiple source/destination IP addresses and/or UDP src/dst ports).
 
-Here is an example for generating 2000 IPv4 flows (100 destination IP addresses * 20 source IP addresses) with a Chelsio NIC:
+Here is an example for generating 2000 IPv4 flows (100 destination IP addresses x 20 source IP addresses) with a Chelsio NIC:
 
 ```
 pkt-gen -i vcxl0 -f tx -n 1000000000 -l 60 -d 198.19.10.1:2000-198.19.10.100 -D 90:e2:ba:84:20:38 -s 198.18.10.1:2000-198.18.10.20 -w 4 -p 2
@@ -84,8 +84,9 @@ pkt-gen -f tx -i vcxl0 -n 1000000000 -l 62 -6 -d "[2001:2:0:8010::1]-[2001:2:0:8
 
 
 !!! warning
-    This version of pkt-gen is improved with: IPv6 support, software checksum and optional unit normalization. [BSDRP's patch to netmap pkt-gen](https://raw.githubusercontent.com/ocochard/BSDRP/master/BSDRPcur/patches/freebsd.pkt-gen.ae-ipv6.patch).
- Receiver will use this command:
+    This version of pkt-gen has been improved with IPv6 support, software checksum, and optional unit normalization. See [BSDRP's patch to netmap pkt-gen](https://raw.githubusercontent.com/ocochard/BSDRP/master/BSDRPcur/patches/freebsd.pkt-gen.ae-ipv6.patch).
+
+The receiver will use this command:
 
 ```
 pkt-gen -i vcxl1 -f rx -w 4
@@ -95,9 +96,9 @@ pkt-gen -i vcxl1 -f rx -w 4
 
 ### Basic configuration
 
-#### Disabling Ethernet flow-control
+#### Disabling Ethernet flow control
 
-First, disable Ethernet flow-control on both servers:
+First, disable Ethernet flow control on both servers:
 
 ```
 echo "dev.ix.0.fc=0" >> /etc/sysctl.conf
@@ -116,9 +117,9 @@ mount -ur /
 
 #### Disabling LRO and TSO
 
-A router [should not use LRO and TSO](../technical-docs/performance.md). BSDRP disable by default using a RC script (disablelrotso_enable=“YES” in /etc/rc.conf.misc).
+A router [should not use LRO and TSO](../technical-docs/performance.md). BSDRP disables them by default via an RC script (`disablelrotso_enable="YES"` in `/etc/rc.conf.misc`).
 
-But on a standard FreeBSD:
+On a standard FreeBSD:
 
 ```
 ifconfig ix0 -tso4 -tso6 -lro
@@ -156,11 +157,11 @@ static_ndp_HPvcxl1="2001:2:0:8000::110 00:07:43:2e:e4:7a"
 
 ### Default fast-forwarding performance in front of a line-rate generator
 
-Behaviour in front of a multi-flow traffic generator at line-rate 14.8Mpps (thanks Chelsio!), netstat on DUT report:
+Behavior in front of a multi-flow traffic generator at line rate 14.8 Mpps (thanks Chelsio!), netstat on the DUT reports:
 
-Can’t enter any command on the DUT during the load: All 4 cores are overloaded.
+You can't enter any command on the DUT during the load: all 4 cores are overloaded.
 
-But on the receiver, there is only 2.8Mpps received (then forwarded):
+On the receiver, only 2.8 Mpps are received (and therefore forwarded):
 
 ```
 242.851700 main_thread [2277] 2870783 pps (2873654 pkts 1379353920 bps in 1001000 usec) 17.79 avg_batch 3584 min_space
@@ -176,7 +177,7 @@ But on the receiver, there is only 2.8Mpps received (then forwarded):
 252.862699 main_thread [2277] 2870795 pps (2873669 pkts 1379361120 bps in 1001001 usec) 17.78 avg_batch 2024 min_space
 ```
 
-The traffic is correctly load-balanced between each queues:
+The traffic is correctly load-balanced across each queue:
 
 ```
 [root@DUT]~# sysctl dev.ix.0. | grep rx_packet
@@ -191,7 +192,7 @@ dev.ix.1.queue1.tx_packets: 140704643
 dev.ix.1.queue0.tx_packets: 139301734
 ```
 
-Where the system spend this time?
+Where does the system spend this time?
 
 ```
 [root@DUT]~# kldload hwpmc
@@ -243,13 +244,13 @@ PMC: [INSTR_RETIRED_ANY] Samples: 99530 (100.0%) , 0 unresolved
   0.5 kernel     ipsec4_capability    ip_input
 ```
 
-###### \> Time spend in ixgbe_rxeof
+###### \> Time spent in ixgbe_rxeof
 
-Equilibrium throughput ====
+### Equilibrium throughput
 
-Previous methodology, by generating 14.8Mpps, is like testing the DUT under a “Denial-of-Service”. Try another methodology known as [equilibrium throughput](setting-up-a-vpn-ipsec-gre-etc-performance-benchmark-lab.md).
+The previous methodology, generating 14.8 Mpps, is like testing the DUT under a denial-of-service attack. Try another methodology known as [equilibrium throughput](setting-up-a-vpn-ipsec-gre-etc-performance-benchmark-lab.md).
 
-From the pkt-generator, start an estimation of the “equilibrium throughput” starting at 4Mpps:
+From the pkt-generator, start an estimation of the equilibrium throughput, starting at 4 Mpps:
 
 ```
 [root@pkt-gen]~# equilibrium -d 90:e2:ba:84:20:38 -p -l 4000 -t vcxl0 -r vcxl1
@@ -295,23 +296,23 @@ Iteration 7
 Estimated Equilibrium Ethernet throughput= 2948 Kpps (maximum value seen: 2949 Kpps)
 ```
 
-###### \> Same results with equilibrium method: 2.9Mpps.
+###### \> Same results with the equilibrium method: 2.9 Mpps.
 
-Firewall impact ====
+### Firewall impact
 
-One rule for each firewall and 2000 UDP “sessions”, more information on the [GigaEthernet performance lab](forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md#firewall-impact).
+One rule for each firewall and 2000 UDP "sessions"; more information is available in the [GigaEthernet performance lab](forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md#firewall-impact).
 
 [Full configuration sets, scripts and results](https://github.com/ocochard/netbenchs/tree/master/Xeon_L5630-4Cores-Intel_82599EB/fastforwarding-pf-ipfw).
 
 ![Impact of ipfw and pf on 4 cores Xeon 2.13GHz with 10-Gigabit Intel 82599EB](../../assets/images/documentation/examples/bench.forwarding.and.firewalling.rate.on.ibm.intel-82599eb.png)
 
-## Routing performance with multiples static routes
+## Routing performance with multiple static routes
 
-FreeBSD had some route lookup contention problem: This setup is using only one static route (192.19.0.0/8) toward the traffic receiver.
+FreeBSD has a route lookup contention problem. This setup uses only one static route (192.19.0.0/8) toward the traffic receiver.
 
-By spliting this unique route by 4 or 8, we should obtain better result.
+By splitting this single route into 4 or 8, we should get better results.
 
-This bench method is using 100 differents destinations IP addressess from 198.19.10.1 to 198.19.10.100, then redoing this bench using 4 static routes:
+This benchmark method uses 100 different destination IP addresses (from 198.19.10.1 to 198.19.10.100), then repeats the benchmark with 4 static routes:
 
 1.  198.19.10.0/27 (0 to 31)
 2.  198.19.10.32/27 (32 to 63)
@@ -347,9 +348,9 @@ sysrc route_receiver4="-net 198.19.10.96/27 198.19.2.2"
 
 ![Impact of number of static routes on forwarding on 4 cores Xeon 2.13GHz with 10-Gigabit Intel 82599EB](../../assets/images/documentation/examples/bench.static-routes-contention.test.fbsd10.2.png)
 
-###### \> A small 4% increase by using 4 static routes in place of 1 route, and 5% if using 8 routes.
+###### \> A small 4% increase from using 4 static routes instead of 1, and 5% with 8 routes.
 
-Ministat ====
+### Ministat
 
 ```
 x pps.one-route

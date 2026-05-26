@@ -1,29 +1,29 @@
 ---
 title: Testing graphpath, the ASCII network diagram tool
 ---
-This lab show an jail/vnet based diagram used for testing BSDRP’s [graphpath](https://github.com/ocochard/graphpath).
+This lab shows a jail/vnet-based topology used to test BSDRP's [graphpath](https://github.com/ocochard/graphpath).
 
-## Presentation
+## Overview
 
-[graphpath](https://github.com/ocochard/graphpath) generates an ASCII network diagram of the path, view from the host, from a source toward a destination IP address.
+[graphpath](https://github.com/ocochard/graphpath) generates an ASCII network diagram of the path, seen from the host, from a source IP address toward a destination IP address.
 
-For testing this tools, we need to create a network with a topology allowing all graphpath use cases.
+To test this tool, we need to create a network topology that exercises all graphpath use cases.
 
 ### Network diagram
 
 ![graphpath.png](../../assets/images/documentation/examples/graphpath.png)
 
-## Setting-up the lab
+## Setting up the lab
 
 ### Downloading BSD Router Project images
 
-Download BSDRP serial image (prevent to have to use an X display) on Sourceforge.
+[Download the BSDRP serial image](../../downloads.md) (which avoids the need for an X display).
 
-### Download Lab scripts
+### Download lab scripts
 
-More information on these BSDRP lab scripts available on [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
+More information on the BSDRP lab scripts is available in [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
 
-Start the lab with only one router, example with bhyve under FreeBSD:
+Start the lab with only one router. Example with bhyve under FreeBSD:
 
 ```
 user:~ # tools/BSDRP-lab-bhyve.sh -i /usr/obj/BSDRPstable.amd64/BSDRP-1.801-full-amd64-serial.img.xz
@@ -43,7 +43,7 @@ For connecting to VM'serial console, you can use:
 
 ## Network setup
 
-From BSDRP, you can configure all these with only one command line:
+From BSDRP, you can configure all of this with a single command:
 
 ```
 labconfig graphpath
@@ -201,7 +201,7 @@ epair521b: Ethernet address: 02:00:90:00:16:0b
  host11 host12 host21 router21 router11 router12.
 ```
 
-And test host11 can reach host21:
+Test that host11 can reach host21:
 
 ```
 [root@me]~# jexec host11 traceroute 10.0.21.21
@@ -220,9 +220,9 @@ traceroute6 to 2001:db8:21::21 (2001:db8:21::21) from 2001:db8:11::11, 64 hops m
 
 ## Testing graphpath
 
-Now, from the main host, we should be able to generate some ASCII network diagrams:
+Now, from the main host, we can generate some ASCII network diagrams.
 
-### Inet4
+### IPv4
 
 ```
 [root@me]~# ping -c 1 10.0.11.11
@@ -342,7 +342,7 @@ Now, from the main host, we should be able to generate some ASCII network diagra
 +-----------------------------+
 ```
 
-### Inet6
+### IPv6
 
 ```
 [root@me]~# ping6 -c 1 2001:db8:11::11

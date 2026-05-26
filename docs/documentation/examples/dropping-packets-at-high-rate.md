@@ -7,13 +7,13 @@ title: Dropping packets at high rate
 
 ## Using IPFW
 
-### Standard IP level configuration
+### Standard IP-level configuration
 
-The configuration file of an IPFW in standard mode is this one:
+The IPFW configuration file in standard mode:
 
-1.  First rule is to deny a blacklist table (IP addresses)
-2.  Second rule is to allow all the rest
-3.  Disable the outgoing [pfil(9)](https://www.freebsd.org/cgi/man.cgiquery=pfil&apropos=0&sektion=0&manpath=FreeBSD+12.1-RELEASE+and+Ports&arch=default&format=html) hook at IP level because we don’t need to filter outgoing traffic in this case
+1.  The first rule denies traffic from a blacklist table (IP addresses).
+2.  The second rule allows everything else.
+3.  Disable the outgoing [pfil(9)](https://www.freebsd.org/cgi/man.cgiquery=pfil&apropos=0&sektion=0&manpath=FreeBSD+12.1-RELEASE+and+Ports&arch=default&format=html) hook at the IP level because we do not need to filter outgoing traffic in this case.
 
 <!-- -->
 
@@ -31,16 +31,16 @@ pfilctl unlink -o ipfw:default inet || true
 pfilctl unlink -o ipfw:default6 inet6 || true
 ```
 
-### NIC level configuration
+### NIC-level configuration
 
-Currently the [Pfil Memory Pointer Hooks](https://svnweb.freebsd.org/changeset/base/343631) feature is supported by [iflib](https://svnweb.freebsd.org/changeset/base/346632), [vtnet](https://svnweb.freebsd.org/changeset/base/356613), [Mellanox](https://svnweb.freebsd.org/changeset/base/346247) and [Chelsio](https://svnweb.freebsd.org/changeset/base/357483) drivers.
+The [Pfil Memory Pointer Hooks](https://svnweb.freebsd.org/changeset/base/343631) feature is currently supported by the [iflib](https://svnweb.freebsd.org/changeset/base/346632), [vtnet](https://svnweb.freebsd.org/changeset/base/356613), [Mellanox](https://svnweb.freebsd.org/changeset/base/346247), and [Chelsio](https://svnweb.freebsd.org/changeset/base/357483) drivers.
 
-The configuration file of an IPFW-at-NIC-level is this one:
+The IPFW-at-NIC-level configuration file:
 
-1.  First rule is to deny a blacklist table (IP addresses)
-2.  Second rule is to allow all the rest
-3.  Enabling pfil(9) at NIC level (in only)
-4.  Removing pfil(9) from the IP level (in & out)
+1.  The first rule denies traffic from a blacklist table (IP addresses).
+2.  The second rule allows everything else.
+3.  Enable pfil(9) at the NIC level (in only).
+4.  Remove pfil(9) from the IP level (in and out).
 
 <!-- -->
 
@@ -62,7 +62,7 @@ if pfilctl link -i ipfw:default-link cxl0; then
 fi
 ```
 
-### Performance benches
+### Performance benchmarks
 
 Hardware:
 
@@ -71,7 +71,7 @@ Hardware:
 - Output NIC: Mellanox ConnectX-4 MCX416A-CCAT (QSFP28 100GBASE-SR4)
 - FreeBSD 13.0-CURRENT r357572
 
-Here is the rate of inet4 (legitimate) packets-per-second forwarded while dropping 42Mpps of denied packets using the different configuration sets:
+Here is the rate of IPv4 (legitimate) packets per second forwarded while dropping 42 Mpps of denied packets using the different configurations:
 
 ```
 x ipfw-standard
@@ -94,15 +94,15 @@ Difference at 95.0% confidence
         (Student's t, pooled s = 29598.4)
 ```
 
-On the 14Mpps of legitimate traffic, this generic (ie: supported by multi drivers) software firewall is still able to forward 12Mpps while droping 42Mpps of denied packets.
+Out of 14 Mpps of legitimate traffic, this generic (i.e., supported by multiple drivers) software firewall is still able to forward 12 Mpps while dropping 42 Mpps of denied packets.
 
-## Using Chelsio’s TCAM firewall
+## Using Chelsio's TCAM firewall
 
-Chelsio NIC allows to configure hardware firewall with the use of cxgbetool(8): The [linux user guide](https://service.chelsio.com/beta/drivers/ChelsioUwire-3.1.0.0/Chelsio-UnifiedWire-Linux-UserGuide.pdf) gives a lots more details than the [FreeBSD user guide](https://service.chelsio.com/beta/drivers/ChelsioUwire-FBSD-3.3.0.1/Chelsio-UnifiedWire-FreeBSD-UserGuide.pdf).
+Chelsio NICs allow configuring a hardware firewall via cxgbetool(8). The [Linux user guide](https://service.chelsio.com/beta/drivers/ChelsioUwire-3.1.0.0/Chelsio-UnifiedWire-Linux-UserGuide.pdf) gives much more detail than the [FreeBSD user guide](https://service.chelsio.com/beta/drivers/ChelsioUwire-FBSD-3.3.0.1/Chelsio-UnifiedWire-FreeBSD-UserGuide.pdf).
 
-A Chelsio NIC is defined by its family name + id and the port id (if it’s a 4 ports, port 0 to 4).
+A Chelsio NIC is identified by its family name + id and the port id (for a 4-port NIC, ports 0 to 4).
 
-Example with only one Chelsio (t5nex0) with 2 ports (0 and 1)
+Example with only one Chelsio (t5nex0) with 2 ports (0 and 1):
 
 ```
 # grep t.nex /var/run/dmesg.boot
@@ -114,7 +114,7 @@ t5nex0: PCIe gen3 x8, 2 ports, 66 MSI-X interrupts, 130 eq, 65 iq
 
 Translating the firewall rule for the Chelsio:
 
-- Add a filter to drop packets incoming from Chelsio NIC 0 (t5nex0) port 0 matching source IP range 198.18.2.0/24
+- Add a filter to drop packets incoming on Chelsio NIC 0 (t5nex0) port 0 matching source IP range 198.18.2.0/24.
 
 <!-- -->
 
@@ -125,7 +125,7 @@ Translating the firewall rule for the Chelsio:
    0        0  0/0  0/7 0:0000/0:0000 00/00 0/0  0/0    00000000/00000000    c6120200/ffffff00 0000/0000 0000/0000 Drop
 ```
 
-To check the packet dropping rate, this a small script will be used:
+A small script is used to check the packet drop rate:
 
 ```
 #!/bin/sh
@@ -147,7 +147,7 @@ while true; do
 done
 ```
 
-And its output during the 42Mpps DDoS:
+And its output during the 42 Mpps DDoS:
 
 ```
 # /tmp/cxgbe-filter-rate.sh t5nex0
@@ -160,9 +160,9 @@ And its output during the 42Mpps DDoS:
 32398556
 ```
 
-The script report an hardware dropping rate of 32Mpps: Where are the other 10Mpps ?
+The script reports a hardware drop rate of 32 Mpps: where are the other 10 Mpps?
 
-Let’s read the [Chelsio default firmware configuration file of our T5 family NIC](https://cgit.freebsd.org/src/tree/sys/dev/cxgbe/firmware/t5fw_cfg_hashfilter.txt):
+Read the [Chelsio default firmware configuration file for our T5-family NIC](https://cgit.freebsd.org/src/tree/sys/dev/cxgbe/firmware/t5fw_cfg_hashfilter.txt):
 
 ```
         # TCAM has 8K cells; each region must start at a multiple of 128 cell.
@@ -175,7 +175,7 @@ Let’s read the [Chelsio default firmware configuration file of our T5 family N
         nhash = 524288
 ```
 
-And we can display the current value applied:
+We can display the currently applied values:
 
 ```
 #  sysctl -n dev.t5nex.0.misc.devlog | grep -w le
@@ -183,9 +183,9 @@ And we can display the current value applied:
         16           619796      INFO       RES  le initialization: nentries 2048 route 32 clip 32 filter 1440 server 416 active 128 hash 0 nserversram 0
 ```
 
-To improve the TCAM performance for a filtering usage, all unused “regions” will be disabled to kept only the route and filter (32 entries for route + 2016 for filter = 2048 total).
+To improve TCAM performance for filtering, all unused "regions" are disabled, keeping only route and filter (32 entries for route + 2016 for filter = 2048 total).
 
-For that we need to download a [default TCAM firmware configuration file for our T5 NIC](https://cgit.freebsd.org/src/tree/sys/dev/cxgbe/firmware/t5fw_cfg_hashfilter.txt) to modify its parameters then load the modified configuration into the NIC flash and instruct the NIC to use the file from its flash.
+To do this, download the [default TCAM firmware configuration file for our T5 NIC](https://cgit.freebsd.org/src/tree/sys/dev/cxgbe/firmware/t5fw_cfg_hashfilter.txt), modify its parameters, load the modified configuration into the NIC flash, and instruct the NIC to use the file from its flash.
 
 ```
 # fetch -o /etc/t5fw.txt https://cgit.freebsd.org/src/plain/sys/dev/cxgbe/firmware/t5fw_cfg_hashfilter.txt
@@ -198,16 +198,16 @@ For that we need to download a [default TCAM firmware configuration file for our
 # reboot
 ```
 
-Check the new tuned parameters:
+Check the newly tuned parameters:
 
 ```
 # sysctl -n dev.t5nex.0.misc.devlog | grep -w le
         12           690716      INFO       RES  le configuration: nentries 2048 route 32 clip 32 filter 1024 server 0 active 960 hash 0 nserversram 0
 ```
 
-We confirm that regions server and hash are at 0 (disabled): Notice that region clip is not disabled and filter didn’t have the size we’ve instructed, but the filtering performance expectation are matched.
+The server and hash regions are at 0 (disabled). Notice that the clip region is not disabled and filter does not have the size we requested, but the filtering performance expectations are met.
 
-Now the packet drop rate by the TCAM firewall match the generator’s 42Mpps:
+Now the packet drop rate of the TCAM firewall matches the generator's 42 Mpps:
 
 ```
 # /tmp/cxgbe-filter-rate.sh t5nex0
@@ -221,7 +221,7 @@ Now the packet drop rate by the TCAM firewall match the generator’s 42Mpps:
 42223090
 ```
 
-And the firewall is now able to forward all packets **without being too busy** in the same time:
+And the firewall is now able to forward all packets **without being too busy** at the same time:
 
 ```
 [root@firewall]~# netstat -ihw 1

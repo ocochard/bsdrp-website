@@ -4,7 +4,7 @@ description: Forwarding performance lab of a quad cores Xeon 2.13GHz and dual-po
 ---
 ## Hardware detail
 
-This lab will test an [IBM System x3550 M3](ibm-system-x3550-m3.md) with **quad** cores (Intel Xeon L5630 2.13GHz, hyper-threading disabled) and a dual port Intel 10-Gigabit X540-AT2 connected to the PCI-Express Bus.
+This lab tests an [IBM System x3550 M3](ibm-system-x3550-m3.md) with **quad** cores (Intel Xeon L5630 2.13 GHz, hyper-threading disabled) and a dual-port Intel 10-Gigabit X540-AT2 connected to the PCI-Express bus.
 
 ## Lab set-up
 
@@ -32,9 +32,9 @@ BSDRP-amd64 v1.51 (FreeBSD 10.0-BETA2 with autotune mbuf patch) is used on the D
 +-----------------------------------+      +----------------------------------+
 ```
 
-The generator **MUST** generate lot’s of smallest IP flows (multiple source/destination IP addresses and/or UDP src/dst port).
+The generator **MUST** generate lots of small IP flows (multiple source/destination IP addresses and/or UDP src/dst ports).
 
-Here is an example for generating 2000 flows (100 different source IP * 20 different destination IP):
+Here is an example for generating 2000 flows (100 different source IPs x 20 different destination IPs):
 
 ```
 pkt-gen -i ix0 -f tx -n 1000000000 -l 60 -d 9.1.1.1:2000-9.1.1.100 -D a0:36:9f:1e:28:14 -s 8.1.1.1:2000-8.1.1.20 -w 4
@@ -42,8 +42,9 @@ pkt-gen -i ix0 -f tx -n 1000000000 -l 60 -d 9.1.1.1:2000-9.1.1.100 -D a0:36:9f:1
 
 
 !!! warning
-    Netmap disable hardware checksum on Intel NIC, you need to use a FreeBSD -head with svn revision of 257758 minimum with the[pkt-gen software-checksum patch](https://bugs.freebsd.org/bugzilla/show_bug.cgiid=187149) for using multiple src/dst IP or port with netmap’s pkt-gen.
- Receiver will use this command:
+    Netmap disables hardware checksum on Intel NICs. You need to use a FreeBSD -head with SVN revision 257758 or later plus the [pkt-gen software-checksum patch](https://bugs.freebsd.org/bugzilla/show_bug.cgiid=187149) to use multiple src/dst IPs or ports with netmap's pkt-gen.
+
+The receiver will use this command:
 
 ```
 pkt-gen -i ix1 -f rx -w 4
@@ -51,9 +52,9 @@ pkt-gen -i ix1 -f rx -w 4
 
 ## Basic configuration
 
-### Disabling Ethernet flow-control
+### Disabling Ethernet flow control
 
-First, disable Ethernet flow-control on both servers:
+First, disable Ethernet flow control on both servers:
 
 ```
 echo "dev.ix.0.fc=0" >> /etc/sysctl.conf
@@ -62,9 +63,9 @@ echo "dev.ix.1.fc=0" >> /etc/sysctl.conf
 
 ### Disabling LRO and TSO
 
-A router [should not use LRO and TSO](../technical-docs/performance.md). BSDRP disable by default using a RC script (disablelrotso_enable=“YES” in /etc/rc.conf.misc).
+A router [should not use LRO and TSO](../technical-docs/performance.md). BSDRP disables them by default via an RC script (`disablelrotso_enable="YES"` in `/etc/rc.conf.misc`).
 
-But on a standard FreeBSD:
+On a standard FreeBSD:
 
 ```
 ifconfig ix0 -tso4 -tso6 -lro
@@ -84,7 +85,7 @@ sysrc ipv6_route_generator6="2001:db8:8:: -prefixlen 48 2001:db8:8::1"
 sysrc ipv6_route_receiver6="2001:db8:9:: -prefixlen 48 2001:db8:9::1"
 ```
 
-And configure IP and static ARP:
+And configure IP addresses and static ARP:
 
 ```
 sysrc ifconfig_ix0="inet 8.8.8.2/24"
@@ -98,7 +99,7 @@ sysrc static_arp_receiver="9.9.9.1 a0:36:9f:1e:1e:da"
 
 ## Default fast-forwarding speed
 
-With the default parameters, on multi-flow traffic generated at 11.2Mpps (Still not the maximum rate for TenGigaEthernet), only 1.9Mpps are correctly fastforwarded (net.inet.ip.fastforwarding=1) :
+With the default parameters, on multi-flow traffic generated at 11.2 Mpps (still not the maximum rate for 10 GigE), only 1.9 Mpps are correctly fast-forwarded (`net.inet.ip.fastforwarding=1`):
 
 ```
 [root@BSDRP]~# netstat -i -w 1
@@ -118,7 +119,7 @@ With the default parameters, on multi-flow traffic generated at 11.2Mpps (Still 
    1884989     0 9545113  731526594    1961394     0  125841590     0
 ```
 
-The traffic is correctly load-balanced between NIC-queue/CPU binding:
+The traffic is correctly load-balanced across the NIC-queue/CPU bindings:
 
 ```
 [root@BSDRP]~# vmstat -i | grep ix
@@ -155,11 +156,11 @@ Swap:
    11 root     -92    -     0K   816K RUN     1   1:04   3.76% intr{irq264: ix1:que }
 ```
 
-## ixgbe(4) tunning
+## ixgbe(4) tuning
 
 #### rx_process_limit and tx_process_limit
 
-What are the impact of modifying these limit on PPS?
+What is the impact of modifying these limits on PPS?
 
 ```
 x [r|t]x_process_limit=256(default)
@@ -184,7 +185,7 @@ Difference at 95.0% confidence
 
 #### hw.ix.rxd and hw.ix.txd
 
-What are the impact of modifying these limit on PPS?
+What is the impact of modifying these limits on PPS?
 
 ```
 x hw.ix.[r|t]xd=1024
@@ -204,11 +205,11 @@ No difference proven at 95.0% confidence
 No difference proven at 95.0% confidence
 ```
 
-=\> No difference
+No difference.
 
 ## Firewall impact
 
-One rule for each firewall and 2000 UDP “sessions”, more information on the [GigaEthernet performance lab](forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md#firewall-impact).
+One rule for each firewall and 2000 UDP "sessions"; more information is available in the [GigaEthernet performance lab](forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md#firewall-impact).
 
 ### Graphs
 

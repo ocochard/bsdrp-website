@@ -4,55 +4,55 @@ description: FreeBSD performance regression testing lab
 ---
 ## Concepts
 
-This article presents the method used for spotting some performance regression problem during the evolution of FreeBSD code (regarding different svn numbers).
+This article presents the method used to spot performance regressions during the evolution of FreeBSD code (across different SVN revisions).
 
-Here is an example of a final bench graphic measuring the impact of forwarding performance: ![freebsd-performance-regression-lab-example-graph-pps.png](../../assets/images/documentation/examples/freebsd-performance-regression-lab-example-graph-pps.png)
+Here is an example of a final bench graph measuring the impact on forwarding performance: ![freebsd-performance-regression-lab-example-graph-pps.png](../../assets/images/documentation/examples/freebsd-performance-regression-lab-example-graph-pps.png)
 
-This method follow these steps:
+The method follows these steps:
 
-1.  A lab of one or more servers is set-up. [On this example, 2 servers were used](forwarding-performance-lab-of-a-hp-proliant-dl360p-gen8-with-10-gigabit-with-10-gigabit-chelsio-t540-cr.md): one traffic generator/receiver, one device under test (DUT).
-2.  A [BSDRP sub-project folder is created](https://github.com/ocochard/BSDRP/tree/master/TESTING): This project configure a minimal (for rapid compilation) nanobsd image.
-3.  A first [script generate lot's of nanobsd image regarding a list of FreeBSD code SVN revision number](https://github.com/ocochard/BSDRP/blob/master/tools/bisection-gen.sh)
-4.  [Different configuration sets to be tested a created](https://github.com/ocochard/netbenches/tree/master/Xeon_E5-2697Av4_16Cores-Mellanox_ConnectX-4/firewalls/configs). The example given use 3 tests: One with forwarding, a second with a minimal ipfw configuration and a third with a minimal pf configuration
-5.  A second [script will run the test and collect data](https://github.com/ocochard/netbenches/blob/master/scripts/bench-lab.sh) (by sending ssh commands to the lab servers). This order are followed:
-    1.  Upgrading the server to the nanobsd release to be tested;
-    2.  ..Uploading the configuration set to be tested (in this example: forwarding-only, ipfw or pf) & reboot the DUT;
-    3.  ….Start the bench test and collecting the result;
-    4.  ….Reboot the DUT;
-    5.  ….Loop 5 times (for having usable [ministat](http://www.freebsd.org/cgi/man.cgiquery=ministat) datas);
-    6.  ..Loop to next configuration set;
-    7.  Loop to next nanobsd release
-6.  [A third script filter the raw output of each tests](https://github.com/ocochard/netbenches/blob/master/scripts/bench-lab-ministat.sh) (heavy dependent of the tool used during the bench) and generate synthesis data files for each Revision-number/configuration-sets pairs.
+1.  A lab of one or more servers is set up. [In this example, two servers were used](forwarding-performance-lab-of-a-hp-proliant-dl360p-gen8-with-10-gigabit-with-10-gigabit-chelsio-t540-cr.md): one traffic generator/receiver and one device under test (DUT).
+2.  A [BSDRP sub-project folder is created](https://github.com/ocochard/BSDRP/tree/master/TESTING). This project configures a minimal (for fast compilation) nanobsd image.
+3.  A first [script generates many nanobsd images from a list of FreeBSD SVN revision numbers](https://github.com/ocochard/BSDRP/blob/master/tools/bisection-gen.sh).
+4.  [Different configuration sets to be tested are created](https://github.com/ocochard/netbenches/tree/master/Xeon_E5-2697Av4_16Cores-Mellanox_ConnectX-4/firewalls/configs). The example uses three tests: one with forwarding, a second with a minimal ipfw configuration, and a third with a minimal pf configuration.
+5.  A second [script runs the tests and collects data](https://github.com/ocochard/netbenches/blob/master/scripts/bench-lab.sh) (by sending SSH commands to the lab servers). The order is:
+    1.  Upgrade the server to the nanobsd release to be tested.
+    2.  Upload the configuration set to be tested (in this example: forwarding-only, ipfw, or pf) and reboot the DUT.
+    3.  Start the bench test and collect the result.
+    4.  Reboot the DUT.
+    5.  Loop 5 times (for usable [ministat](http://www.freebsd.org/cgi/man.cgiquery=ministat) data).
+    6.  Loop to the next configuration set.
+    7.  Loop to the next nanobsd release.
+6.  [A third script filters the raw output of each test](https://github.com/ocochard/netbenches/blob/master/scripts/bench-lab-ministat.sh) (heavily dependent on the tool used during the bench) and generates synthesis data files for each revision-number/configuration-set pair.
 
 ## Physical lab
 
-The physical lab used by BSDRP targets forwarding network speed. And for this purpose it’s composed of minimum 3 servers and 1 switches, and maximum 4 servers and 2 switchs. Common to all these setups:
+The physical lab used by BSDRP targets forwarding network speed. It is composed of a minimum of 3 servers and 1 switch, and a maximum of 4 servers and 2 switches. Common to all these setups:
 
-- The controller server that runs the bench script;
-- The admin switch (send SSH commands)
+- The controller server that runs the bench script.
+- The admin switch (used to send SSH commands).
 
 Specific:
 
-- One server with netmap compliant NIC for being used as packet generator/receiver
-- One server as DUT
-- And for network crypto (IPSec, OpenVPN) bench, a referent server
-- A dedicated switch with ([with specific configuration for not polluting packet counters](setting-up-a-forwarding-performance-benchmark-lab.md#switch-configuration)). Useful for double-checking NIC drivers statistics against the switch statistics
+- One server with a netmap-compatible NIC, used as packet generator/receiver.
+- One server as the DUT.
+- For network crypto (IPsec, OpenVPN) benchmarks, a reference server.
+- A dedicated switch ([configured to avoid polluting packet counters](setting-up-a-forwarding-performance-benchmark-lab.md#switch-configuration)). Useful for cross-checking NIC driver statistics against the switch statistics.
 
-### 2 nodes lab examples
+### Two-node lab examples
 
-#### simplest lab
+#### Simplest lab
 
-This simple lab is great for benching 10Gigabit performance without the need of 10Gigabit switch:
+This simple lab is great for benchmarking 10-Gigabit performance without needing a 10-Gigabit switch:
 
 ![bsdrp_simple_2_node_bench_lab.png](../../assets/images/documentation/examples/bsdrp_simple_2_node_bench_lab.png)
 
-#### with switch lab
+#### With-switch lab
 
-This simple lab is usefull for cross-checking NIC statistics counters with switch statistics counters:
+This simple lab is useful for cross-checking NIC statistics counters against switch statistics counters:
 
 ![bsdrp_switched_2_node_bench_lab.png](../../assets/images/documentation/examples/bsdrp_switched_2_node_bench_lab.png)
 
-### 3 nodes lab example
+### Three-node lab example
 
 This is the setup used for a VPN benchmark:
 
@@ -60,15 +60,15 @@ This is the setup used for a VPN benchmark:
 
 ## Generating FreeBSD nanobsd images
 
-The objective is to generate BSDRP nanobsd images regarding a list of FreeBSD’s code SVN revision number.
+The goal is to generate BSDRP nanobsd images from a list of FreeBSD SVN revision numbers.
 
-You need to [download BSDRP source code](../technical-docs.md#getting-the-bsdrp-source-code) on a FreeBSD machine.
+You need to [download the BSDRP source code](../technical-docs.md#getting-the-bsdrp-source-code) on a FreeBSD machine.
 
-Then you have to create or customize a BSDRP project for obtaining a small image: Try to remove maximum [FreeBSD options](http://svnweb.freebsd.org/base/head/tools/build/options/) and no ports for improving the image generation speed. The BSDRP’s [TESTING project](https://github.com/ocochard/BSDRP/tree/master/TESTING) is a good example for this step.
+Then create or customize a BSDRP project to get a small image: remove as many [FreeBSD options](http://svnweb.freebsd.org/base/head/tools/build/options/) as possible and no ports, to improve image-generation speed. The BSDRP [TESTING project](https://github.com/ocochard/BSDRP/tree/master/TESTING) is a good example.
 
-Take care of the kernel configuration file: the head branch can impose kernel configuration parameters incompatible between different code revisions. The best method for avoiding this incompatibility is to start the kernel configuration by “include GENERIC” and adding or removing (nooptions XXX, nodevice XXX) unwanted parts. Refer the [kernel configuration file used for BSDRP regression bench lab](https://github.com/ocochard/BSDRP/blob/master/TESTING/kernels/amd64) as an example.
+Take care with the kernel configuration file: the head branch can impose kernel configuration parameters that are incompatible between different code revisions. The best way to avoid this is to start the kernel configuration with `include GENERIC` and add or remove unwanted parts (`nooptions XXX`, `nodevice XXX`). See the [kernel configuration file used for the BSDRP regression bench lab](https://github.com/ocochard/BSDRP/blob/master/TESTING/kernels/amd64) for an example.
 
-Once your BSDRP bench-project ready, edit the script [tools/bisection-gen.sh](https://github.com/ocochard/BSDRP/blob/master/tools/bisection-gen.sh)for adapting the project basic configuration (PROJECT name, CONSOLE type, ARCH) and filling all SVN revision numbers (SVN_REV_LIST), then start the image generation script (from the top level directory of BSDRP source code):
+Once your BSDRP bench project is ready, edit the script [tools/bisection-gen.sh](https://github.com/ocochard/BSDRP/blob/master/tools/bisection-gen.sh) to adapt the project basic configuration (PROJECT name, CONSOLE type, ARCH) and fill in all SVN revision numbers (SVN_REV_LIST). Then start the image-generation script (from the top-level directory of the BSDRP source code):
 
 ```
 root@dev:/usr/local/BSDRP # mkdir -p /root/benchs/nanobsd
@@ -79,23 +79,23 @@ Building image matching revision 257715...done
 All images were put in /root/benchs/nanobsd
 ```
 
-At the end, you will find all the nanobsd images in your selected directory.
+At the end, you will find all the nanobsd images in the chosen directory.
 
-You can find an example of finals images generated here: <http://dev.bsdrp.net/benchs/265145-274745/nanobsd.images/>
+An example of final images generated is available here: <http://dev.bsdrp.net/benchs/265145-274745/nanobsd.images/>
 
 ## Configuration sets
 
-The creation of different configuration sets is pretty simple: just create a main folder and inside this folder, creating different folder for each configuration sets.
+Creating different configuration sets is straightforward: create a main folder and, inside it, a subfolder for each configuration set.
 
-Inside each configuration sets folder will be placed the configuration files that need override default parameters.
+Each configuration-set folder holds the configuration files that override default parameters.
 
-Here is a very simple example regarding [igb NIC drivers tuning benchs](forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md#igb4-drivers-tunning-with-82546gb) were differents parameters in /boot/loader.conf.local were tested.
+Here is a simple example from the [igb NIC driver tuning benchmarks](forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md#igb4-driver-tuning-with-82546gb) where different parameters in `/boot/loader.conf.local` were tested.
 
 We want 3 configuration sets:
 
-- First called “xd1024.proc_lim-1”
-- Second called “xd2048.proc_lim-1”
-- Third called “xd4096.proc_lim-1”
+- First, called `xd1024.proc_lim-1`
+- Second, called `xd2048.proc_lim-1`
+- Third, called `xd4096.proc_lim-1`
 
 <!-- -->
 
@@ -120,18 +120,18 @@ hw.igb.rx_process_limit="-1"
 EOF
 ```
 
-## Testing Lab
+## Testing lab
 
-Start by configuring all servers, and the DUT with the configurations parameters common to all configuration sets (but remember that files in configuration sets will totally overwrite existing file). Install your ssh public-key on each servers for permitting bench script to automatically connect to them.
+Start by configuring all servers and the DUT with the configuration parameters common to all configuration sets (remember that files in the configuration sets will completely overwrite existing files). Install your SSH public key on each server so the bench script can connect to them automatically.
 
-There are 2 examples of configuration files available for a bench lab:
+There are two example bench-lab configuration files:
 
 - [bench-lab-2nodes.config](https://github.com/ocochard/netbenches/blob/master/AMD_GX-412TC_4Cores_Intel_i210AT/bench-lab-2nodes.config)
 - [bench-lab-3nodes.config](https://github.com/ocochard/netbenches/blob/master/AMD_GX-412TC_4Cores_Intel_i210AT/bench-lab-3nodes.pkt.config)
 
-Put on one of these files, all the IP adresses, testing command lines, etc corresponding to your bench test.
+Put all the IP addresses, test command lines, etc., for your bench test into one of these files.
 
-Then start [bench-lab.sh](https://github.com/ocochard/netbenches/blob/master/scripts/bench-lab.sh) with some parameters. Then start it:
+Then run [bench-lab.sh](https://github.com/ocochard/netbenches/blob/master/scripts/bench-lab.sh) with some parameters:
 
 ```
 ./bench-lab.sh -f bench-lab-parameters-file -c configuration-sets-dir -i nanobsd-images-dir -n iteration -d benchs-results-dir -r my@email.org
@@ -212,14 +212,14 @@ All bench tests were done, results in forwarding-pf-ipfw/results/fbsd.2017/
 
 ## Results generation
 
-Once bench finished, there are lot’s of raw result files with these names:
+Once the bench has finished, there are many raw result files named like this:
 
-- bench.NANOBSD-SVN.CONFIGURATION-SETS.info: Give resumed information about the nanobsd image and configuration set name used
-- bench.NANOBSD-SVN.CONFIGURATION-SETS.ITERATION.receiver: raw output of the ssh session on the receiver
-- bench.NANOBSD-SVN.CONFIGURATION-SETS.ITERATION.sender: raw output of the ssh session on the sender
+- `bench.NANOBSD-SVN.CONFIGURATION-SETS.info`: summary information about the nanobsd image and configuration-set name used.
+- `bench.NANOBSD-SVN.CONFIGURATION-SETS.ITERATION.receiver`: raw output of the SSH session on the receiver.
+- `bench.NANOBSD-SVN.CONFIGURATION-SETS.ITERATION.sender`: raw output of the SSH session on the sender.
 
 Here is [an example of these raw results](https://github.com/ocochard/netbenches/blob/master/AMD_GX-412TC_4Cores_Intel_i210AT/bench-lab-2nodes.config).
 
-These raw results, closely dependents of the bench tool used, need to be filtered (and synthesized) in a usable data file.
+These raw results, closely tied to the bench tool used, need to be filtered (and synthesized) into a usable data file.
 
-BSDRP use the script [bench-lab-ministat.sh](https://github.com/ocochard/netbenches/blob/master/scripts/bench-lab-ministat.sh) for filtering netmap pkt-gen output with a first pass of ministat and generate a list of files named SVN-REV.CONFIG-SETS-NAME that include N line of result (with N=number of test iterations) and gnuplot.data file.
+BSDRP uses the script [bench-lab-ministat.sh](https://github.com/ocochard/netbenches/blob/master/scripts/bench-lab-ministat.sh) to filter netmap pkt-gen output with a first pass of ministat and generate a list of files named `SVN-REV.CONFIG-SETS-NAME` containing N lines of results (where N = number of test iterations) and a `gnuplot.data` file.

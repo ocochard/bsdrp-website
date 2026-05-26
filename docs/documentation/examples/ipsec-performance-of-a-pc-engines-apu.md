@@ -1,22 +1,22 @@
 ---
-title: IPSec performance lab of a PC Engines APU
-description: IPSec performance lab of a PC Engines APU
+title: IPsec performance lab of a PC Engines APU
+description: IPsec performance lab of a PC Engines APU
 ---
 ## Hardware detail
 
-This lab will test a [PC Engines APU 1](http://www.pcengines.ch/apu.htm) ([dmesg](pc-engines-apu.md)):
+This lab tests a [PC Engines APU 1](http://www.pcengines.ch/apu.htm) ([dmesg](pc-engines-apu.md)):
 
-- Dual core [AMD G-T40E Processor](http://www.amd.com/us/Documents/49282_G-Series_platform_brief.pdf) (1 GHz)
-- 3 Realtek RTL8111E Gigabit Ethernet ports
-- 2Gb of RAM
+- Dual-core [AMD G-T40E Processor](http://www.amd.com/us/Documents/49282_G-Series_platform_brief.pdf) (1 GHz)
+- 3x Realtek RTL8111E Gigabit Ethernet ports
+- 2 GB of RAM
 
-[IPSec performance of APU version 2 is here.](ipsec-performance-of-a-pc-engines-apu2.md)
+[IPsec performance of APU version 2 is here.](ipsec-performance-of-a-pc-engines-apu2.md)
 
 ## Lab set-up
 
 For more information about full setup of this lab: [Setting up a forwarding performance benchmark lab](setting-up-a-forwarding-performance-benchmark-lab.md) (switch configuration, etc.).
 
-A current version of [BSDRP-1.9997](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/current/amd64/) based on FreeBSD 11-current r262847 (10-stable didn’t boot on this board) is used on the packet generator, receiver and the DUT.
+A current version of [BSDRP-1.9997](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/current/amd64/) based on FreeBSD 11-current r262847 (10-stable did not boot on this board) is used on the packet generator, the receiver, and the DUT.
 
 ### Diagram
 
@@ -59,7 +59,7 @@ ifconfig igb3 up
 
 ### APU (DUT)
 
-Disable fastforwarding (not compliant with IPSec), configure IP address, routes and static IPSec.
+Disable fastforwarding (not compatible with IPsec), then configure IP addresses, routes, and static IPsec.
 
 /etc/rc.conf
 
@@ -114,7 +114,7 @@ add 2001:2:0:1::207 2001:2:0:1::203 esp 0x1003 -E rijndael-cbc "1234567890123456
 
 ### R3 (Reference device)
 
-Disable fastforwarding (not compliant with IPSec), configure IP address, routes and static IPSec.
+Disable fastforwarding (not compatible with IPsec), then configure IP addresses, routes, and static IPsec.
 
 /etc/rc.conf:
 
@@ -170,13 +170,13 @@ add 2001:2:0:1::203 2001:2:0:1::207 esp 0x1002 -E rijndael-cbc "1234567890123456
 add 2001:2:0:1::207 2001:2:0:1::203 esp 0x1003 -E rijndael-cbc "1234567890123456";
 ```
 
-## Using IPSec bench “Equilibrium throughput” method
+## IPsec benchmark "equilibrium throughput" method
 
-Once done, we start using a fast method for measuring the “IPsec equilibrium throughput” of the DUT.
+Once that is done, we use a fast method to measure the "IPsec equilibrium throughput" of the DUT.
 
-Notice that the reference device (IBM x3550-M3) used in front of the PC Engines APU1 has a [equilibrium throughput of 843Mb/s](ipsec-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md). Then if the value measured during this bench is close to 843Mb/s we had to found a more powerful reference device.
+Note that the reference device (IBM x3550-M3) used in front of the PC Engines APU1 has an [equilibrium throughput of 843 Mb/s](ipsec-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md). If the value measured during this benchmark approaches 843 Mb/s, we would need a more powerful reference device.
 
-From the packet generator/receiver a simple script that use netmap-pktgen will do the job:
+From the packet generator/receiver, a simple script that uses netmap-pktgen will do the job:
 
 ```
 [root@R1]# equilibrium -l 100 -d 00:0d:b9:3c:dd:3d -t igb2 -r igb3
@@ -226,9 +226,9 @@ x Equilibrium throughput with rijndael-cbc
 x   5            61            65            64          63.4     1.5165751
 ```
 
-Using AES-CBC (rijndael-cbc) with a 128 bits key, we can estimate an IPSec Equilibrium throughput of 64Mb/s.
+Using AES-CBC (rijndael-cbc) with a 128-bit key, we can estimate an IPsec equilibrium throughput of 64 Mb/s.
 
-And same performance for IPv6:
+And the same performance for IPv6:
 
 ```
 [root@R1]# equilibrium -l 100 -d 00:0d:b9:3c:dd:3d -t igb2 -r igb3 -6

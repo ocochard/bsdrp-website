@@ -4,11 +4,11 @@ description: Forwarding performance lab of a dual core AMD G series T40E APU (1 
 ---
 ## Hardware detail
 
-This lab will test a [PC Engines APU 1](http://www.pcengines.ch/apu.htm) ([dmesg](pc-engines-apu.md)):
+This lab tests a [PC Engines APU 1](http://www.pcengines.ch/apu.htm) ([dmesg](pc-engines-apu.md)):
 
-- Dual core [AMD G-T40E Processor](http://www.amd.com/us/Documents/49282_G-Series_platform_brief.pdf) (1 GHz)
-- 3 Realtek RTL8111E Gigabit Ethernet ports
-- 2Gb of RAM
+- Dual-core [AMD G-T40E Processor](http://www.amd.com/us/Documents/49282_G-Series_platform_brief.pdf) (1 GHz)
+- 3x Realtek RTL8111E Gigabit Ethernet ports
+- 2 GB of RAM
 
 [Forwarding performance of APU version 2 is here.](forwarding-performance-lab-of-a-pc-engines-apu2.md)
 
@@ -46,15 +46,15 @@ For more information about full setup of this lab: [Setting up a forwarding perf
  +------------------------------------------+
 ```
 
-The generator **MUST** generate lot’s of IP flows (multiple source/destination IP addresses and/or UDP src/dst port) and minimum packet size (for generating maximum packet rate) with one of these commands:
+The generator **MUST** generate lots of IP flows (multiple source/destination IP addresses and/or UDP src/dst ports) with the minimum packet size (to produce the maximum packet rate) with one of these commands:
 
-Multiple source/destination IP addresses (don’t forget to precise port to use for avoiding to use port number 0 filtered by pf):
+Multiple source/destination IP addresses (don't forget to specify the UDP port to avoid using port 0, which is filtered by pf):
 
 ```
 pkt-gen -U -i igb3 -f tx -n 80000000 -l 60 -d 198.19.10.1:2000-198.19.10.20 -D 00:0d:b9:3c:dd:3e -s 198.18.10.1:2000-198.18.10.100 -w 4
 ```
 
-Receiver will use these commands:
+The receiver will use this command:
 
 ```
 pkt-gen -i igb2 -f rx -w 4
@@ -62,9 +62,9 @@ pkt-gen -i igb2 -f rx -w 4
 
 ## Basic configuration
 
-### Disabling Ethernet flow-control
+### Disabling Ethernet flow control
 
-re(4) drivers didn’t seems to support flow-control and the switch confirms this behavior:
+The re(4) driver does not appear to support flow control, and the switch confirms this:
 
 ```
 switch#sh int Gi1/0/16 flowcontrol
@@ -81,7 +81,7 @@ Gi1/0/17   Unsupp.  Unsupp.  off      off         0       0
 
 ### Static routes and ARP entries
 
-Configure static routes, configure IP addresses and static ARP. A router [should not use LRO and TSO](../technical-docs/performance.md). BSDRP disable by default using a RC script (disablelrotso_enable=“YES” in /etc/rc.conf.misc), but re(4) drivers didn’t support it.
+Configure static routes, IP addresses, and static ARP entries. A router [should not use LRO and TSO](../technical-docs/performance.md). BSDRP disables these by default via an RC script (`disablelrotso_enable="YES"` in `/etc/rc.conf.misc`), but the re(4) driver does not support disabling them this way.
 
 /etc/rc.conf:
 
@@ -112,10 +112,10 @@ static_ndp_receiver="2001:2:0:8000::203 00:1b:21:c4:95:7b"
 
 ## Default forwarding rate
 
-We start the first test by starting one packet generator at gigabit line-rate (1.488Mpps) and found:
+We start the first test with one packet generator at gigabit line rate (1.488 Mpps) and observe:
 
-- APU is still responsive during this test (thanks to the dual core);
-- About 154Kpps are accepted by the re(4) Ethernet interface.
+- The APU is still responsive during this test (thanks to the dual core).
+- About 154 Kpps are accepted by the re(4) Ethernet interface.
 
 <!-- -->
 
@@ -140,9 +140,9 @@ We start the first test by starting one packet generator at gigabit line-rate (1
     154145     0     0    9248706     154113     0    9248822     0
 ```
 
-The forwarding rate is not very high: RealTek NIC are not very very fast and doesn’t support multi-queues and it’s only a 1Ghz CPU. We notice input error counters of re(4) are not updated: re(4) drivers bugs?.
+The forwarding rate is not very high: Realtek NICs are not very fast, do not support multi-queues, and this is only a 1 GHz CPU. We notice that the input error counters of re(4) are not updated: re(4) driver bug?
 
-We can force drivers stats with this command:
+We can force driver stats with this command:
 
 ```
 [root@BSDRP]~# sysctl dev.re.1.stats=1
@@ -167,7 +167,7 @@ Tx underruns : 0
 
 But the RX missed frame counter is still not accurate.
 
-About system load during this test:
+System load during this test:
 
 ```
 [root@BSDRP]/# top -nCHSIzs1
@@ -184,22 +184,22 @@ Swap:
 
 ## Firewalls impact
 
-This test will generate 2000 different flows by using 2000 different UDP destination ports.
+This test generates 2000 different flows by using 2000 different UDP destination ports.
 
-pf and ipfw configurations used are detailed on the previous [Forwarding performance lab of an IBM System x3550 M3 with Intel 82580](forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md#firewall-impact).
+The pf and ipfw configurations used are detailed in the earlier [Forwarding performance lab of an IBM System x3550 M3 with Intel 82580](forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md#firewall-impact).
 
 ### Graph
 
-scale information about Gigabit Ethernet:
+Scale information about Gigabit Ethernet:
 
-- 1.488Mpps is the maximum paquet-per-second (pps) rate with smallest 46 bytes packets.
-- 81Kpps is the minimum pps rate with biggest 1500 bytes packets.
+- 1.488 Mpps is the maximum packet-per-second (pps) rate with the smallest 46-byte packets.
+- 81 Kpps is the minimum pps rate with the largest 1500-byte packets.
 
 ![forwarding and firewalling rate with a PC Engines APU running FreeBSD FreeBSD 10.3](../../assets/images/documentation/examples/bench.forwarding.and.firewalling.rate.on.pc.engines.apu.png)
 
 ### Ministat
 
-All benchs were done 5 times, with a reboot between them.
+All benchmarks were run 5 times, with a reboot between them.
 
 ```
 x forwarding
@@ -229,9 +229,9 @@ Difference at 95.0% confidence
         (Student's t, pooled s = 103.559)
 ```
 
-## Netmap’s pkt-gen performance
+## Netmap's pkt-gen performance
 
-re(4) has [netmap](http://info.iet.unipi.it/~luigi/netmap/) support… what’s about the rate with the netmap’s packet generator/receiver ?
+re(4) has [netmap](http://info.iet.unipi.it/~luigi/netmap/) support... what about the rate with netmap's packet generator/receiver?
 
 As a receiver (the sender is emitting at 1.48 Mpps):
 
@@ -261,7 +261,7 @@ Receiving from netmap:re1: 1 queues, 1 threads and 2 cpus.
 903.204329 main_thread [1438] 577499 pps (578655 pkts in 1002001 usec)
 ```
 
-Netmap usage improve the receiving packet rate to about 580Kpps only: It’s strange that it didn’t reach the maximum Ethernet frame rate (1.48Mpps) with netmap.
+Netmap only improves the receiving packet rate to about 580 Kpps: it is strange that it does not reach the maximum Ethernet frame rate (1.48 Mpps) with netmap.
 
 As a packet generator:
 
@@ -301,4 +301,4 @@ Sent 14897486 packets, 60 bytes each, in 36.52 seconds.
 Speed: 407.98 Kpps Bandwidth: 195.83 Mbps (raw 274.16 Mbps)
 ```
 
-Still not able to reach the maximum Ethernet throughput with netmap !?!? Realtek chipset limitation ?
+Still not able to reach the maximum Ethernet throughput with netmap. Realtek chipset limitation?

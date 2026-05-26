@@ -4,7 +4,7 @@ description: Forwarding performance lab of a quad cores Xeon 2.13GHz and quad-po
 ---
 ## Hardware detail
 
-This lab will test an [IBM System x3550 M3](ibm-system-x3550-m3.md) with **quad** cores (Intel Xeon L5630 2.13GHz, hyper-threading disabled) and a quad NIC 82580 connected to the PCI-Express Bus.
+This lab tests an [IBM System x3550 M3](ibm-system-x3550-m3.md) with **quad** cores (Intel Xeon L5630 2.13 GHz, hyper-threading disabled) and a quad-port 82580 NIC connected to the PCI-Express bus.
 
 ## Lab set-up
 
@@ -41,7 +41,7 @@ BSDRP-amd64 v1.51 (FreeBSD 10.0-BETA2 with autotune mbuf patch) is used on the D
 +------------------------------------------+            +------------------------------+
 ```
 
-The generator **MUST** generate lot’s of smallest IP flows (multiple source/destination IP addresses and/or UDP src/dst port).
+The generator **MUST** generate lots of small IP flows (multiple source/destination IP addresses and/or UDP src/dst ports).
 
 Here is an example for generating about 2000 flows:
 
@@ -49,7 +49,7 @@ Here is an example for generating about 2000 flows:
 pkt-gen -N -f tx -i igb1 -n 1000000000 -4 -d 198.19.10.1:2000-198.19.10.100 -D 00:1b:21:c4:95:7a -s 198.18.10.1:2000-198.18.10.20 -S 0c:c4:7a:da:3c:11 -w 4 -l 60 -U
 ```
 
-Receiver will use this command:
+The receiver will use this command:
 
 ```
 pkt-gen -N -f rx -i igb2 -w 4
@@ -57,9 +57,9 @@ pkt-gen -N -f rx -i igb2 -w 4
 
 ## Basic configuration
 
-### Disabling Ethernet flow-control
+### Disabling Ethernet flow control
 
-First, disable Ethernet flow-control:
+First, disable Ethernet flow control:
 
 ```
 echo "dev.igb.2.fc=0" >> /etc/sysctl.conf
@@ -68,11 +68,11 @@ sysctl dev.igb.2.fc=0
 sysctl dev.igb.3.fc=0
 ```
 
-### IP Configuration
+### IP configuration
 
-Configure IP addresses, static routes and static ARP entries.
+Configure IP addresses, static routes, and static ARP entries.
 
-A router [should not use LRO and TSO](../technical-docs/performance.md). BSDRP disable by default using a RC script (disablelrotso_enable=“YES” in /etc/rc.conf.misc).
+A router [should not use LRO and TSO](../technical-docs/performance.md). BSDRP disables them by default via an RC script (`disablelrotso_enable="YES"` in `/etc/rc.conf.misc`).
 
 ```
 sysrc static_routes="generator receiver"
@@ -87,7 +87,7 @@ sysrc static_arp_receiver="2.2.2.3 00:1b:21:c4:95:7b"
 
 ## Default forwarding speed
 
-With the default parameters, multi-flow traffic at 1.488Mpps (the maximum rate for GigaEthernet) are correctly forwarded without any loss:
+With the default parameters, multi-flow traffic at 1.488 Mpps (the maximum rate for Gigabit Ethernet) is correctly forwarded without any loss:
 
 ```
 [root@BSDRP]~# netstat -iw 1
@@ -104,7 +104,7 @@ With the default parameters, multi-flow traffic at 1.488Mpps (the maximum rate f
    1437796     0     0   87084606    1435594     0   51504950     0
 ```
 
-The traffic is correctly load-balanced between NIC-queue/CPU binding:
+The traffic is correctly load-balanced across the NIC-queue/CPU bindings:
 
 ```
 [root@BSDRP]# vmstat -i | grep igb
@@ -137,21 +137,21 @@ Swap:
    11 root     -92    -     0K   816K CPU0    0  59:39  15.28% intr{irq283: igb3:que}
 ```
 
-## igb(4) drivers tunning with 82546GB
+## igb(4) driver tuning with 82546GB
 
 ### Disabling multi-queue
 
-For disabling multi-queue (this mean without IRQ load-sharing between CPUs), there are 2 methods:
+To disable multi-queue (which means no IRQ load-sharing between CPUs), there are two methods.
 
-The first method is to use pkt-gen for generating a one IP flow (same src/dst IP and same src/dst port) traffic like this:
+The first method is to use pkt-gen to generate a single IP flow (same src/dst IP and same src/dst port) like this:
 
 ```
 pkt-gen -i igb2 -f tx -n 80000000 -l 42 -d 2.3.3.2 -D 00:1b:21:d3:8f:3e -s 1.3.3.3 -w 10
 ```
 
-=\> With this method, igb(4) can’t do load-balancing input traffic and will use only one queue.
+With this method, igb(4) can't load-balance input traffic and uses only one queue.
 
-The second method is to disabling the multi-queue support of igb(4) drivers by forcing the usage of one queue:
+The second method is to disable the multi-queue support of the igb(4) driver by forcing the use of a single queue:
 
 ```
 mount -uw /
@@ -160,7 +160,7 @@ mount -ur /
 reboot
 ```
 
-And check on the dmesg or with number of IRQ assigned to the NIC that no multi-queue was enabled:
+And check via dmesg or the number of IRQs assigned to the NIC that multi-queue is not enabled:
 
 ```
 [root@BSDRP]~# grep 'igb[2-3]' /var/run/dmesg.boot 
@@ -180,7 +180,7 @@ irq274: igb3:que 0              48517905      74757
 irq275: igb3:link                      2          0
 ```
 
-Using any of theses method, the result will be the same: forwarding speed will decrease (to about 700Kpps) corresponding to the maximum input rate (100% CPU usage of the unique CPU bound to input NIC IRQ).
+Using either method, the result will be the same: forwarding speed decreases (to about 700 Kpps), corresponding to the maximum input rate (100% CPU usage of the single CPU bound to the input NIC IRQ).
 
 ```
 [root@BSDRP]~# netstat -iw 1
@@ -208,13 +208,13 @@ Swap:
 
 ### hw.igb.rx_process_limit and hw.igb.txd/rxd
 
-What are the impact of modifying hw.igb.rx_process_limit and hw.igb.txd/rxd sysctls on the igb(4) performance ?
+What is the impact of modifying the hw.igb.rx_process_limit and hw.igb.txd/rxd sysctls on igb(4) performance?
 
-We need to overload this NIC for this test, this meaning using this NIC without multi-queue.
+We need to overload this NIC for this test, which means using it without multi-queue.
 
-#### graphical result
+#### Graphical result
 
-Here are the results of one-flow paquet per seconds peformance with differents values:
+Here are the results of one-flow packet-per-second performance with different values:
 
 ![play_ing_with_hw.igb_values.png](../../assets/images/documentation/examples/play_ing_with_hw.igb_values.png)
 
@@ -302,14 +302,14 @@ Difference at 95.0% confidence
 
 ## Firewall impact
 
-Multi-queue is re-enabled for this test, and best value from the previous tests used:
+Multi-queue is re-enabled for this test, and the best values from the previous tests are used:
 
 - hw.igb.rxd=2048
 - hw.igb.txd=2048
 - hw.igb.rx_process_limit=-1 (disabled)
 - hw.igb.num_queues=0 (automatically based on number of CPUs and max supported MSI-X messages = 4 on this lab hardware)
 
-This test will generate 2000 different flows by using 2000 different UDP destination ports:
+This test generates 2000 different flows by using 2000 different UDP destination ports:
 
 ```
 pkt-gen -i igb2 -f tx -l 42 -d 2.3.3.1:2000-2.3.3.1:4000 -D 00:1b:21:d3:8f:3e -s 1.3.3.1 -w 10
@@ -319,7 +319,7 @@ pkt-gen -i igb2 -f tx -l 42 -d 2.3.3.1:2000-2.3.3.1:4000 -D 00:1b:21:d3:8f:3e -s
 
 #### Stateless
 
-Now we will test the impact of enabling simple stateless IPFW rules:
+Test the impact of enabling simple stateless IPFW rules:
 
 ```
 cat > /etc/ipfw.rules <<'EOF'
@@ -334,9 +334,9 @@ sysrc firewall_enable="YES"
 sysrc firewall_script="/etc/ipfw.rules"
 ```
 
-#### Statefull
+#### Stateful
 
-Now we will test the impact of enabling simple statefull IPFW rules:
+Test the impact of enabling simple stateful IPFW rules:
 
 ```
 cat > /etc/ipfw.rules <<'EOF'
@@ -354,7 +354,7 @@ service ipfw restart
 
 #### Stateless
 
-Now we will test the impact of enabling simple stateless PF rules:
+Test the impact of enabling simple stateless PF rules:
 
 ```
 cat >/etc/pf.conf <<'EOF'
@@ -365,9 +365,9 @@ pass no state
 sysrc pf_enable="YES"
 ```
 
-#### Statefull
+#### Stateful
 
-Now we will test the impact of enabling simple statefull PF rules:
+Test the impact of enabling simple stateful PF rules:
 
 ```
 cat >/etc/pf.conf <<'EOF'
@@ -382,11 +382,11 @@ sysrc pf_enable="YES"
 
 #### Graph
 
-scale information: 1.488Mpps is the maximum paquet-per-second rate for GigaEthernet.
+Scale information: 1.488 Mpps is the maximum packet-per-second rate for Gigabit Ethernet.
 
 ![Impact of ipfw and pf on 4 cores Xeon 2.13GHz with Intel 82580 NIC](../../assets/images/documentation/examples/bench.impact.of.ipfw-pf.png)
 
-#### ministat
+#### Ministat
 
 ```
 x pps.fastforwarding

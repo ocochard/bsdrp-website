@@ -2,9 +2,9 @@
 title: How to build a BSDRP router lab
 description: Instructions for launching full-mesh topology with Qemu/VirtualBox/bhyve scripts or with GNS3
 ---
-## BSDRP Virtual lab scripts
+## BSDRP virtual lab scripts
 
-BSDRP provide some scripts for setting-up labs with Qemu/KVM, [Virtualbox](https://www.virtualbox.org/) or [bhyve](http://bhyve.org/).
+BSDRP provides scripts for setting up labs with Qemu/KVM, [VirtualBox](https://www.virtualbox.org/), or [bhyve](http://bhyve.org/).
 
 ### bhyve
 
@@ -15,7 +15,7 @@ fetch --no-verify-peer -o BSDRP-lab-bhyve.sh "https://raw.githubusercontent.com/
 chmod +x BSDRP-lab-bhyve.sh
 ```
 
-Usage of this script is:
+Usage:
 
 ```
 Usage: ./BSDRP-lab-bhyve.sh [-dhp] -i FreeBSD-disk-image.img [-n vm-number] [-l LAN-number]
@@ -35,12 +35,12 @@ Usage: ./BSDRP-lab-bhyve.sh [-dhp] -i FreeBSD-disk-image.img [-n vm-number] [-l 
 
 
 !!! info "Important"
-    Qemu has some bug with multicast paquets. If you need to build a lab that use multicast (VRRP, CARP, OSPF, RIPv2, etc…), use a patched release of qemu.
+    Qemu has bugs with multicast packets. If you need to build a lab that uses multicast (VRRP, CARP, OSPF, RIPv2, etc.), use a patched release of Qemu.
 
 
-Patched release of Qemu can be found:
+Patched releases of Qemu can be found:
 
-- FreeBSD: Included (GNS3 option)
+- FreeBSD: included (GNS3 option)
 - Windows: [GNS3's qemu 0.13.0](https://sourceforge.net/projects/gns-3/files/Qemu/qemu-0.13.0.patched.win32.zip/download)
 
 #### Under FreeBSD or Linux
@@ -52,11 +52,11 @@ fetch -o BSDRP-lab-qemu.sh "https://raw.githubusercontent.com/ocochard/BSDRP/mas
 chmod +x BSDRP-lab-qemu.sh
 ```
 
-*Linux users have to replace fetch by wget.*
+*Linux users should replace `fetch` with `wget`.*
 
-This script was tested with qemu 0.11.1 on FreeBSD) and with KVM on a Debian GNU/Linux.
+This script was tested with qemu 0.11.1 on FreeBSD and with KVM on Debian GNU/Linux.
 
-Usage of this script is:
+Usage:
 
 ```
 Usage: ./BSDRP-lab-qemu.sh [-s] -i BSDRP-full.img [-n router-number] [-l LAN-number]
@@ -66,67 +66,67 @@ Usage: ./BSDRP-lab-qemu.sh [-s] -i BSDRP-full.img [-n router-number] [-l LAN-num
   -s              Enable a shared LAN with Qemu host
   -h              Display this help
 
-Note: In lab mode, the qemu process are started in snapshot mode,
-this mean that all modifications to disks are lose after quitting the lab
-Script need to be started with root if you want a shared LAN with the Qemu host
+Note: in lab mode, the qemu processes are started in snapshot mode,
+which means all disk modifications are lost after quitting the lab.
+The script must be run as root for a shared LAN with the Qemu host.
 ```
 
 #### Under Windows
 
-There is a VBScript for windows on [irom's Blog: BSDRP – QEMU VBScript](http://iromaniuk.wordpress.com/2010/08/08/bsdrp-qemu-vbscript/)
+There is a VBScript for Windows on [irom's Blog: BSDRP - QEMU VBScript](http://iromaniuk.wordpress.com/2010/08/08/bsdrp-qemu-vbscript/).
 
-### Virtualbox
+### VirtualBox
 
 
 !!! info "Important"
-    Even if you are using a 64 bit OS, it’s not enough for running a 64 bit guest with Virtualbox: [Your 64 bit processor needs support VT-x or AMD-V technology too (and enabled in the BIOS)!](http://www.virtualbox.org/manual/ch03.html#intro-64bitguests)
+    Even with a 64-bit OS, that is not enough to run a 64-bit guest with VirtualBox: [your 64-bit processor must also support VT-x or AMD-V technology (and have it enabled in the BIOS)](http://www.virtualbox.org/manual/ch03.html#intro-64bitguests).
 
 
 #### Under Windows
 
-If you are under MS Windows, here is a [BSDRP Virtualbox lab PowerShell script](https://raw.githubusercontent.com/ocochard/BSDRP/master/tools/BSDRP-lab-vbox.ps1) (need PowerShell and .Net).
+If you are on MS Windows, here is a [BSDRP VirtualBox lab PowerShell script](https://raw.githubusercontent.com/ocochard/BSDRP/master/tools/BSDRP-lab-vbox.ps1) (requires PowerShell and .Net).
 
-For starting this PS script you need to:
+To start this PowerShell script, you need to:
 
-1.  Permit Unrestricted PowerShell script execution (into a powershell started with administrative right, enter: Set-ExecutionPolicy unrestricted)
-2.  Unblock the BSDRP-lab script, by righ-clicking on it and selecting properties then click on unblock
+1.  Allow unrestricted PowerShell script execution (in a PowerShell started with administrative rights, enter `Set-ExecutionPolicy unrestricted`).
+2.  Unblock the BSDRP-lab script by right-clicking it, selecting Properties, and clicking Unblock.
 
 
 !!! tip
-    We recommend to use a BSDRP serial-console image under MS Windows: Avoid potential keyboard layout problems and serial port redirection is well supported under MS Windows.
+    We recommend using a BSDRP serial-console image under MS Windows: it avoids potential keyboard layout problems, and serial-port redirection is well supported under MS Windows.
 
 
-Pre-requise:
+Prerequisites:
 
 - [VirtualBox](http://www.virtualbox.org) 4.2
-- A RDP client for lab based on BSDRP vga release (included in Windows: mstsc)
-- A serial terminal software able to open pipe like [PuTTY](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html) or [KiTTY](http://www.9bis.net/kitty/)for lab based on BSDRP serial release
+- An RDP client for labs based on the BSDRP VGA release (mstsc is included with Windows)
+- A serial-terminal application that can open a pipe, like [PuTTY](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html) or [KiTTY](http://www.9bis.net/kitty/), for labs based on the BSDRP serial release
 
 Steps:
 
-1.  Download a BSDRP image and decompress the xz archive (using [7-zip](http://www.7-zip.org/) as example) for obtaining the .img
-2.  Right-click on the BSDRP-lab-vbox.ps1 and select “execute with PowerShell”
+1.  Download a BSDRP image and decompress the xz archive (using [7-zip](http://www.7-zip.org/), for example) to obtain the `.img` file.
+2.  Right-click `BSDRP-lab-vbox.ps1` and select "Run with PowerShell".
 
-After use, if you want to use a new BSDRP image for the lab, delete all Virtualbox BSDRP_lab_* VM. The script will generate a BSDRP-Putty-sessions.reg file on your desktop: Import this file to your registration database for auto-configuring Putty&Kitty sessions.
+After use, if you want to use a new BSDRP image for the lab, delete all VirtualBox `BSDRP_lab_*` VMs. The script generates a `BSDRP-Putty-sessions.reg` file on your desktop; import it into your registry to auto-configure PuTTY and KiTTY sessions.
 
 #### Under FreeBSD or Linux
 
-If you want to use Virtualbox, here is the [BSDRP Virtualbox shell lab script](https://raw.githubusercontent.com/ocochard/BSDRP/master/tools/BSDRP-lab-vbox.sh).
+If you want to use VirtualBox, here is the [BSDRP VirtualBox shell lab script](https://raw.githubusercontent.com/ocochard/BSDRP/master/tools/BSDRP-lab-vbox.sh).
 
 ```
 fetch "https://raw.githubusercontent.com/ocochard/BSDRP/master/tools/BSDRP-lab-vbox.sh"
 chmod +x BSDRP-lab-vbox.sh
 ```
 
-*Linux users have to replace fetch by wget.*
+*Linux users should replace `fetch` with `wget`.*
 
-Pre-requise:
+Prerequisites:
 
 - FreeBSD
 - Linux
-- Virtualbox (non OSE) 4.2
-- socat installed for using the BSDRP serial release
-- A VNC/RDP client for connecting the BSDRP vga release
+- VirtualBox (non-OSE) 4.2
+- `socat` installed, for the BSDRP serial release
+- A VNC/RDP client to connect to the BSDRP VGA release
 
 <!-- -->
 
@@ -149,7 +149,7 @@ Usage: /usr/local/BSDRP/tools/BSDRP-lab-vbox.sh [-hdsv] [-a i386|amd64] [-i BSDR
 
 ### Example of use
 
-Using qemu:
+Using Qemu:
 
 ```
 ./BSDRP-lab-qemu.sh -n 4 -l 2 -i BSDRP.i386.img
@@ -198,27 +198,27 @@ Connect to router 3: socat unix-connect:/tmp/BSDRP_lab_R3.serial STDIO,raw,echo=
 Connect to router 4: socat unix-connect:/tmp/BSDRP_lab_R4.serial STDIO,raw,echo=0
 ```
 
-This will start 4 routers full-meshed (ethernet cross-over cable) and each routers connected to 2 LAN:
+This starts four full-meshed routers (Ethernet cross-over cable), each connected to 2 LANs:
 
 ![bsdrp-example-lab.png](../../assets/images/bsdrp-example-lab.png)
 
 ## GNS3
 
-If you would testing BSDRP integration with Cisco/Juniper devices,[GNS3](http://www.gns3.net/) is a great tools.
+If you want to test BSDRP integration with Cisco/Juniper devices, [GNS3](http://www.gns3.net/) is a great tool.
 
 ### VirtualBox
 
-Latest release of GNS3 support the use of virtualbox guest: The guest speed with virtualbox is a lot’s better than with Qemu.
+The latest release of GNS3 supports VirtualBox guests; guest speed with VirtualBox is much better than with Qemu.
 
-#### Preparing BSDRP image disk for VirtualBox
+#### Preparing the BSDRP image disk for VirtualBox
 
-Download a full i386/amd65 BSDRP serial image and un-xz it (using 7-zip)… you should obtain a .img file (not a .xz file!).
+Download a full i386/amd64 BSDRP serial image and un-xz it (using 7-zip); you should get a `.img` file (not a `.xz` file).
 
-Using a serial image will permit to prevent keyboard mapping problem: We will connect to the console with a virtual serial port and Putty.
+Using a serial image prevents keyboard mapping issues; we connect to the console with a virtual serial port and PuTTY.
 
-We need to convert the RAW BSDRP .img file to a .vdi VirtualBox hard drive image using the command-line only ["VBoxManage convertfromraw"](http://www.virtualbox.org/manual/ch08.html#idp14312224).
+Convert the raw BSDRP `.img` file to a `.vdi` VirtualBox hard-drive image using the command-line tool [`VBoxManage convertfromraw`](http://www.virtualbox.org/manual/ch08.html#idp14312224).
 
-Under MS Windows this is done by opening a cmd.exe window and entering:
+On MS Windows, open a `cmd.exe` window and enter:
 
 ```
 C:\Users\Olivier>cd %VBOX_INSTALL_PATH%
@@ -233,58 +233,58 @@ C:\Program Files\Oracle\VirtualBox>
 
 Now start VirtualBox and create a new VM:
 
-- Name: What you want
+- Name: as you wish
 - OS: BSD
-- Version: “FreeBSD” or “FreeBSD (64 bits)” regarding your BSDRP image
-- RAM: 128Mo minimum
-- Hard Drive: Use existing, and select your freshly converted .vdi BSDRP image file
+- Version: "FreeBSD" or "FreeBSD (64 bits)", matching your BSDRP image
+- RAM: 128 MB minimum
+- Hard Drive: use existing, and select your freshly converted `.vdi` BSDRP image file
 
-Then, only if you are using the “serial” BSDRP image, edit your VM:
+Then, only if you are using the "serial" BSDRP image, edit your VM:
 
 - Serial Port: Port 1
-  - Enable
-  - Mode: Host pipe
-  - Check the case: Create pipe
-  - port path: \\.\pipe\YOUR_VM_NAME
+    - Enable
+    - Mode: Host pipe
+    - Check the box: Create pipe
+    - Port path: `\\.\pipe\YOUR_VM_NAME`
 
-You can test your settings by starting your VM and launch PuTTY with theses parameters:
+You can test your settings by starting your VM and launching PuTTY with these parameters:
 
 - Connection type: serial
-- serial port: \\.\pipe\YOUR_VM_NAME
+- Serial port: `\\.\pipe\YOUR_VM_NAME`
 - Speed: 115200
 
-You should see the bootloader and dmesg, now shutdown your VM.
+You should see the bootloader and dmesg. Now shut down your VM.
 
-#### Declaring a VirtualBox Guest
+#### Declaring a VirtualBox guest
 
-Under GNS3, go to “Edit” =\> “Preferences…” =\> “VirtualBox” =\> “VirtualBox Guest”
+In GNS3, go to "Edit" -> "Preferences..." -> "VirtualBox" -> "VirtualBox Guest".
 
-And simply select the BSDRP Vbox VM.
+Then simply select the BSDRP VirtualBox VM.
 
 ![bsdrp-example-gns3-vbox-guest.png](../../assets/images/documentation/examples/bsdrp-example-gns3-vbox-guest.png)
 
 ### Qemu
 
-Use Qemu only if you can use the KVM acceleration feature (GNS3 under GNU/Linux only), if not: Use the virtualbox guest.
+Use Qemu only if you can use the KVM acceleration feature (GNS3 under GNU/Linux only); otherwise use the VirtualBox guest.
 
-#### Preparing BSDRP i386 VGA image for GNS3’s Qemu
+#### Preparing the BSDRP i386 VGA image for GNS3's Qemu
 
-Download a full i386 BSDRP VGA and un-xz it (using 7-zip)… you should obtain a .img file (not a .xz file!).
+Download a full i386 BSDRP VGA image and un-xz it (using 7-zip); you should get a `.img` file (not a `.xz` file).
 
-Don’t use a 64bit image: GNS3’s Qemu is configured for running 32bits guest only.
+Do not use a 64-bit image: GNS3's Qemu is configured to run 32-bit guests only.
 
-#### Declaring a Qemu Guest
+#### Declaring a Qemu guest
 
-Under GNS3, go to “Edit” =\> “Preferences…” =\> “Qemu” =\> “Qemu Guest”
+In GNS3, go to "Edit" -> "Preferences..." -> "Qemu" -> "Qemu Guest".
 
-And simply give the path to the BSDRP vga image.
+Then simply give the path to the BSDRP VGA image.
 
 ![bsdrp-example-gns3-qemu-guest.png](../../assets/images/documentation/examples/bsdrp-example-gns3-qemu-guest.png)
 
 #### Troubleshooting
 
-If when you try starting your BSDRP qemu host you have this message:
+If, when you try to start your BSDRP Qemu host, you see the message:
 
-“CPU doesn’t support long mode”
+"CPU doesn't support long mode"
 
-This mean your are trying to start a 64bits OS on your 32bits emulated guest.
+then you are trying to start a 64-bit OS on a 32-bit emulated guest.

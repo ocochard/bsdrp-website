@@ -1,16 +1,16 @@
 ---
-title: IPSec performance lab of Netgate RCC-VE 4860
-description: IPSec performance lab of Netgate RCC-VE 4860
+title: IPsec performance lab of Netgate RCC-VE 4860
+description: IPsec performance lab of Netgate RCC-VE 4860
 ---
 ## Hardware detail
 
-This lab will test a [Netgate RCC-VE 4860](http://store.netgate.com/ADI/RCC-VE-4860.aspx) ([dmesg](netgate-rcc-ve-4860.md)):
+This lab tests a [Netgate RCC-VE 4860](http://store.netgate.com/ADI/RCC-VE-4860.aspx) ([dmesg](netgate-rcc-ve-4860.md)):
 
-- Quad cores Intel Atom C2558 (2.40GHz)
-  - AES-NI supporting AES-CBC,AES-XTS,AES-GCM,AES-ICM
-- 2 Gigabit Intel i211
-- 4 Gigabit Intel i350
-- 8Gb of RAM
+- Quad-core Intel Atom C2558 (2.40 GHz)
+  - AES-NI supporting AES-CBC, AES-XTS, AES-GCM, AES-ICM
+- 2x Gigabit Intel i211
+- 4x Gigabit Intel i350
+- 8 GB of RAM
 
 ## Method used
 
@@ -60,7 +60,7 @@ The benchmarking method used here is detailed in [Setting up a VPN IPSec, GRE, e
 aesni_load="YES"
 ```
 
-Configure IP address, routes and static IPSec:
+Configure IP addresses, routes, and static IPsec:
 
 ```
 # IPv4 router
@@ -112,7 +112,7 @@ add 198.18.1.209 198.18.1.203 esp 10001 -m tunnel -u 100 -E aes-gcm-16 "12345678
 aesni_load="YES"
 ```
 
-Configure IP address, routes and static IPSec. /etc/rc.conf:
+Configure IP addresses, routes, and static IPsec. /etc/rc.conf:
 
 ```
 # IPv4 router
@@ -157,11 +157,11 @@ add 198.18.1.203 198.18.1.209 esp 10000 -m tunnel -u 200 -E aes-gcm-16 "12345678
 add 198.18.1.209 198.18.1.203 esp 10001 -m tunnel -u 200 -E aes-gcm-16 "12345678901234567890";
 ```
 
-## Using IPSec bench “Equilibrium throughput” method
+## IPsec benchmark "equilibrium throughput" method
 
-Once done, we start using a fast method for measuring the “IPsec equilibrium throughput” of the DUT.
+Once that is done, we use a fast method to measure the "IPsec equilibrium throughput" of the DUT.
 
-From the packet generator/receiver a simple script that use netmap-pktgen will do the job:
+From the packet generator/receiver, a simple script that uses netmap-pktgen will do the job:
 
 ```
 [root@R1]~# equilibrium -4 -u -d 00:08:a2:09:33:da -t igb1 -r igb2
@@ -207,6 +207,6 @@ Iteration 7
 Estimated Equilibrium Ethernet throughput= 670 Mb/s (maximum value seen: 672 Mb/s)
 ```
 
-Using AES-GCM-128 and aesni kernel module loaded on the NetGate RCC-VE 4860, we can estimate an IPSec Equilibrium throughput of about 672Mb/s.
+Using AES-GCM-128 and the aesni kernel module loaded on the Netgate RCC-VE 4860, we can estimate an IPsec equilibrium throughput of about 672 Mb/s.
 
 ![](../../assets/images/documentation/examples/bench.netgate.ipsec.13head.png)

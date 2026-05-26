@@ -1,10 +1,10 @@
 ---
-title: Setting-up a forwarding performance benchmark lab
-description: How to build a Forwarding performance benchmark lab with BSDRP
+title: Setting up a forwarding performance benchmark lab
+description: How to build a forwarding performance benchmark lab with BSDRP
 ---
-## Benchmark Methodology
+## Benchmark methodology
 
-Before to start a router benchmark, some RFC to read:
+Before starting a router benchmark, here are some RFCs to read:
 
 - Benchmarking Terminology for Network Interconnection Devices: [RFC1242](https://tools.ietf.org/html/rfc1242)
 - Benchmarking Methodology for Network Interconnect Devices: [RFC2544](http://www.ietf.org/rfc/rfc2544.txt) (notice usage of pool 198.18.0.0/15)
@@ -12,28 +12,28 @@ Before to start a router benchmark, some RFC to read:
 - IPv6 Benchmarking Methodology for Network Interconnect Devices: [RFC5180](https://tools.ietf.org/html/rfc5180) (notice usage of pool 2001:0002::/48) for IPv6
 - Applicability Statement for RFC 2544: Use on Production Networks Considered Harmful [RFC6815](https://tools.ietf.org/html/rfc6815)
 
-But, we will start by a more simple lab by focusing on a wire-speed (or line-rate) packet-generator. We didn’t cover firewall benchmark ([RFC3511](https://www.ietf.org/rfc/rfc3511.txt)) but there are [a VPN benchmark lab](setting-up-a-vpn-ipsec-gre-etc-performance-benchmark-lab.md).
+We will start with a simpler lab by focusing on a wire-speed (line-rate) packet generator. We do not cover firewall benchmarks ([RFC3511](https://www.ietf.org/rfc/rfc3511.txt)), but there is [a VPN benchmark lab](setting-up-a-vpn-ipsec-gre-etc-performance-benchmark-lab.md).
 
-Reading [FreeBSD forwarding Performance](../technical-docs/performance.md) pages is a good start too.
+Reading the [FreeBSD forwarding performance](../technical-docs/performance.md) page is a good start too.
 
-A wire-speed packet generator should be able to generate the [maximum number of smallest packet per second on the tested media](http://www.cisco.com/web/about/security/intelligence/network_performance_metrics.html), this mean about 1,488Mpps on a Gigabit lab (because we will avoid packet fragmentation 1 packet=1 frame) and 14.88Mpps on a TenGigabit lab.
+A wire-speed packet generator should be able to generate the [maximum number of smallest packets per second on the tested media](http://www.cisco.com/web/about/security/intelligence/network_performance_metrics.html). This is about 1.488 Mpps on a Gigabit lab (since we avoid packet fragmentation, 1 packet = 1 frame) and 14.88 Mpps on a 10-Gigabit lab.
 
 ## Simplified methodology
 
-Method used here is to bench only the “worse” case by generating:
+The method used here is to benchmark only the "worst" case by generating:
 
-1.  Only smallest size packet (20 bytes for IPv4, 40 bytes for IPv6): Generating packets with only 1 byte of payload, and using padding feature could be a possibility too.
-2.  Offered load is the maximum line-rate of the medium (like under a Denial of Service attack)
+1.  Only the smallest packets (20 bytes for IPv4, 40 bytes for IPv6). Generating packets with only 1 byte of payload, using the padding feature, is another option.
+2.  Offered load equal to the maximum line rate of the medium (similar to a denial-of-service attack).
 
-And the value we are interested by will be the maximum forwarding rate measured at the receiving side. This mean without take care of the dropped packet.
+The value of interest is the maximum forwarding rate measured at the receiving side, ignoring dropped packets.
 
-Once obtain this “worse” value, it’s possible to estimated the expected throughput (in bit/s) by using [Internet Mix](https://en.wikipedia.org/wiki/Internet_Mix) packet size distribution.
+Once this "worst-case" value is obtained, it is possible to estimate the expected throughput (in bit/s) by using the [Internet Mix](https://en.wikipedia.org/wiki/Internet_Mix) packet size distribution.
 
 ## Diagram
 
-For cross-checking the packet counters, we will connect our devices to a non-blocking switch that have its own traffic counters.
+To cross-check the packet counters, we connect the devices to a non-blocking switch that has its own traffic counters.
 
-We can use the same device for packet generator/receiver:
+The same device can be used for packet generator and receiver:
 
 ```
 +---------------------------+    +-------------------------+ 
@@ -46,7 +46,7 @@ We can use the same device for packet generator/receiver:
 +----------------------------------------------------------+
 ```
 
-or using two different device for packet generator and receiver:
+or using two different devices for packet generator and receiver:
 
 ```
 +------------------+    +-------------------+     +-----------------+
@@ -59,7 +59,7 @@ or using two different device for packet generator and receiver:
 +------------------------------------------------------------------+
 ```
 
-Or for a lab without switch: Still the same device for packet generator/receiver.
+Or, for a lab without a switch, the same device acts as both packet generator and receiver:
 
 ```
 +---------------------------+
@@ -74,15 +74,15 @@ Or for a lab without switch: Still the same device for packet generator/receiver
 
 ## Switch configuration
 
-We need to take care of the switch configuration:
+The switch configuration needs some care:
 
-- The device used as “packet receiver” will not emitting any packet, then the switch can’t not learn its MAC address and then will broadcast the traffic to all ports. We Need to disable mac-address aging or configure static MAC entry on the switch;
-- The switch need to be configured for not sending non-desirable frame too (spanning tree, keepalive, CDP, etc…) that will fake our counters;
-- Allowing Ethernet flow control is not a good idea (it’s allays better to drop some packet and let TCP windowing slow down the connection speed), but it’s even worse when we want to build a high speed packet generator.
+- The device used as "packet receiver" does not emit any packet, so the switch cannot learn its MAC address and would broadcast the traffic to all ports. We need to disable MAC-address aging or configure a static MAC entry on the switch.
+- The switch must also be configured not to send unwanted frames (spanning tree, keepalive, CDP, etc.) that would skew the counters.
+- Allowing Ethernet flow control is not a good idea (it is always better to drop some packets and let TCP windowing slow down the connection), and it is even worse when building a high-speed packet generator.
 
-### Disabling Spanning-Tree
+### Disabling Spanning Tree
 
-Disable STP (if you know what you are doing) on the vlan or interfaces used for the bench.
+Disable STP (if you know what you are doing) on the VLAN or interfaces used for the bench.
 
 #### Cisco switch
 
@@ -97,9 +97,9 @@ no spanning-tree vlan 3
 set protocols rstp interface xe0/0/0 disable
 ```
 
-### Mac-address Table aging or static MAC
+### MAC-address table aging or static MAC
 
-Then disabling mac-address-table aging too or configure static MAC entry (this avoid to use a ping before starting the test for populating the dynamic MAC table):
+Disable MAC-address-table aging, or configure a static MAC entry (this avoids the need to ping before starting the test to populate the dynamic MAC table):
 
 #### Cisco switch
 
@@ -125,7 +125,7 @@ set vlans bench switch-options interface xe0/0/0 static-mac 000e.0cde.45df
 
 ### Port
 
-Disable CDP, LLDP, DTP, keep-alive and flow-control on all ports connected to the testers and DUT. Reduce the load-interval for statistics calculation to the minimum (30seconds here).
+Disable CDP, LLDP, DTP, keep-alive, and flow control on all ports connected to the testers and the DUT. Reduce the load-interval for statistics calculation to the minimum (30 seconds here).
 
 #### Cisco switch
 
@@ -154,11 +154,11 @@ set protocols lldp-med interface xe-0/0/0 disable
 
 ### Hardware
 
-NIC supported by [netmap](http://www.freebsd.org/cgi/man.cgiquery=netmap) are mandatory on the server used as packet generator/receiver: Chelsio (the best one!), Intel (em, ixgbe). RealTek (re) NIC are supported but avoid them at all cost!
+NICs supported by [netmap](http://www.freebsd.org/cgi/man.cgiquery=netmap) are mandatory on the server used as packet generator/receiver: Chelsio (the best one!) and Intel (em, ixgbe). RealTek (re) NICs are supported but should be avoided at all cost.
 
 ### Static ARP
 
-It’s better to avoid ARP resolution on the packet generator:
+It is better to avoid ARP resolution on the packet generator:
 
 ```
 sysrc static_arp_pairs="tester2 dut"
@@ -167,11 +167,11 @@ sysrc static_arp_dut="2.2.2.3 00:0e:0c:de:45:de"
 service static_arp start
 ```
 
-### NIC drivers tunning
+### NIC driver tuning
 
-#### Disabling Flow-control
+#### Disabling flow control
 
-This step depends of the NIC used, igb(4) uses this:
+This step depends on the NIC used. igb(4) uses this:
 
 ```
 cat >> /etc/sysctl.conf <EOF
@@ -182,25 +182,25 @@ dev.igb.3.fc=0
 EOF
 ```
 
-#### Unleashing the power of NIC chipset
+#### Unleashing the power of the NIC chipset
 
-By default FreeBSD use timid drivers values, but BSDRP increase them ([source of benchs](forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md#igb4-drivers-tunning-with-82546gb)).
+By default FreeBSD uses conservative driver values, but BSDRP raises them ([source of benchmarks](forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md#igb4-driver-tuning-with-82546gb)).
 
-As example for em(4) or igb(4) drivers:
+For example, for em(4) or igb(4) drivers:
 
-- Disable the limit of maximum number of received packets to process at a time:
-  - hw.em\|igb.rx_process_limit 100 =\> -1
-- Increase number of transmit and receive descriptors per queue to their maximum:
-  - hw.em\|igb.txd 1024 =\> 2048
-  - hw.em\|igb.rxd 1024 =\> 2048
-- Increase the maximum number of interrupts per second generated
-  - hw.igb.max_interrupt_rate 8000 =\> 16000
+- Disable the limit on the maximum number of received packets processed at a time:
+    - `hw.em|igb.rx_process_limit`: 100 -> -1
+- Increase the number of transmit and receive descriptors per queue to their maximum:
+    - `hw.em|igb.txd`: 1024 -> 2048
+    - `hw.em|igb.rxd`: 1024 -> 2048
+- Increase the maximum number of interrupts generated per second:
+    - `hw.igb.max_interrupt_rate`: 8000 -> 16000
 
-If you understand all the parameters on the document [Interrupt Moderation with IntelGbE Controllers](http://www.intel.com/content/dam/doc/application-note/gbe-controllers-interrupt-moderation-appl-note.pdf) you can try to tune them too.
+If you understand all the parameters in [Interrupt Moderation with Intel GbE Controllers](http://www.intel.com/content/dam/doc/application-note/gbe-controllers-interrupt-moderation-appl-note.pdf), you can try tuning them too.
 
 ## Testing the packet generator and receiver
 
-We need to learn to use the packet generator/receiver and discover its limits.
+We need to learn how to use the packet generator/receiver and discover its limits.
 
 ### Diagram
 
@@ -212,9 +212,9 @@ We need to learn to use the packet generator/receiver and discover its limits.
 
 ### Preparation
 
-Before to start, if you didn’t use static MAC entry on the switch or static ARP on your generator, ping each other for forcing them to emitting at last one packet.
+Before starting, if you did not configure a static MAC entry on the switch or static ARP on the generator, ping between the devices to force each one to emit at least one packet.
 
-Then clear the counter on the switch
+Then clear the counters on the switch:
 
 ```
 switch#clear counters
@@ -225,22 +225,22 @@ Clear "show interface" counters on all interfaces [confirm] <enter>
 
 
 !!! warning
-    You need to use a [patched version of netmap pkt-gen](https://github.com/ocochard/BSDRP/blob/master/BSDRP/patches/ports.pkt-gen.patch) because hardware CRC checksum is disabled on Intel NIC in netmap mode (Chelsio NIC didn’t have this limitation) and to fix the range bug.
+    You need a [patched version of netmap pkt-gen](https://github.com/ocochard/BSDRP/blob/master/BSDRP/patches/ports.pkt-gen.patch) because the hardware CRC checksum is disabled on Intel NICs in netmap mode (Chelsio NICs do not have this limitation), and to fix the range bug.
 
 
 We need to generate:
 
-- multi-flows (important for using NIC multi-queue features), these mean using multiple IP as source and destination
-- Smallest Ethernet frame size (64 bytes including CRC)
+- Multi-flow traffic (important to exercise NIC multi-queue features), meaning multiple source and destination IP addresses.
+- The smallest Ethernet frame size (64 bytes including CRC).
 
 Here is an example for:
 
-- 2000 flows by using a source range of IP 198.18.0.1-198.18.0.100 and destination 198.19.0.1 to 198.18.20
-- The source and destination UDP port are 2000 (it’s important to specify the port source and destination for avoiding the usage of port number 0 filtered by pf)
-- The destination MAC address needs to be given
-- We generate 1 Billion packets (10 Giga ethernet links are fast)
-- with a 4 second timer for the link be ready (pkt-gen down/up the link)
-- 60 bytes Ethernet Frame (pkt-gen didn’t include the 4 bytes CRC size)
+- 2000 flows, using a source IP range of 198.18.0.1-198.18.0.100 and destination 198.19.0.1-198.19.0.20.
+- The source and destination UDP port are both 2000 (it is important to specify both ports to avoid port number 0, which is filtered by pf).
+- The destination MAC address must be given.
+- One billion packets (10-Gigabit Ethernet links are fast).
+- A 4-second timer to let the link come up (pkt-gen brings the link down/up).
+- 60-byte Ethernet frames (pkt-gen does not include the 4-byte CRC).
 
 <!-- -->
 
@@ -277,13 +277,13 @@ Sending on netmap:ix0: 4 queues, 1 threads and 1 cpus.
 ...
 ```
 
-###### \> It sends at about 12.4Mpps (the line-rate is 14.8Mpps).
+It sends at about 12.4 Mpps (the line rate is 14.8 Mpps).
 
-Don‘t use netstat ’-h’ on FreeBSD older than 11-head r287593 ====
+### Don't use `netstat -h` on FreeBSD older than 11-head r287593
 
-During the tests, we meet a problem with netstat:
+During the tests, we hit a problem with netstat.
 
-The receiver measure about 565Kpps:
+The receiver measures about 565 Kpps:
 
 ```
 main_thread [1078] 564842 pps (565406 pkts in 1000998 usec)
@@ -295,7 +295,7 @@ main_thread [1078] 565122 pps (565686 pkts in 1000998 usec)
 main_thread [1078] 564752 pps (565318 pkts in 1001002 usec)
 ```
 
-Now what about the router stats:
+Now check the router stats:
 
 ```
 [root@BSDRP]~# netstat -ihw 1
@@ -312,20 +312,20 @@ Now what about the router stats:
       551k  906k     0        32M       552k     0        22M     0
 ```
 
-The router display a forwarding rate of 552Kpps: There is a 10Kpps gap between the receiver and router stats.
+The router shows a forwarding rate of 552 Kpps, a 10 Kpps gap between the receiver and the router stats.
 
-We need to check the switch stats for a tie:
+Check the switch stats to break the tie:
 
 ```
 switch#sh int GigabitEthernet 1/0/6 | i output rate
   30 second output rate 289701000 bits/sec, 565821 packets/sec
 ```
 
-=\> Switch stats confirm the number of 565Kpps received.
+The switch stats confirm the 565 Kpps received.
 
-There were a problem with FreeBSD self-counters that misses about 10Kpps in this case. Hopefully a contributer give me an hint: 564842 / 1024 = 551.6 Kpps. The [netstat '-h' (human readable) have a bug by converting 1k packets/errors in 1024 packets/errors](http://www.freebsd.org/cgi/query-pr.cgipr=183598) (fixed in 11-head r287593).
+There was a problem with FreeBSD self-counters that misses about 10 Kpps in this case. Fortunately a contributor gave me a hint: 564842 / 1024 = 551.6 Kpps. The [netstat `-h` (human-readable) flag has a bug that converts 1k packets/errors into 1024 packets/errors](http://www.freebsd.org/cgi/query-pr.cgipr=183598) (fixed in 11-head r287593).
 
-If we call netstat without ‘-h’, the problem disappear:
+If we call netstat without `-h`, the problem disappears:
 
 ```
 [root@BSDRP]~# netstat -iw 1
@@ -337,11 +337,11 @@ If we call netstat without ‘-h’, the problem disappear:
     564842 929645     0   33524492     564842     0   23064732   0
 ```
 
-Now we can try to bench your servers for a router usage, like [Forwarding performance lab of a HP ProLiant DL360p Gen8 with 10-Gigabit with 10-Gigabit Chelsio T540-CR](forwarding-performance-lab-of-a-hp-proliant-dl360p-gen8-with-10-gigabit-with-10-gigabit-chelsio-t540-cr.md).
+Now you can benchmark your servers for router use, like in the [forwarding performance lab of an HP ProLiant DL360p Gen8 with 10-Gigabit Chelsio T540-CR](forwarding-performance-lab-of-a-hp-proliant-dl360p-gen8-with-10-gigabit-with-10-gigabit-chelsio-t540-cr.md).
 
 ## Bench reproducibility and ministat
 
-Once your test ready you need to run it multiple time without human interaction:
+Once your test is ready, you need to run it multiple times without human interaction:
 
-- Need to script the test like on the [FreeBSD performance regression lab](freebsd-performance-regression-lab.md), and publish the scripts used
-- Doing multiples times and publishing the [ministat](https://www.freebsd.org/cgi/man.cgiquery=ministat) output
+- Script the test like the [FreeBSD performance regression lab](freebsd-performance-regression-lab.md), and publish the scripts used.
+- Run it multiple times and publish the [ministat](https://www.freebsd.org/cgi/man.cgiquery=ministat) output.

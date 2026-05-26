@@ -4,12 +4,12 @@ description: Forwarding performance lab of a quad core Intel Atom C2558E (2.40GH
 ---
 ## Hardware detail
 
-This lab will test a [Netgate RCC-VE 4860](http://store.netgate.com/ADI/RCC-VE-4860.aspx) ([dmesg](netgate-rcc-ve-4860.md)):
+This lab tests a [Netgate RCC-VE 4860](http://store.netgate.com/ADI/RCC-VE-4860.aspx) ([dmesg](netgate-rcc-ve-4860.md)):
 
-- Quad cores Intel Atom C2558 (2.40GHz)
-- 2 Gigabit Intel i211
-- 4 Gigabit Intel i350
-- 8Gb of RAM
+- Quad-core Intel Atom C2558 (2.40 GHz)
+- 2x Gigabit Intel i211
+- 4x Gigabit Intel i350
+- 8 GB of RAM
 
 ## Lab set-up
 
@@ -45,26 +45,26 @@ For more information about full setup of this lab: [Setting up a forwarding perf
  +------------------------------------------+
 ```
 
-This device use 2 kinds of Intel NIC:
+This device uses two kinds of Intel NIC:
 
-- igb0 and igb1: Intel i211 with 2 queues, should be used for admin purpose
-- igb2 to igb5: Intel i350 with 4 queues (and iPXE support) should be used for forwarding/firewalling purpose
+- igb0 and igb1: Intel i211 with 2 queues, intended for admin purposes
+- igb2 to igb5: Intel i350 with 4 queues (and iPXE support), intended for forwarding/firewalling
 
-The generator **MUST** generate lot’s of IP flows (multiple source/destination IP addresses and/or UDP src/dst port) and minimum packet size (for generating maximum packet rate) with one of these commands:
+The generator **MUST** generate lots of IP flows (multiple source/destination IP addresses and/or UDP src/dst ports) with the minimum packet size (to produce the maximum packet rate) with one of these commands:
 
-Multiple source/destination IP addresses (don’t forget to precise UDP port to use for avoiding using number 0 filtered by pf):
+Multiple source/destination IP addresses (don't forget to specify the UDP port to avoid using port 0, which is filtered by pf):
 
 ```
 pkt-gen -i igb2 -f tx -n 80000000 -l 60 -d 198.19.10.1:2000-198.19.10.20 -D 00:08:a2:09:33:da -s 198.18.10.1:2000-198.18.10.100 -S 00:1b:21:c4:95:7a -w 4 -U
 ```
 
-And the same with IPv6 flows (minimum frame size of 62 for having a correct empty UDP packet):
+And the same with IPv6 flows (minimum frame size of 62 for a valid empty UDP packet):
 
 ```
 pkt-gen -f tx -i igb2 -n 1000000000 -l 62 -6 -d "[2001:2:0:8001::1]-[2001:2:0:8001::64]" -D 00:08:a2:09:33:da -s "[2001:2:0:1::1]-[2001:2:0:1::14]" -S 00:1b:21:c4:95:7a -w 4 -U
 ```
 
-Receiver will use these commands:
+The receiver will use this command:
 
 ```
 pkt-gen -i igb3 -f rx -w 4

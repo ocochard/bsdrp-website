@@ -1,14 +1,14 @@
 ---
-title: IPSec performance lab of a PC Engines APU2
-description: IPSec performance lab of a PC Engines APU2
+title: IPsec performance lab of a PC Engines APU2
+description: IPsec performance lab of a PC Engines APU2
 ---
 ## Hardware detail
 
-This lab will test a [PC Engines APU 2C4](http://www.pcengines.ch/apu2.htm) ([dmesg](pc-engines-apu2.md)):
+This lab tests a [PC Engines APU 2C4](http://www.pcengines.ch/apu2.htm) ([dmesg](pc-engines-apu2.md)):
 
-- Quad core [AMD GX-412TC Processor](https://www.amd.com/Documents/AMDGSeriesSOCProductBrief.pdf) (1 GHz and AESNI)
-- 3 with Intel i210AT Gigabit
-- 4Gb of RAM
+- Quad-core [AMD GX-412TC Processor](https://www.amd.com/Documents/AMDGSeriesSOCProductBrief.pdf) (1 GHz with AES-NI)
+- 3x Intel i210AT Gigabit ports
+- 4 GB of RAM
 
 ## Lab set-up
 
@@ -51,7 +51,7 @@ For more information about full setup of this lab: [Setting up a forwarding perf
 
 ### APU2 (DUT)
 
-Disable fastforwarding (not compliant with IPSec), configure IP address, routes and static IPSec:
+Disable fastforwarding (not compatible with IPsec), then configure IP addresses, routes, and static IPsec:
 
 /etc/rc.conf:
 
@@ -103,7 +103,7 @@ add 2001:2:0:1::205 2001:2:0:1::203 esp 0x1003 -E aes-gcm-16 "123456789012345678
 
 ### R3 (Reference device)
 
-Disable fastforwarding (not compliant with IPSec), configure IP address, routes and static IPSec:
+Disable fastforwarding (not compatible with IPsec), then configure IP addresses, routes, and static IPsec:
 
 ```
 # IPv4 router
@@ -151,11 +151,11 @@ add 2001:2:0:1::203 2001:2:0:1::205 esp 0x1002 -E aes-gcm-16 "123456789012345678
 add 2001:2:0:1::205 2001:2:0:1::203 esp 0x1003 -E aes-gcm-16 "12345678901234567890";
 ```
 
-## Using IPSec bench “Equilibrium throughput” method
+## IPsec benchmark "equilibrium throughput" method
 
-Once done, we start using a fast method for measuring the “IPsec equilibrium throughput” of the DUT.
+Once that is done, we use a fast method to measure the "IPsec equilibrium throughput" of the DUT.
 
-Notice that the reference device (IBM x3550-M3) used in front of the PC Engines APU2 has a [equilibrium throughput of 843Mb/s](ipsec-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md). Then if the value measured during this bench is close to 843Mb/s we had to found a more powerful reference device.
+Note that the reference device (IBM x3550-M3) used in front of the PC Engines APU2 has an [equilibrium throughput of 843 Mb/s](ipsec-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md). If the value measured during this benchmark approaches 843 Mb/s, we would need a more powerful reference device.
 
 ```
 root@pkt-gen # equilibrium -4 -u -d 00:0d:b9:41:ca:3d -t igb2 -r igb3
@@ -201,8 +201,8 @@ Iteration 7
 Estimated Equilibrium Ethernet throughput= 350 Mb/s (maximum value seen: 359 Mb/s)
 ```
 
-And it reach a maximum of 359Mb/s.
+It reaches a maximum of 359 Mb/s.
 
 ### Graph
 
-![IPSec throughput with a PC Engines APU2C2 running FreeBSD 11.0](../../assets/images/documentation/examples/bench.ipsec.on.pc.engines.apu2.png)
+![IPsec throughput with a PC Engines APU2C2 running FreeBSD 11.0](../../assets/images/documentation/examples/bench.ipsec.on.pc.engines.apu2.png)

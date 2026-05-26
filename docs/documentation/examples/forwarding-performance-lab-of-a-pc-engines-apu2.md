@@ -4,11 +4,11 @@ description: Forwarding performance lab of a dual core  AMD GX-412TC (1 GHz) wit
 ---
 ## Hardware detail
 
-This lab will test a [PC Engines APU 2C4](http://www.pcengines.ch/apu2.htm) ([dmesg](pc-engines-apu2.md)):
+This lab tests a [PC Engines APU 2C4](http://www.pcengines.ch/apu2.htm) ([dmesg](pc-engines-apu2.md)):
 
-- Quad core [AMD GX-412TC Processor](https://www.amd.com/Documents/AMDGSeriesSOCProductBrief.pdf) (1 GHz and AESNI)
-- 3 with Intel i210AT Gigabit
-- 4Gb of RAM
+- Quad-core [AMD GX-412TC Processor](https://www.amd.com/Documents/AMDGSeriesSOCProductBrief.pdf) (1 GHz with AES-NI)
+- 3x Intel i210AT Gigabit ports
+- 4 GB of RAM
 
 ## Lab set-up
 
@@ -45,9 +45,9 @@ BSDRP release 1.92 based on FreeBSD 12-STABLE is used.
  +------------------------------------------+      +-----------------------+
 ```
 
-The generator **MUST** generate lot’s of IP flows (multiple source/destination IP addresses and/or UDP src/dst port) and minimum packet size (for generating maximum packet rate) with one of these commands:
+The generator **MUST** generate lots of IP flows (multiple source/destination IP addresses and/or UDP src/dst ports) with the minimum packet size (to produce the maximum packet rate) with one of these commands:
 
-Multiple source/destination IP addresses (don’t forget to precise port to use for avoiding to use port number 0 filtered by pf):
+Multiple source/destination IP addresses (don't forget to specify the UDP port to avoid using port 0, which is filtered by pf):
 
 ```
 pkt-gen -U -i igb2 -f tx -n 80000000 -l 60 -d 198.19.10.1:2000-198.19.10.20 -D 00:0d:b9:41:ca:3d -s 198.18.10.1:2000-198.18.10.100 -w 4
@@ -59,7 +59,7 @@ And the same with IPv6 flows:
 pkt-gen -N -f tx -i igb2 -n 1000000000 -l 60 -6 -d "[2001:2:0:8001::1]-[2001:2:0:8001::64]" -D 00:0d:b9:41:ca:3d -s "[2001:2:0:1::1]-[2001:2:0:1::14]" -S 00:07:43:2e:e4:72 -w 4
 ```
 
-Receiver will use these commands:
+The receiver will use this command:
 
 ```
 pkt-gen -i igb3 -f rx -w 4
@@ -67,7 +67,7 @@ pkt-gen -i igb3 -f rx -w 4
 
 ## Basic configuration
 
-### Disabling Ethernet flow-control
+### Disabling Ethernet flow control
 
 ```
 echo "dev.igb.1.fc=0" >> /etc/sysctl.conf
@@ -77,7 +77,7 @@ service sysctl restart
 
 ### Enabling Tx abdicate (iflib drivers)
 
-Second, if NIC drivers is iflib based you should enable TX abdicate (automatically done with BSDRP but not on a generic FreeBSD):
+If the NIC driver is iflib-based, you should enable TX abdicate (done automatically by BSDRP but not on a generic FreeBSD):
 
 ```
 cat <<EOF >> /etc/sysctl.conf
@@ -90,7 +90,7 @@ service sysctl restart
 
 ### Disabling ICMP redirect
 
-ICMP redirect is enabled by default on a generic FreeBSD (it’s disabled by default on BSDRP), and this feature disable the fast tryforward code path.
+ICMP redirect is enabled by default on a generic FreeBSD (it is disabled by default on BSDRP), and this feature disables the fast tryforward code path.
 
 ```
 cat <<EOF >> /etc/sysctl.conf
@@ -103,9 +103,9 @@ service sysctl restart
 
 ### Static routes and ARP/NDP entries
 
-Configure static routes, configure IP addresses, static ARP and some entropy sources are excluded:
+Configure static routes, IP addresses, and static ARP, and exclude some entropy sources.
 
-A router [should not use LRO and TSO](../technical-docs/performance.md). BSDRP disable by default using a RC script (disablelrotso_enable=“YES” in /etc/rc.conf.misc).
+A router [should not use LRO and TSO](../technical-docs/performance.md). BSDRP disables them by default via an RC script (`disablelrotso_enable="YES"` in `/etc/rc.conf.misc`).
 
 ```
 sysrc gateway_enable="YES"
@@ -135,10 +135,10 @@ harvest_mask="351"
 
 ## Default forwarding rate
 
-We start the first test by starting one packet generator at gigabit line-rate (1.488Mpps) and found:
+We start the first test with one packet generator at gigabit line rate (1.488 Mpps) and observe:
 
-- APU2 is not responsive during this test: NIC multiqueue correcly distribute load to all cores;
-- About 794Kpps are accepted by the igb(4) Ethernet interface.
+- The APU2 is not responsive during this test: NIC multiqueue correctly distributes load to all cores.
+- About 794 Kpps are accepted by the igb(4) Ethernet interface.
 
 <!-- -->
 
@@ -152,8 +152,8 @@ We start the first test by starting one packet generator at gigabit line-rate (1
 
 ## Firewalls impact
 
-This test will generate 2000 different flows by using 2000 different UDP destination ports.
+This test generates 2000 different flows by using 2000 different UDP destination ports.
 
-pf and ipfw configurations used are detailed on the previous [Forwarding performance lab of an IBM System x3550 M3 with Intel 82580](forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md#firewall-impact).
+The pf and ipfw configurations used are detailed in the earlier [Forwarding performance lab of an IBM System x3550 M3 with Intel 82580](forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md#firewall-impact).
 
 ![forwarding and firewalling rate with a PC Engines APU running FreeBSD 10.3](../../assets/images/documentation/examples/bench.forwarding.and.firewalling.rate.on.pc.engines.apu2.png)

@@ -1,16 +1,16 @@
 ---
-title: IPSec performance lab of SuperServer 5018A-FTN4
-description: IPSec VTI performance lab of a 8 cores Atom
+title: IPsec performance lab of SuperServer 5018A-FTN4
+description: IPsec VTI performance lab of an 8-core Atom
 ---
 ## Hardware detail
 
-This lab will test a [SuperMicro](http://www.supermicro.com/products/system/1U/5018/SYS-5018A-FTN4.cfm) [SuperServer 5018A-FTN4](superserver-5018a-ftn4.md):
+This lab tests a [SuperMicro](http://www.supermicro.com/products/system/1U/5018/SYS-5018A-FTN4.cfm) [SuperServer 5018A-FTN4](superserver-5018a-ftn4.md):
 
-- Intel Rangeley: [Atom C2758 (8 cores) at 2.4GHz](http://ark.intel.com/products/77988/Intel-Atom-Processor-C2758-4M-Cache-2_40-GHz)
-- 8Gb of RAM
-- Quad port Chelsio 10-Gigabit T540-CR and OPT SFP (SFP-10G-LR)
+- Intel Rangeley: [Atom C2758 (8 cores) at 2.4 GHz](http://ark.intel.com/products/77988/Intel-Atom-Processor-C2758-4M-Cache-2_40-GHz)
+- 8 GB of RAM
+- Quad-port Chelsio 10-Gigabit T540-CR and OPT SFPs (SFP-10G-LR)
 
-This CPU includes AES-NI: AES-CBC,AES-XTS,AES-GCM,AES-ICM.
+This CPU includes AES-NI: AES-CBC, AES-XTS, AES-GCM, AES-ICM.
 
 ## Method used
 
@@ -51,11 +51,11 @@ The benchmarking method used here is detailed in [Setting up a VPN IPSec, GRE, e
 
 ## Devices configuration
 
-Almost the same as on the forwarding performance lab.
+Almost the same as the forwarding performance lab.
 
 ### DUT
 
-Configure IP address, routes and static IPSec.
+Configure IP addresses, routes, and static IPsec.
 
 /boot/loader.conf:
 
@@ -117,7 +117,7 @@ add 198.18.1.210 198.18.1.208 esp 10001 -m tunnel -u 100 -E aes-gcm-16 "12345678
 aesni_load="YES"
 ```
 
-Configure IP address, routes and static IPSec:
+Configure IP addresses, routes, and static IPsec:
 
 ```
 gateway_enable="YES"
@@ -159,11 +159,11 @@ add 198.18.1.208 198.18.1.210 esp 10000 -m tunnel -u 200 -E aes-gcm-16 "12345678
 add 198.18.1.210 198.18.1.208 esp 10001 -m tunnel -u 200 -E aes-gcm-16 "12345678901234567890";
 ```
 
-## IPSec benchmark “Equilibrium throughput” method
+## IPsec benchmark "equilibrium throughput" method
 
-Once done, we start using a fast method for measuring the “IPsec equilibrium throughput” of the DUT.
+Once that is done, we use a fast method to measure the "IPsec equilibrium throughput" of the DUT.
 
-From the packet generator/receiver a simple script that use netmap-pktgen will do the job:
+From the packet generator/receiver, a simple script that uses netmap-pktgen will do the job:
 
 ```
 [root@pkt-gen]~# equilibrium -4 -d 00:07:43:2e:e5:90 -t vcxl0 -r vcxl1 -l 10000
@@ -210,7 +210,7 @@ Iteration 7
 Estimated Equilibrium Ethernet throughput= 1604 Mb/s (maximum value seen: 1604 Mb/s)
 ```
 
-=\> We reach about 1.604Gb/s to encrypt 5000 flows.
+We reach about 1.604 Gb/s encrypting 5000 flows.
 
 ### Encryption algorithms
 

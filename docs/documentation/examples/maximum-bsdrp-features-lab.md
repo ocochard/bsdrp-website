@@ -1,10 +1,10 @@
 ---
 title: Maximum BSDRP features lab
-description: Complex example showing some of available features
+description: Complex example showing several of the available features
 ---
-This lab is used for testing BSDRP before releasing new version.
+This lab is used to test BSDRP before each new release.
 
-## Presentation
+## Overview
 
 ### Network diagram
 
@@ -12,15 +12,15 @@ Here is the logical and physical view:
 
 ![maximum_bsdrp_features_lab.png](../../assets/images/documentation/examples/maximum_bsdrp_features_lab.png)
 
-## Setting-up the lab
+## Setting up the lab
 
 ### Downloading BSD Router Project images
 
-Download BSDRP serial image (prevent to have to use an X display) on Sourceforge.
+[Download the BSDRP serial image](../../downloads.md) (which avoids the need for an X display).
 
-### Download Lab scripts
+### Download lab scripts
 
-More information on these BSDRP lab scripts available on [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
+More information on the BSDRP lab scripts is available in [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
 
 Start the lab with full-meshed 6 routers.
 
@@ -68,11 +68,11 @@ To connect VM'serial console, you can use:
 - VM 5 : cu -l /dev/nmdm-BSDRP.5B
 ```
 
-## Routers configuration
+## Router configuration
 
-In this order for avoiding DHCP client timeout problems.
+Configure the routers in this order to avoid DHCP client timeout problems.
 
-All these routers can be configured with labconfig tool (use it only on a lab, because it will replace your current running configuration):
+All these routers can be configured with the labconfig tool (use it only in a lab, because it will replace your current running configuration):
 
 ```
 labconfig full_vm[VM-NUMBER]
@@ -80,7 +80,7 @@ labconfig full_vm[VM-NUMBER]
 
 ### Router 5 (including jail5 and jail6)
 
-(you can use script “labconfig vm5” for automatically pushing full configuration):
+You can use the script `labconfig vm5` to push the full configuration automatically:
 
 ```
 sysrc hostname=R5 \
@@ -211,7 +211,7 @@ service jail start
 
 ### Router 2
 
-(you can use script “labconfig vm2” for automatically pushing full configuration):
+You can use the script `labconfig vm2` to push the full configuration automatically:
 
 ```
 sysrc hostname=R2
@@ -429,7 +429,7 @@ service pimd start
 
 ### Router 3
 
-(you can use script “labconfig vm3” for automatically pushing full configuration):
+You can use the script `labconfig vm3` to push the full configuration automatically:
 
 ```
 sysrc hostname=R3
@@ -564,7 +564,7 @@ service bird start
 
 ### Router 4
 
-(you can use script “labconfig vm4” for automatically pushing full configuration):
+You can use the script `labconfig vm4` to push the full configuration automatically:
 
 ```
 sysrc hostname=R4
@@ -791,7 +791,7 @@ service pimd start
 
 ### Router 1
 
-This router will be used for backuping all other routers configuration files, then it need a root password for enabling SSH access to it. We will use “root” password for this lab.
+This router will be used to back up the configuration files from all the other routers, so it needs a root password to allow SSH access. We will use the password "root" for this lab.
 
 ```
 sysrc hostname=R1 \
@@ -837,7 +837,7 @@ Server listening on 5201
 -----------------------------------------------------------
 ```
 
-Start an iperf3 client on R1, and check available bandwidth is about 10Mb/s:
+Start an iperf3 client on R1, and check that the available bandwidth is about 10 Mb/s:
 
 ```
 [root@R1]~#  iperf3 -c 10.0.56.6
@@ -864,14 +864,14 @@ iperf Done.
 
 ### IPv6 traffic shaping
 
-One jail6, display its autoconfigured inet6 address:
+On jail6, display its autoconfigured inet6 address:
 
 ```
 [root@jail6]~# ifconfig lagg0 inet6 | grep autoconf
         inet6 2001:db8:56:0:ff:ff:fe00:80b prefixlen 64 autoconf
 ```
 
-Start an iperf3 ipv6 client on R1, and check available bandwith is about 20Mb/s:
+Start an iperf3 IPv6 client on R1, and check that the available bandwidth is about 20 Mb/s:
 
 ```
 [root@R1]~# iperf3 -c 2001:db8:56:0:cf:8fff:fea9:490b
@@ -897,7 +897,7 @@ iperf Done.
 [root@R1]~#
 ```
 
-And during iperf, R4 ipfw pipe showing some activity:
+And during the iperf run, the R4 ipfw pipes show some activity:
 
 ```
 root@R4:~ # ipfw pipe show
@@ -918,9 +918,9 @@ q131132  50 sl. 0 flows (1 buckets) sched 65596 weight 0 lmax 0 pri 0 droptail
   0 ip           0.0.0.0/0             0.0.0.0/0      125    15881  0    0   0
 ```
 
-### netflow
+### NetFlow
 
-Check that netflows are collected on jail5 (/tmp/file-date-hour.txt):
+Check that NetFlow records are collected on jail5 (`/tmp/file-date-hour.txt`):
 
 ```
 [root@jail5]~# ls /tmp/file-*
@@ -933,7 +933,7 @@ Check that netflows are collected on jail5 (/tmp/file-date-hour.txt):
 
 ### SNMP
 
-From R1, get 2 SNMP values of R6:
+From R1, get two SNMP values from R6:
 
 - The basic sysname
 - The UCD module version
@@ -947,11 +947,11 @@ sysName.0 = jail6
 1.3.6.1.4.1.2021.100.2.0 = $Name: bsnmp-ucd-0-4-3 $
 ```
 
-### Configurations files network backup
+### Configuration files network backup
 
-R1 will be use as a configuration files backup repository
+R1 will be used as a backup repository for configuration files.
 
-#### Mounting data partition on R1 and configure root password
+#### Mounting the data partition on R1 and configuring the root password
 
 ```
 [root@R1]~# mount /data/
@@ -961,9 +961,9 @@ New Password:
 Retype New Password:
 ```
 
-#### Sending configuration archive file to R1
+#### Sending the configuration archive file to R1
 
-From all others routers, send the configuration file to the /data partition of R1:
+From all the other routers, send the configuration file to the `/data` partition of R1:
 
 ```
 [root@R2]/# config put scp root@10.0.12.1:/data/R2.tar.xz
@@ -978,7 +978,7 @@ config.3803.tar.xz                            100% 7100     6.9KB/s   00:00
 
 ### System integrity check
 
-Download the mtree reference file corresponding to your BSDRP release and start a system integrity check. In this lab, we put the reference file in the /tmp folder of R1:
+Download the mtree reference file corresponding to your BSDRP release and start a system integrity check. In this lab, we put the reference file in the `/tmp` folder of R1:
 
 ```
 [root@R1]~# system integrity /tmp/BSDRP-1.4-amd64-serial.mtree.xz
@@ -989,4 +989,4 @@ tmp extra
 var extra
 ```
 
-Extra files and folder are normal regarding your previous tests.
+Extra files and folders are expected after the previous tests.
