@@ -2,19 +2,19 @@
 title: Downloads
 description: "Downloads section: BSD Router Project images/firmwares and system integrity reference files"
 ---
-Refer to the [Filename convention](documentation/end-users-docs.md#filename-convention) for choosing the disk image corresponding to your needs.
+Refer to the [filename convention](documentation/end-users-docs.md#filename-convention) to choose the disk image that matches your needs.
 
-Theses images were create for:
+These images are built for:
 
-- architectures: x86_64(amd64) and ARM 64 (aarch64)
-- a minimum 4GB media (flash device, usb key, hard drive, etc.)
+- Architectures: x86_64 (amd64) and ARM 64 (aarch64)
+- A minimum 4 GB medium (flash device, USB key, hard drive, etc.)
 
 Image types:
 
-- Full: [For new installation](documentation/end-users-docs.md#installation) or VM usage (use them as RAW image disk)
-- Upgrade: [To upgrade existing installation](documentation/end-users-docs.md#upgrading-examples)
-- mtree: [Used for system integrity check](documentation/end-users-docs.md#system-integrity-check)
-- debug: debug symbols
+- Full: [for new installations](documentation/end-users-docs.md#installation) or VM use (use them as RAW disk images)
+- Upgrade: [to upgrade an existing installation](documentation/end-users-docs.md#upgrading-examples)
+- mtree: [used for system integrity checks](documentation/end-users-docs.md#system-integrity-check)
+- Debug: debug symbols
 
 ## Stable releases
 
@@ -32,6 +32,6 @@ Image types:
 | amd64 | debug | [BSDRP-2.2-debug-amd64.tar.xz](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.2/amd64/BSDRP-2.2-debug-amd64.tar.xz/download) | [sha256](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.2/amd64/BSDRP-2.2-debug-amd64.tar.xz.sha256/download) |
 | aarch64 | debug | [BSDRP-2.2-debug-aarch64.tar.xz](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.2/aarch64/BSDRP-2.2-debug-aarch64.tar.xz/download) | [sha256](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.2/aarch64/BSDRP-2.2-debug-aarch64.tar.xz.sha256/download) |
 
-## Nightly Build
+## Nightly builds
 
-[BSDRP Nightly builds](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/nightly/) are work-in-progress and are not fully tested.
+[BSDRP nightly builds](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/nightly/) are work-in-progress and are not fully tested.

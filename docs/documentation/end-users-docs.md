@@ -2,12 +2,12 @@
 title: User Guide
 description: BSD Router Project User Guide
 ---
-## Hardware Compatibility List
+## Hardware compatibility list
 
-To run BSDRP, you will need:
+To run BSDRP, you need:
 
-- A 4GB flash disk (such as Compact Flash, USB stick, or mSATA module).
-- At least 1GB of RAM.
+- A 4 GB flash disk (such as a CompactFlash card, USB stick, or mSATA module).
+- At least 1 GB of RAM.
 
 All hardware supported by the latest FreeBSD release is compatible with BSDRP, except for some drivers that have been removed (e.g., wireless, PCMCIA, SCSI, USB printer, and FireWire).
 
@@ -17,37 +17,37 @@ BSDRP image filenames follow this pattern:
 
 BSDRP_*release*_*image type*_*arch*.img.xz
 
-The value *image type* can be:
+The *image type* can be:
 
-- full : For full installation, includes the bootloader, system, and data partitions.
-- upgrade : For system upgrades, includes only one system partition
+- full: for a full installation; includes the bootloader, system, and data partitions
+- upgrade: for system upgrades; includes only one system partition
 
-The value *arch* can be:
+The *arch* can be:
 
-- amd64 : For modern x86 64-bit CPUs (Intel and AMD)
-- aarch64 : For ARM 64-bit CPUs.
+- amd64: for modern x86 64-bit CPUs (Intel and AMD)
+- aarch64: for ARM 64-bit CPUs
 
 Examples:
 
-- BSDRP_2.0_full_amd64.img: Full image for x86_64.
-- BSDRP_2.0_upgrade_aarch64.img: Upgrade image for ARM.
+- BSDRP_2.0_full_amd64.img: full image for x86_64
+- BSDRP_2.0_upgrade_aarch64.img: upgrade image for ARM
 
-The *.mtree.xz files are used for system integrity check.
+The `*.mtree.xz` files are used for system integrity checks.
 
 ## Installation
 
-#### To a flash media (CF/USB)
+### To flash media (CF/USB)
 
-##### Windows users
+#### Windows users
 
-Here are the 2 steps for writing the image to a CF/flasg/USB removable media:
+The two steps for writing the image to a CF/flash/USB removable medium:
 
-1.  Decompress the BSDRP image using [7-Zip](http://www.7-zip.org/) to get a .img file.
-2.  Use [Image Writer for Windows](http://win32diskimager.sourceforge.net/) to write the .img file to your CF/flash/USB device.
+1.  Decompress the BSDRP image using [7-Zip](http://www.7-zip.org/) to get a `.img` file.
+2.  Use [Image Writer for Windows](http://win32diskimager.sourceforge.net/) to write the `.img` file to your CF/flash/USB device.
 
-##### *BSD or Linux users
+#### *BSD or Linux users
 
-Connect your flash or USB drive and note its device name. Decompress the image and copy it to your drive using a byte copy command. Then unzip the file and byte copy it to your drive (**Warning: Be sure to double-check the destination disk!**):
+Connect your flash or USB drive and note its device name. Decompress the image and copy it to the drive using a byte-copy command (**Warning: be sure to double-check the destination disk!**):
 
 ```
 xzcat BSDRP_full_amd64_vga.1.0.img.xz | dd of=/dev/sd4 bs=256k
@@ -55,16 +55,16 @@ xzcat BSDRP_full_amd64_vga.1.0.img.xz | dd of=/dev/sd4 bs=256k
 
 You can boot from this media now.
 
-##### Mac OS X users
+#### macOS users
 
-Insert the USB key, and display list of external devices:
+Insert the USB key and list the external devices:
 
 ```
 % diskutil list | grep external
 /dev/disk3 (external, physical):
 ```
 
-Check if it is already mounted
+Check whether it is already mounted:
 
 ```
 % mount | grep '/dev/disk3'
@@ -76,18 +76,18 @@ map auto_home on /home (autofs, automounted)
 /dev/disk3s1 on /Volumes/UNTITLED (msdos, local, nodev, nosuid, noowners)
 ```
 
-The last line is your USB device. Unmount it and write the BSDRP image to the device adding the ‘r’ letter:
+The last line is your USB device. Unmount it and write the BSDRP image to the device, prefixing the device name with `r`:
 
 ```
 sudo umount -f /dev/disk3s1
 xzcat BSDRP_full_amd64_vga.1.0.img.xz | sudo dd of=/dev/rdisk3 bs=1m
 ```
 
-If successful, OSX will pop up an error dialog telling you it doesn‘t recognise the disk. Click ’Eject’, remove the USB key, and you’re done.
+If successful, macOS will show an error dialog saying it doesn’t recognize the disk. Click “Eject”, remove the USB key, and you’re done.
 
-#### To an hard drive
+### To a hard drive
 
-Boot BSDRP from the previously generated usb key, then from BSDRP, display the BSDRP system diskname:
+Boot BSDRP from the USB key you just created. From BSDRP, display the BSDRP system disk name:
 
 ```
 [root@router]~# glabel status | grep BSDRP
@@ -96,7 +96,7 @@ Boot BSDRP from the previously generated usb key, then from BSDRP, display the B
 ufs/BSDRPs1a     N/A  da1s1a
 ```
 
-=\> On this example BSDRP is on disk da1 (USB key)
+In this example, BSDRP is on disk `da1` (the USB key).
 
 Display all the system disks:
 
@@ -105,9 +105,9 @@ Display all the system disks:
 kern.disks: da1 da0 ada0
 ```
 
-=\> On this example, because da1 is the BSDRP disk, ada0 is the hard-drive where we want install BSDRP.
+In this example, since `da1` is the BSDRP disk, `ada0` is the hard drive where we want to install BSDRP.
 
-Then copy the BSDRP disk to the hard-drive:
+Copy the BSDRP disk to the hard drive:
 
 ```
 [root@router]# system install ada0
@@ -119,39 +119,39 @@ Copying 487MB from da1 to ada0...
 
 Reboot your system (and don’t forget to remove the USB key).
 
-Once rebooted from your hard drive, you can expand the /data slice for using all the free space:
+Once rebooted from your hard drive, you can expand the `/data` slice to use all the free space:
 
 ```
 system expand-data-slice
 ```
 
-#### Special notes for PC-Engines
+### Special notes for PC Engines
 
-##### Alix platform
+#### Alix platform
 
-You need to use [BIOS revision 0.99h](http://www.pcengines.ch/alix2.htm) minimum. You can use the [pfSense Alix BIOS update FreeDOS image disk](https://doc.pfsense.org/index.php/ALIX_BIOS_Update_Procedure) for an easy upgrade.
+You need at least [BIOS revision 0.99h](http://www.pcengines.ch/alix2.htm). You can use the [pfSense Alix BIOS update FreeDOS image disk](https://doc.pfsense.org/index.php/ALIX_BIOS_Update_Procedure) for an easy upgrade.
 
 ## Quick start
 
-Login as root with no password.
+Log in as `root` with no password.
 
-If you are using the serial version, serial port parameters are: 115200,8,N,1,MODEM.
+If you are using the serial version, the serial port parameters are: 115200, 8, N, 1, MODEM.
 
-Start by using the help:
+Start with the built-in help:
 
 ```
 help
 ```
 
-Create a password for root (mandatory for SSH):
+Set a password for root (mandatory for SSH):
 
 ```
 passwd
 ```
 
-For a routing protocol daemons, you have choice between bird or FRRouting (Quaga fork).
+For a routing protocol daemon, you can choose between Bird and FRRouting (a Quagga fork).
 
-As an example, for starting FRR and enter into its cli mode:
+As an example, to start FRR and enter its CLI mode:
 
 ```
 sysrc frr_enable=yes
@@ -159,14 +159,14 @@ service frr start
 cli
 ```
 
-Do your frr configuration, and save frr config and exit cli:
+Configure FRR, then save its config and exit the CLI:
 
 ```
 wr
 exit
 ```
 
-Then save all changes (you can avoid this by enabling autosave feature):
+Then save all changes (you can skip this step by enabling the autosave feature):
 
 ```
 config save
@@ -174,9 +174,9 @@ config save
 
 ## Configuration files
 
-All modifications done in configuration files (/etc/*, /usr/local/etc/*) need to be saved before a reboot.
+Any changes to configuration files (`/etc/*`, `/usr/local/etc/*`) must be saved before a reboot.
 
-Use the config command for saving configuration:
+Use the `config` command to save the configuration:
 
 ```
 [root@R1]~#config
@@ -195,7 +195,7 @@ Usage: /usr/local/sbin/config option
 
 
 !!! note
-    Don’t modify /boot/loader.conf: Your changes will be lost after an upgrade. In place, create a new file /boot/loader.conf.local and put your modifications on this file.
+    Don’t modify `/boot/loader.conf`: your changes will be lost after an upgrade. Instead, create a new file `/boot/loader.conf.local` and put your modifications there.
 
 
 ## Upgrading examples
@@ -204,7 +204,7 @@ Usage: /usr/local/sbin/config option
 
 #### HTTP/FTP fetch without checking SHA256
 
-Directly download and send output to xzcat+upgrade:
+Download the image directly and pipe the output through xzcat into upgrade:
 
 ```
 fetch 'http://URL/BSDRP-upgrade.image.xz' -o - | xzcat | upgrade
@@ -218,41 +218,41 @@ fetch 'https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/1.96/amd6
 
 #### SSH fetch without checking SHA256
 
-Same than previously, but using SSH:
+Same as above, but over SSH:
 
 ```
 ssh my-user@my-ssh-server cat /path-to/BSDRP-upgrade.image.xz | xzcat | upgrade
 ```
 
-#### Using a SCP Client or fetching upgrade file from BSDRP
+#### Using an SCP client, or fetching the upgrade file from BSDRP
 
-This method required:
+This method requires:
 
-- A minimum of 60MB of free RAM on your BSDRP (mem_avail value in the “show mem” output)
-- One of this:
-  - Sending the upgrade file + sha256 with a SCP client ([FileZilla](http://filezilla-project.org/) or [WinSCP](http://winscp.net) as example)
-  - Or downloading upgrade file directly from BSDRP
+- At least 60 MB of free RAM on your BSDRP (the `mem_avail` value in the `show mem` output)
+- One of the following:
+  - Sending the upgrade file and its sha256 with an SCP client (for example [FileZilla](http://filezilla-project.org/) or [WinSCP](http://winscp.net))
+  - Or downloading the upgrade file directly from BSDRP
 
-Resume:
+Summary:
 
 1.  Create a TMPFS (RAM disk) directory
-2.  Transfer BSDRP image upgrade file + sha256 on the ram disk using the SCP client or download the image directly
-3.  Check SHA256
+2.  Transfer the BSDRP upgrade image and its sha256 onto the RAM disk using the SCP client, or download them directly
+3.  Check the SHA256
 4.  Upgrade the system
 
-Step 1: Creating the ram disk
+Step 1: create the RAM disk
 
-On BSDRP, enter theses commands for creating a RAM drive:
+On BSDRP, run the following command to create a RAM drive:
 
 ```
 mount -t tmpfs tmpfs /mnt/
 ```
 
-Step 2: Transferring image file + sha256 in the temporary RAM drive
+Step 2: transfer the image file and sha256 onto the temporary RAM drive
 
-Using your SCP client, send the BSDRP upgrade image to the router’s **/mnt** folder.
+Using your SCP client, send the BSDRP upgrade image to the router's **/mnt** folder.
 
-Or download them from BSDRP:
+Or download them directly from BSDRP:
 
 ```
 cd /mnt
@@ -260,7 +260,7 @@ fetch URL/BSDRP-upgrade.image.xz
 fetch URL/BSDRP-upgrade.image.sha256
 ```
 
-Step 3: After transfer complete, On BSDRP, enter this command:
+Step 3: once the transfer is complete, run on BSDRP:
 
 ```
 sha256 -c `cat BSDRP-upgrade.image.sha256 | cut -d ' ' -f 4` BSDRP-upgrade.image.xz && echo "good" || echo "bad"
@@ -270,9 +270,9 @@ umount /mnt
 
 ### From a *nix server
 
-This method required a SSH client (all Linux/Unix should include it).
+This method requires an SSH client (Linux and Unix systems include one by default).
 
-From the client, enter this command:
+From the client, run:
 
 ```
 cat BSDRP_1.2_upgrade_amd64_vga.img.xz | ssh root@a.b.c.d "xzcat | upgrade"
@@ -282,7 +282,7 @@ cat BSDRP_1.2_upgrade_amd64_vga.img.xz | ssh root@a.b.c.d "xzcat | upgrade"
 
 ### SSH access
 
-SSH access with the root user is not available by default: You need to set-up a password for the root account before with the **passwd** command.
+SSH access for the root user is not available by default. You first need to set a password for the root account with the **passwd** command.
 
 Example:
 
@@ -295,11 +295,11 @@ Retype New Password: XXXXXXXX
 
 ### System integrity check
 
-[Reference mtree file are provided](../downloads.md) for checking the integrity of all your files on your router.
+[Reference mtree files are provided](../downloads.md) so you can check the integrity of all files on your router.
 
-You can check your BSDRP system integrity using these references files by downloading the corresponding file into your router and using “system integrity” command.
+To check the integrity of your BSDRP system, download the corresponding reference file onto your router and run the `system integrity` command.
 
-As example, if you are using 0.35 amd64-serial release, from your BSDRP router (if it had DNS resolution and Internet access configured):
+For example, on a 0.35 amd64-serial release (assuming the router has DNS resolution and internet access):
 
 ```
 cd /tmp
@@ -307,13 +307,13 @@ fetch http://downloads.sourceforge.net/project/bsdrp/BSD_Router_Project/0.35/BSD
 system integrity BSDRP_0.35_amd64_serial.mtree.xz
 ```
 
-## System Management
+## System management
 
-### autosave configuration
+### Autosave configuration
 
-All modifications in configuration files done into /etc and /usr/local/etc needs to be saved with “config save” command. (/etc and /usr/local/etc is a ram disk).
+Any changes to configuration files under /etc and /usr/local/etc must be persisted with the `config save` command (both directories live on a RAM disk).
 
-You can enable service autosave for automatically issue command “config save” each time a modification is detected into /etc or /usr/local/etc.
+You can enable the autosave service to automatically run `config save` whenever a change is detected under /etc or /usr/local/etc:
 
 ```
 sysrc autosave_enable=yes
@@ -322,45 +322,45 @@ service autosave start
 
 ### Serial port
 
-#### Enabling dual console vga/serial
+#### Enabling dual VGA/serial console
 
-If you are using the vga release of BSDRP, you can enable the serial access (COM1) with the command
+If you are using the VGA release of BSDRP, you can enable serial access (COM1) with:
 
 ```
 system dual-console
 ```
 
-#### baud rate
+#### Baud rate
 
-Serial port baud rate need to be modified in 2 different files:
+The serial port baud rate must be changed in two files:
 
 - /boot.config
 - /etc/ttys
 
-For modifying the /boot.config file you need to mount RW the /:
+To edit /boot.config, first remount / read-write:
 
 ```
 mount -uw /
 ```
 
-Change the speeed value just after the “-S” option (don’t remove the other -D or/and -h options!) in the /boot.config file.
+Change the speed value just after the `-S` option in /boot.config (do not remove the other `-D` or `-h` options).
 
-Check that you didn’t have legacy values (boot_serial, comconsole_speed, console) configured on your /boot/loader.conf.local: There are useless with the use of /boot.config.
+Check that there are no legacy values (`boot_serial`, `comconsole_speed`, `console`) in /boot/loader.conf.local. They are unnecessary when /boot.config is in use.
 
-Once done, mount RO /:
+Once done, remount / read-only:
 
 ```
 mount -ur /
 ```
 
-Then edit etc/ttys and change the baud rate in line ttyu0 (if you need to change the first serial port).
+Then edit /etc/ttys and change the baud rate on the `ttyu0` line (for the first serial port).
 
-#### Changing the default serial port used for console
+#### Changing the default serial port used for the console
 
-If you need to change the default serial port to use for console (like Supermicro that use COM2 for sol):
+If you need to change which serial port is used for the console (Supermicro boards, for example, use COM2 for SOL):
 
-- Start by displaying the list of available serial ports
-- Then change the value in /boot/loader.conf.local
+- First list the available serial ports
+- Then update the value in /boot/loader.conf.local
 
 <!-- -->
 
@@ -376,23 +376,23 @@ root@bsdrp# mount -ur /
 
 ### IPMI
 
-If you need to configure the local IPMI board, you have to load the IPMI drivers.
+To configure the local IPMI board, you first need to load the IPMI driver.
 
-Edit /etc/rc.conf and check that module “ipmi” is declared on the kld_list variable:
+Edit /etc/rc.conf and make sure the `ipmi` module is listed in the `kld_list` variable:
 
 ```
 kld_list='ipmi'
 ```
 
-You can load it from the shell too:
+You can also load it from the shell:
 
 ```
 kldload ipmi
 ```
 
-Then you can use [ipmitool](http://ipmitool.sourceforge.net/) for configuring it.
+Then you can use [ipmitool](http://ipmitool.sourceforge.net/) to configure it.
 
-For connecting with IPMI to serial port with IPMI SOL (Serial over lAN) from a remote machine, change the baud-rate of the serial line to 115200 and to connect to it (example with default password for IBM x3550):
+To connect to the serial port over IPMI SOL (Serial Over LAN) from a remote machine, set the baud rate of the serial line to 115200 and then activate the session (example uses the default password for an IBM x3550):
 
 ```
 ipmitool -H 192.168.1.11 -U USERID -P PASSW0RD sol set non-volatile-bit-rate 115.2
@@ -407,7 +407,7 @@ Add to /etc/rc.conf:
 ```
 # Load Intel ICH watchdog interrupt timer driver
 kld_list='ichwd'
-# Start watchdogd dameon
+# Start watchdogd daemon
 watchdogd_enable="yes"
 ```
 
@@ -418,23 +418,23 @@ kldload ichwd
 service watchdogd start
 ```
 
-If you already load ipmi module, watchdogd can use IPMI in place of ichwd.
+If the `ipmi` module is already loaded, `watchdogd` can use IPMI instead of `ichwd`.
 
 ### SNMP
 
-Enable bsdnmpd:
+Enable bsnmpd:
 
 ```
 sysrc bsnmpd_enable=YES
 ```
 
-Edit /etc/snmpd.config according to your needs and start the daemon:
+Edit /etc/snmpd.config to suit your needs and start the daemon:
 
 ```
 service bsnmpd start
 ```
 
-Then you can check it locally (it uses public as default snmp community):
+You can then check it locally (the default SNMP community is `public`):
 
 ```
 [root@BSDRP]~# bsnmpget sysDescr.0
@@ -443,7 +443,7 @@ sysDescr.0 = router.bsdrp.net 2059309898 FreeBSD 9.1-RELEASE-p1
 
 ### Syslog
 
-For generating syslog message, just edit /etc/syslog.conf and check the example:
+To send syslog messages to a remote host, edit /etc/syslog.conf. The file already includes a commented example:
 
 ```
 # uncomment this to enable logging to a remote loghost named loghost
@@ -458,14 +458,14 @@ service syslogd restart
 
 
 !!! note
-    BSDRP v1.4 and earlier have a default configuration that prevent remote syslog. This behavior can be changed by editing /etc/rc.conf.misc and replacing syslogd_flags=“-ss” by syslogd_falgs=“-s”
+    BSDRP v1.4 and earlier ship with a default configuration that blocks remote syslog. To change this, edit /etc/rc.conf.misc and replace `syslogd_flags="-ss"` with `syslogd_flags="-s"`.
 
 
-### Firmware Upgrade
+### Firmware upgrade
 
 #### Mellanox
 
-Stat by identifying your NIC ID:
+Start by identifying your NIC:
 
 ```
 # mstfwmanager
@@ -489,7 +489,7 @@ Device #1:
   Status:           No matching image found
 ```
 
-Then go to the [Mellanox firmware web site](https://www.mellanox.com/page/firmware_download) in section “Device Type” -\> “Part Number” -\> “PSID”, then fetch it into your BSDRP and upgrade it:
+Go to the [Mellanox firmware download site](https://www.mellanox.com/page/firmware_download), navigate to "Device Type" -> "Part Number" -> "PSID", then fetch the firmware on your BSDRP router and apply the upgrade:
 
 ```
 # mount /data
@@ -534,35 +534,35 @@ Restart needed for updates to take effect.
 
 #### Local swap dump device
 
-For saving and extracting a crash dump you need:
+To save and extract a crash dump you need:
 
-- A swap partition with same size as your RAM size (will store the raw RAM dump)
-- A data partition with same size as your RAM size (for storing the extracted dump)
+- A swap partition the same size as your RAM (to store the raw memory dump)
+- A data partition the same size as your RAM (to store the extracted dump)
 
-For enabling crash dump, the steps are:
+The steps to enable crash dumps are:
 
-1.  Configure a dump device that will be used for storing memory dump (can be an external USB key)
-2.  Increase size of /data for being able to store the memory dump
-3.  Configure to mount /data automatically (because next step needs it)
-4.  Configure to store dump into /data
+1.  Configure a dump device for storing the memory dump (this can be an external USB key)
+2.  Increase the size of /data so it can hold the memory dump
+3.  Configure /data to mount automatically (the next step needs it)
+4.  Configure the system to save dumps under /data
 
-Here is an an example when we split data partition 4 in 2 BSD partitions:
+Here is an example that splits data partition 4 into two BSD partitions:
 
 - One as swap
 - One as /data
 
-But if you can plug an USB key with a size=RAM size, you can avoid to expand your partition 4 and just using this device.
+If you can plug in a USB key the same size as your RAM, you can skip expanding partition 4 and just use that device.
 
-Step to follows:
+Steps:
 
 1.  Delete partition 4 (/data)
-2.  Recreate partition 4 using full disk space
-3.  Create 2 BSD partitions in this new large partition 4:
-    - partition s4a (4.2BSD) with a size= RAM size
-    - partition s4b (swap) with a size= RAM size
-4.  Format s4a in UFS and enable dumpon on the swap
+2.  Recreate partition 4 using the full available disk space
+3.  Create two BSD partitions inside this new partition 4:
+    - partition s4a (4.2BSD) the size of your RAM
+    - partition s4b (swap) the size of your RAM
+4.  Format s4a as UFS and enable dumpon on the swap partition
 
-Then we destroy the default small partition 4, and re-create a new one that will use the full disk size, and create BSD-partition inside it (MBR partition scheme allow only 4 partitions, then we’re using sub-partition in BSD mode):
+Now destroy the default small partition 4, recreate it using the full disk size, and create BSD partitions inside it (the MBR scheme allows only four partitions, so we use BSD sub-partitions):
 
 ```
 gpart delete -i 4 da0
@@ -576,7 +576,7 @@ Now start the BSD partition editor:
 bsdlabel -e /dev/da0s4
 ```
 
-and replace these lines:
+Replace these lines:
 
 ```
 # /dev/da0s4:
@@ -586,7 +586,7 @@ and replace these lines:
   c:  284191428          0    unused        0     0     # "raw" part, don't edit
 ```
 
-by this one (size and fstype of line a: and b: modified, ‘*’ mean automatic size):
+with these (the size and fstype of the `a:` and `b:` lines are updated; `*` means "automatic size"):
 
 ```
 # /dev/da0s4:
@@ -597,7 +597,7 @@ by this one (size and fstype of line a: and b: modified, ‘*’ mean automatic 
   c:  284191428          0    unused        0     0     # "raw" part, don't edit
 ```
 
-Then quit the editor (:x) and format partition a (/data):
+Then quit the editor (`:x`) and format partition a (/data):
 
 ```
 newfs -UjL BSDRPs4 /dev/da0s4a
@@ -613,7 +613,7 @@ config save
 service dumpon start
 ```
 
-Now, during a crash it will wrote the core dump to :
+When a crash occurs, the core dump is written to the dump device:
 
 ```
 #14 0xffffffff8096c34a at taskqueue_run_locked+0x14a
@@ -625,7 +625,7 @@ Dumping 1112 out of 16325 MB:..2%..11%..21%..31%..41%..51%..61%..71%..81%..91%
 Dump complete
 ```
 
-And after a reboot it will automatically extract the dump from dumpdevice and store it to /data/crash:
+After the next reboot the dump is automatically extracted from the dump device and stored in /data/crash:
 
 ```
 [root@router]~# ll -h /data/crash/
@@ -639,7 +639,7 @@ lrwxr-xr-x  1 root  wheel     8B Aug 30 14:57 vmcore.last@ -> vmcore.0
 
 #### netdump
 
-In case where you didn’t have enough disk space to localy store dump, you can use netdump(4).
+If you do not have enough local disk space to store a dump, you can use netdump(4).
 
 On the receiving FreeBSD server (not your router):
 
@@ -649,7 +649,7 @@ service netdumpd enable
 service netdumpd start
 ```
 
-Then on your router, declare source interface to use, source IP address, gateway
+Then on your router, set the source interface, source IP address, and gateway:
 
 ```
 sysrc dumpdev=igb1
@@ -669,12 +669,12 @@ gateway address: 192.168.1.254
 
 ### Installing debug symbols
 
-Symbol files of kernel and binary are available in the separate DEBUG archive file. It needs:
+Kernel and binary symbol files are shipped in a separate DEBUG archive. To install them you need:
 
-1.  Either 1Gbs of Free RAM for creating a large tmpfs or 1Gbs of free space in /data (use “system expand-data-slice”)
-2.  The debug tar file needs to being extracted in /data/ (there is already a symlink from /usr/lib/debug pointing to /data/debug)
+1.  Either 1 GB of free RAM (to create a large tmpfs) or 1 GB of free space in /data (use `system expand-data-slice`)
+2.  The debug tarball extracted under /data/ (a symlink from /usr/lib/debug already points to /data/debug)
 
-Here in an example, by starting expanding the data slice:
+Here is an example that begins by expanding the data slice:
 
 ```
 [root@router]~# system expand-data-slice
@@ -689,9 +689,9 @@ Filesystem          Size    Used   Avail Capacity  Mounted on
 [root@router]~# fetch "URL/BSDRP-1.60-debug-amd64.tar.xz" -o - | tar -C /data -xvf -
 ```
 
-### Analysing core dump
+### Analysing a core dump
 
-You need to install debug symbols first, then:
+Install debug symbols first, then:
 
 ```
 kgdb /usr/lib/debug/boot/kernel/kernel.debug /data/crash/vmcore.0
@@ -778,17 +778,17 @@ Previous frame inner to this frame (corrupt stack?)
 Current language:  auto; currently minimal
 ```
 
-### Generate a panic on a hang/freeze system
+### Generate a panic on a hung or frozen system
 
-If your system didn’t panic but freeze, you can generate a panic by sending a Non Maskable Interupt (NMI) by IPMI (chassis power diag).
+If your system has frozen rather than panicked, you can force a panic by sending a Non-Maskable Interrupt (NMI) via IPMI (`chassis power diag`):
 
 ```
 ipmitool -I lanplus -H SERVER -U USER -P PASSWORD chassis power diag
 ```
 
-### Kernel live debugging
+### Live kernel debugging
 
-You need to install debug symbols first, then:
+Install debug symbols first, then:
 
 ```
 [root@router]~# kgdb /boot/kernel/kernel /dev/mem
@@ -838,9 +838,9 @@ Quit
 
 ## Going further
 
-BSDRP is a FreeBSD, then you need to read how to configure a FreeBSD for using it.
+BSDRP is a FreeBSD-based system, so the standard FreeBSD documentation applies.
 
-Here is a list of useful documentations:
+Useful references:
 
 - [BSDRP Examples](examples.md)
 - [FreeBSD Handbook](http://www.freebsd.org/doc/en_US.ISO8859-1/books/handbook/):
@@ -857,9 +857,9 @@ Here is a list of useful documentations:
 
 ### Scripts
 
-The root filesystem is in read-only mode, then you can’t modify or create your own script on it.
+The root filesystem is mounted read-only, so you cannot modify or create scripts directly on it.
 
-For modify the existing script (don’t forget to send us your improvement), use the “data” partition. Here is an example for customizing the config script:
+To customize an existing script (and please send your improvements back upstream), use the `/data` partition. Here is an example for the `config` script:
 
 ```
 mount /data
@@ -867,13 +867,13 @@ cp /usr/local/bin/config /data
 vi /data/config
 ```
 
-Now you can add your great patches to config script. And test it:
+Apply your changes to the script, then test it:
 
 ```
 sh /data/config
 ```
 
-Then, don’t forget to umount the /data partition:
+When you are done, unmount the /data partition:
 
 ```
 umount /data
@@ -881,15 +881,15 @@ umount /data
 
 ### System
 
-You can modify the full filesystem by re-mount the active slice in read-write mode:
+You can modify the whole filesystem by remounting the active slice read-write:
 
 ```
 mount -uw /
 ```
 
-Now you can modify all files or removing/installing package.
+You can now modify any file, or install and remove packages.
 
-Here is how to remove ucarp as example:
+For example, to remove ucarp:
 
 ```
 [root@router]~# pkg info | grep ucarp
@@ -910,7 +910,7 @@ pkg: /usr/local/etc/rc.d/ucarp different from original checksum, not removing
 [1/1] Deleting files for ucarp-1.5.2.20171201: 100%
 ```
 
-After your changes, re-mount it in read-only mode:
+After your changes, remount it read-only:
 
 ```
 mount -ur /
@@ -918,9 +918,9 @@ mount -ur /
 
 
 !!! warning
-    But warning: All your changes (with the exception of /boot/loader.conf.local) will be lost after an upgrade!
+    All your changes (with the exception of /boot/loader.conf.local) will be lost after an upgrade.
 
 
 ## Improving forwarding speed
 
-Check the [FreeBSD forwarding Performance](technical-docs/performance.md) page for more information.
+See the [FreeBSD forwarding performance](technical-docs/performance.md) page for more information.
