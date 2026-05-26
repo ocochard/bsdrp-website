@@ -16,7 +16,7 @@ Start a lab using the [VirtualBox lab script](how-to-build-a-bsdrp-router-lab.md
 Bzipped image detected, unzip it...
 filename guests a i386 image
 filename guests a serial image
-Image file given… rebuilding BSDRP router template
+Image file given... rebuilding BSDRP router template
 Creating lab with 4 router(s):
 - 2 LAN between all routers
 - Full mesh ethernet point-to-point link between each routers

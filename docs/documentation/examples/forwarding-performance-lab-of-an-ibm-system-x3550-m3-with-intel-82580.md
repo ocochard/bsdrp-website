@@ -1,6 +1,6 @@
 ---
 title: Forwarding performance lab of an IBM System x3550 M3 with Intel 82580
-description: Forwarding performance lab of a quad cores Xeon 2.13GHz and quad-port gigabit Intel 82580
+description: Forwarding performance lab of a quad-core Xeon 2.13 GHz and quad-port Gigabit Intel 82580
 ---
 ## Hardware detail
 
@@ -384,7 +384,7 @@ sysrc pf_enable="YES"
 
 Scale information: 1.488 Mpps is the maximum packet-per-second rate for Gigabit Ethernet.
 
-![Impact of ipfw and pf on 4 cores Xeon 2.13GHz with Intel 82580 NIC](../../assets/images/documentation/examples/bench.impact.of.ipfw-pf.png)
+![Impact of ipfw and pf on 4 cores Xeon 2.13 GHz with Intel 82580 NIC](../../assets/images/documentation/examples/bench.impact.of.ipfw-pf.png)
 
 #### Ministat
 

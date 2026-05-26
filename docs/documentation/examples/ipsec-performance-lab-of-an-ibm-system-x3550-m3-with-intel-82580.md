@@ -10,7 +10,7 @@ This CPU includes AES-NI: AES-CBC, AES-XTS, AES-GCM, AES-ICM.
 
 ## Method used
 
-The benchmarking method used here is detailed in [Setting up a VPN IPSec, GRE, etc... performance benchmark lab](setting-up-a-vpn-ipsec-gre-etc-performance-benchmark-lab.md).
+The benchmarking method used here is detailed in [Setting up a VPN IPsec, GRE, etc. performance benchmark lab](setting-up-a-vpn-ipsec-gre-etc-performance-benchmark-lab.md).
 
 ### Diagram
 
@@ -203,4 +203,4 @@ IPsec overhead prevents us from reaching 1 Gb/s of clear traffic across an encry
 
 ### Encryption algorithms
 
-![Impact of IPSec encryption algorithms on 4 cores Xeon 2.13GHz with Intel 82580 NIC](../../assets/images/documentation/examples/ipsec-ibm3550-fbsd11.0.png)
+![Impact of IPsec encryption algorithms on 4 cores Xeon 2.13 GHz with Intel 82580 NIC](../../assets/images/documentation/examples/ipsec-ibm3550-fbsd11.0.png)

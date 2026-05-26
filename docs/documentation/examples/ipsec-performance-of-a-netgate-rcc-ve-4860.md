@@ -14,7 +14,7 @@ This lab tests a [Netgate RCC-VE 4860](http://store.netgate.com/ADI/RCC-VE-4860.
 
 ## Method used
 
-The benchmarking method used here is detailed in [Setting up a VPN IPSec, GRE, etc... performance benchmark lab](setting-up-a-vpn-ipsec-gre-etc-performance-benchmark-lab.md).
+The benchmarking method used here is detailed in [Setting up a VPN IPsec, GRE, etc. performance benchmark lab](setting-up-a-vpn-ipsec-gre-etc-performance-benchmark-lab.md).
 
 ### Diagram
 

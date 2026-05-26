@@ -66,7 +66,7 @@ fi
 
 Hardware:
 
-- Intel Xeon CPU E5-2697A v4 @ 2.60GHz (16 cores, 32 threads)
+- Intel Xeon CPU E5-2697A v4 @ 2.60 GHz (16 cores, 32 threads)
 - Input NIC (filtering): Chelsio T580-LP-CR (QSFP+ 40GBASE-SR4)
 - Output NIC: Mellanox ConnectX-4 MCX416A-CCAT (QSFP28 100GBASE-SR4)
 - FreeBSD 13.0-CURRENT r357572

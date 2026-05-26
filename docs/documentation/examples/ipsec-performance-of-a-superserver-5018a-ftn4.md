@@ -14,7 +14,7 @@ This CPU includes AES-NI: AES-CBC, AES-XTS, AES-GCM, AES-ICM.
 
 ## Method used
 
-The benchmarking method used here is detailed in [Setting up a VPN IPSec, GRE, etc... performance benchmark lab](setting-up-a-vpn-ipsec-gre-etc-performance-benchmark-lab.md).
+The benchmarking method used here is detailed in [Setting up a VPN IPsec, GRE, etc. performance benchmark lab](setting-up-a-vpn-ipsec-gre-etc-performance-benchmark-lab.md).
 
 ### Diagram
 

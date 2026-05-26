@@ -1,6 +1,6 @@
 ---
 title: Forwarding performance lab of a PC Engines APU
-description: Forwarding performance lab of a dual core AMD G series T40E APU (1 GHz) with 3 Realtek RTL8111E Gigabit
+description: Forwarding performance lab of a dual-core AMD G-series T40E APU (1 GHz) with 3 Realtek RTL8111E Gigabit ports
 ---
 ## Hardware detail
 
@@ -114,7 +114,7 @@ static_ndp_receiver="2001:2:0:8000::203 00:1b:21:c4:95:7b"
 
 We start the first test with one packet generator at gigabit line rate (1.488 Mpps) and observe:
 
-- The APU is still responsive during this test (thanks to the dual core).
+- The APU is still responsive during this test (thanks to the dual-core).
 - About 154 Kpps are accepted by the re(4) Ethernet interface.
 
 <!-- -->

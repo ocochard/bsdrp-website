@@ -1,6 +1,6 @@
 ---
 title: Forwarding performance lab of a PC Engines APU 2
-description: Forwarding performance lab of a dual core  AMD GX-412TC (1 GHz) with 3 with Intel i210AT Gigabit
+description: Forwarding performance lab of a quad-core AMD GX-412TC (1 GHz) with 3 Intel i210AT Gigabit ports
 ---
 ## Hardware detail
 

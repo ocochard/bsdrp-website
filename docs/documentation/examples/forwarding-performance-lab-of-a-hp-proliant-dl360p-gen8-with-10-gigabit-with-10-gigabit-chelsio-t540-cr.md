@@ -1,12 +1,12 @@
 ---
 title: Forwarding performance lab of a HP ProLiant DL360p Gen8 with 10-Gigabit Chelsio T540-CR
-description: Forwarding performance lab of a quad cores Xeon 2.13GHz and quad-port 10-Gigabit Chelsio T540-CR
+description: Forwarding performance lab of an eight-core Xeon 2.60 GHz and quad-port 10-Gigabit Chelsio T540-CR
 ---
 ## Bench lab
 
 ### Hardware detail
 
-This lab tests an [HP ProLiant DL360p Gen8](hp-proliant-dl360p-gen8.md) with **eight** cores (Intel Xeon E5-2650 @ 2.60GHz), a quad-port Chelsio 10-Gigabit T540-CR, and OPT SFPs (SFP-10G-LR).
+This lab tests an [HP ProLiant DL360p Gen8](hp-proliant-dl360p-gen8.md) with **eight** cores (Intel Xeon E5-2650 @ 2.60 GHz), a quad-port Chelsio 10-Gigabit T540-CR, and OPT SFPs (SFP-10G-LR).
 
 The lab is detailed here: [Setting up a forwarding performance benchmark lab](setting-up-a-forwarding-performance-benchmark-lab.md).
 

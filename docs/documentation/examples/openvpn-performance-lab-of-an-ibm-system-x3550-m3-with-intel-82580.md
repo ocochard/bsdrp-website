@@ -10,7 +10,7 @@ This CPU includes AES-NI: AES-CBC, AES-XTS, AES-GCM, AES-ICM.
 
 ## Method used
 
-The benchmarking method used here is detailed in [Setting up a VPN IPSec, GRE, etc... performance benchmark lab](setting-up-a-vpn-ipsec-gre-etc-performance-benchmark-lab.md) and [OpenVPN example lab](gre-ipsec-and-openvpn.md#openvpn).
+The benchmarking method used here is detailed in [Setting up a VPN IPsec, GRE, etc. performance benchmark lab](setting-up-a-vpn-ipsec-gre-etc-performance-benchmark-lab.md) and [OpenVPN example lab](gre-ipsec-and-openvpn.md#openvpn).
 
 ### Diagram
 
@@ -218,4 +218,4 @@ OpenVPN (userspace) reaches about 454 Mb/s, which is about half of IPsec perform
 
 ### Encryption algorithms
 
-![Impact of OpenVPN encryption algorithms on 4 cores Xeon 2.13GHz with Intel 82580 NIC](../../assets/images/documentation/examples/openvpn-ibm3550-fbsd11.0.png)
+![Impact of OpenVPN encryption algorithms on 4 cores Xeon 2.13 GHz with Intel 82580 NIC](../../assets/images/documentation/examples/openvpn-ibm3550-fbsd11.0.png)

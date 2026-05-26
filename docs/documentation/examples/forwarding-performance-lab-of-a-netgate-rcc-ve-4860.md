@@ -1,6 +1,6 @@
 ---
 title: Forwarding performance lab of Netgate RCC-VE 4860
-description: Forwarding performance lab of a quad core Intel Atom C2558E (2.40GHz) with 2+4 Gigabit Intel NIC
+description: Forwarding performance lab of a quad-core Intel Atom C2558E (2.40 GHz) with 2+4 Gigabit Intel NICs
 ---
 ## Hardware detail
 

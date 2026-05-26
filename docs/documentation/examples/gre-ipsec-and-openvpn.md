@@ -1,5 +1,5 @@
 ---
-title: VPN with GRE, GIF, IPSec, OpenVPN and Wireguard
+title: VPN with GRE, GIF, IPsec, OpenVPN and Wireguard
 ---
 This lab shows some VPN examples with BSDRP 1.991.
 
@@ -550,7 +550,7 @@ service racoon restart
 
 #### Router 4
 
-Configure the IPSec Security Policy (SP) rules:
+Configure the IPsec Security Policy (SP) rules:
 
 ```
 cat > /usr/local/etc/racoon/setkey.conf <<'EOF'

@@ -1,6 +1,6 @@
 ---
 title: Forwarding performance lab of an IBM System x3550 M3 with 10-Gigabit Intel X540-AT2
-description: Forwarding performance lab of a quad cores Xeon 2.13GHz and dual-port 10-Gigabit Intel X540-AT2
+description: Forwarding performance lab of a quad-core Xeon 2.13 GHz and dual-port 10-Gigabit Intel X540-AT2
 ---
 ## Hardware detail
 
@@ -209,11 +209,11 @@ No difference.
 
 ## Firewall impact
 
-One rule for each firewall and 2000 UDP "sessions"; more information is available in the [GigaEthernet performance lab](forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md#firewall-impact).
+One rule for each firewall and 2000 UDP "sessions"; more information is available in the [Gigabit Ethernet performance lab](forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md#firewall-impact).
 
 ### Graphs
 
-![Impact of ipfw and pf on 4 cores Xeon 2.13GHz with 10-Gigabit Intel X540-AT2](../../assets/images/documentation/examples/bench.impact.of.ipfw-pf.tengig.png)
+![Impact of ipfw and pf on 4 cores Xeon 2.13 GHz with 10-Gigabit Intel X540-AT2](../../assets/images/documentation/examples/bench.impact.of.ipfw-pf.tengig.png)
 
 Some translation of pps to throughput using [IMIX distribution](https://en.wikipedia.org/wiki/Internet_Mix):
 

@@ -1,6 +1,6 @@
 ---
 title: Forwarding performance lab of a SuperServer 5018A-FTN4 with 10-Gigabit Chelsio T540-CR
-description: Forwarding performance lab of a 8 cores Atom C2758 at 2.41GHz with 10-Gigabit Chelsio T540-CR
+description: Forwarding performance lab of an 8-core Atom C2758 at 2.4 GHz with 10-Gigabit Chelsio T540-CR
 ---
 ## Hardware detail
 

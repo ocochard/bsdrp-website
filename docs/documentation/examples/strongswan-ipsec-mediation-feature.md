@@ -573,9 +573,9 @@ bridge6: flags=8843<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> metric 0 mtu 1500
         description: LAN_1
 ```
 
-=\> Create two new TAP interfaces and add them to bridge6: they will be used on C3 and C5 as the “Internet-facing” interface.
+Create two new TAP interfaces and add them to bridge6: they will be used on C3 and C5 as the "Internet-facing" interface.
 
-Second, find the LAN between R2 and R3. The BSDRP lab script naming policy uses descriptions of the form “MESH_lower-router-id - higher-router-id”, so look for the bridge with description “MESH_2-3”:
+Second, find the LAN between R2 and R3. The BSDRP lab script naming policy uses descriptions of the form "MESH_lower-router-id - higher-router-id", so look for the bridge with description "MESH_2-3":
 
 ```
 # ifconfig -a | grep -B 1 'MESH_2-3$'
@@ -583,7 +583,7 @@ bridge7: flags=8843<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> metric 0 mtu 1500
         description: MESH_2-3
 ```
 
-=\> Create a new TAP interface and add it to bridge7: it will be used on C3 as the “Internal” interface.
+Create a new TAP interface and add it to bridge7: it will be used on C3 as the "Internal" interface.
 
 Same for the R5-R6 bridge:
 
@@ -593,7 +593,7 @@ bridge19: flags=8843<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> metric 0 mtu 1500
         description: MESH_5-6
 ```
 
-=\> Create the last TAP interface and add it to bridge19: it will be used on C5 as the “Internal” interface.
+Create the last TAP interface and add it to bridge19: it will be used on C5 as the "Internal" interface.
 
 Once done, start two dynamips instances (version 0.2.16 minimum for a working tap interface) emulating Cisco 3725 routers. Start each dynamips in a different tmux console.
 

@@ -242,7 +242,7 @@ Connecting to host 10.0.5.5, port 5201
 iperf Done.
 ```
 
-=\> Upload is correctly shaped to 50 Mb/s.
+Upload is correctly shaped to 50 Mb/s.
 
 Now a “reverse” bench (the server sends data to the user) to test the download shaping:
 
@@ -264,7 +264,7 @@ Reverse mode, remote host 10.0.5.5 is sending
 [  4]   0.00-60.00  sec   691 MBytes  96.6 Mbits/sec                  receiver
 ```
 
-⇒ Download is correctly shaped to 100 Mb/s.
+Download is correctly shaped to 100 Mb/s.
 
 ### With two users
 
@@ -306,7 +306,7 @@ Connecting to host 10.0.5.5, port 9092
 iperf Done.
 ```
 
-=\> Upload bandwidth is fairly shared between the two users.
+Upload bandwidth is fairly shared between the two users.
 
 Now the download speed should be 50 Mb/s each too:
 
@@ -348,7 +348,7 @@ Reverse mode, remote host 10.0.5.5 is sending
 iperf Done.
 ```
 
-=\> Same correct behavior here.
+Same correct behavior here.
 
 During this bench, on the router, queue 1 (upload) and queue 2 (download) status:
 
@@ -390,7 +390,7 @@ Connecting to host 10.0.5.5, port 9091
 iperf Done.
 ```
 
-=\> Only 50M/3 = 16.66 Mb/s for each user on upload.
+Only 50M/3 = 16.66 Mb/s for each user on upload.
 
 Queue status on the router during this three-user bench:
 

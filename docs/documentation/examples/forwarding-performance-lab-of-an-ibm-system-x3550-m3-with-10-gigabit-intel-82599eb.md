@@ -1,6 +1,6 @@
 ---
 title: Forwarding performance lab of an IBM System x3550 M3 with 10-Gigabit Intel 82599EB
-description: Forwarding performance lab of a quad cores Xeon 2.13GHz and dual-port Intel 82599EB 10-Gigabit
+description: Forwarding performance lab of a quad-core Xeon 2.13 GHz and dual-port Intel 82599EB 10-Gigabit
 ---
 ## Bench lab
 
@@ -300,11 +300,11 @@ Estimated Equilibrium Ethernet throughput= 2948 Kpps (maximum value seen: 2949 K
 
 ### Firewall impact
 
-One rule for each firewall and 2000 UDP "sessions"; more information is available in the [GigaEthernet performance lab](forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md#firewall-impact).
+One rule for each firewall and 2000 UDP "sessions"; more information is available in the [Gigabit Ethernet performance lab](forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md#firewall-impact).
 
 [Full configuration sets, scripts and results](https://github.com/ocochard/netbenchs/tree/master/Xeon_L5630-4Cores-Intel_82599EB/fastforwarding-pf-ipfw).
 
-![Impact of ipfw and pf on 4 cores Xeon 2.13GHz with 10-Gigabit Intel 82599EB](../../assets/images/documentation/examples/bench.forwarding.and.firewalling.rate.on.ibm.intel-82599eb.png)
+![Impact of ipfw and pf on 4 cores Xeon 2.13 GHz with 10-Gigabit Intel 82599EB](../../assets/images/documentation/examples/bench.forwarding.and.firewalling.rate.on.ibm.intel-82599eb.png)
 
 ## Routing performance with multiple static routes
 
@@ -346,7 +346,7 @@ sysrc route_receiver4="-net 198.19.10.96/27 198.19.2.2"
 
 ### Graphs
 
-![Impact of number of static routes on forwarding on 4 cores Xeon 2.13GHz with 10-Gigabit Intel 82599EB](../../assets/images/documentation/examples/bench.static-routes-contention.test.fbsd10.2.png)
+![Impact of number of static routes on forwarding on 4 cores Xeon 2.13 GHz with 10-Gigabit Intel 82599EB](../../assets/images/documentation/examples/bench.static-routes-contention.test.fbsd10.2.png)
 
 ###### \> A small 4% increase from using 4 static routes instead of 1, and 5% with 8 routes.
 
