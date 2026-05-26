@@ -1,4 +1,4 @@
-# BSDRP website — project notes for Claude
+# BSDRP website - project notes for Claude
 
 This is the mkdocs-material site published at `bsdrp.net`. It is the
 public documentation for the [BSD Router Project](https://github.com/ocochard/BSDRP).
@@ -8,20 +8,21 @@ itself lives in a separate repo (see "Companion repo" below).
 ## Repo layout
 
 ```
-docs/                — mkdocs content (the source of truth)
-  index.md           — homepage
-  assets/            — favicon, logo, page images
-  documentation/     — user guide, FAQ, technical-docs, examples
-  community/         — mailing lists, how to contribute
-mkdocs.yml           — site config + full nav (hand-curated)
-.htaccess            — Apache 301 redirects from old DokuWiki URLs
-site/                — mkdocs build output (gitignored)
+docs/                - mkdocs content (the source of truth)
+  index.md           - homepage
+  assets/            - favicon, logo, page images
+  documentation/     - user guide, FAQ, technical-docs, examples
+  community/         - mailing lists, how to contribute
+mkdocs.yml           - site config + full nav (hand-curated)
+.htaccess            - Apache 301 redirects from old DokuWiki URLs
+site/                - mkdocs build output (gitignored)
 ```
 
-The site was migrated from a DokuWiki backup in early 2026 (see
-`CONVERSION_PLAN.md` for the historical migration plan). The DokuWiki
-backup and conversion scripts have been removed — `docs/*.md` is now
-the only source of truth.
+The site was migrated from a DokuWiki backup in early 2026. The
+DokuWiki backup, the conversion scripts, and the migration plan have
+all been removed now that `docs/*.md` is the only source of truth.
+Anyone curious about the historical migration can read it in git
+history (look for the commits prefixed `Phase A`/`Phase B`).
 
 ## Companion repo: `~/BSDRP`
 
@@ -48,23 +49,23 @@ matching pointer back to this repo.
 ## Branding
 
 Logo and favicon source files live in `~/BSDRP/logos/`. In this repo:
-- `docs/assets/favicon.ico` — multi-resolution favicon built with ImageMagick.
-- `docs/assets/images/bsdrp-logo.png` — theme logo.
+- `docs/assets/favicon.ico` - multi-resolution favicon built with ImageMagick.
+- `docs/assets/images/bsdrp-logo.png` - theme logo.
 
 If the logo or favicon source files change in `~/BSDRP/logos/`, regenerate
 the in-repo assets from there.
 
 ## mkdocs conventions in use
 
-- **Relative `.md` links** — internal links use relative paths (e.g.
+- **Relative `.md` links** - internal links use relative paths (e.g.
   `../examples/foo.md`). `mkdocs build --strict` validates them at build
   time; keep it clean.
-- **Native mermaid via `pymdownx.superfences`** — *not* the
+- **Native mermaid via `pymdownx.superfences`** - *not* the
   `mkdocs-mermaid2` plugin. Mermaid diagrams use fenced ` ```mermaid `
   blocks.
-- **Admonitions** — use `!!! note` / `!!! info "Important"` /
+- **Admonitions** - use `!!! note` / `!!! info "Important"` /
   `!!! warning` / `!!! tip`.
-- **Kebab-case heading slugs** — mkdocs auto-generates kebab anchors.
+- **Kebab-case heading slugs** - mkdocs auto-generates kebab anchors.
   When linking to a heading, use the kebab-case form (e.g.
   `#firewall-impact`).
 
