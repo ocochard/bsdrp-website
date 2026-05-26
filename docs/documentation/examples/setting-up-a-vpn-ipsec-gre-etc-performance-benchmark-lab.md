@@ -22,8 +22,8 @@ BSDRP includes a [shell script that uses netmap-pkg to measure the equilibrium t
 - Uses netmap's pktgen in place of iperf.
 - Generates about 2000 flows (a mix of different source and destination IP addresses).
 - Supports two modes:
-  - The standard “IPsec Benchmark mode”, using a 500-byte UDP payload (default, configurable) and an equilibrium throughput unit in Mb/s (Ethernet link level).
-  - A specific “Router Benchmark mode”, using a minimum 16-byte UDP payload (default, configurable) and an equilibrium throughput unit in Kpps.
+  - The standard "IPsec Benchmark mode", using a 500-byte UDP payload (default, configurable) and an equilibrium throughput unit in Mb/s (Ethernet link level).
+  - A specific "Router Benchmark mode", using a minimum 16-byte UDP payload (default, configurable) and an equilibrium throughput unit in Kpps.
 - Adds some fixes to the official hybrid step/binary search algorithm.
 
 ## Diagram
@@ -69,13 +69,13 @@ Same configuration as on [forwarding performance benchmark lab](setting-up-a-for
 
 A detailed example configuration can be found in [IPsec performance lab of an IBM System x3550 M3 with Intel 82580](ipsec-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md).
 
-The performance of a “Reference Device” is measured by setting up a bench lab with two identical DUTs if possible, or with a powerful “reference” device if only one DUT is available.
+The performance of a "Reference Device" is measured by setting up a bench lab with two identical DUTs if possible, or with a powerful "reference" device if only one DUT is available.
 
 If the CPU supports the [AES-NI feature](http://www.intel.com/content/dam/www/public/us/en/documents/white-papers/aes-ipsec-performance-linux-paper.pdf), the [aesni kernel module](https://www.freebsd.org/cgi/man.cgiquery=aesni&sektion=4) needs to be loaded.
 
-## IPsec bench “Equilibrium throughput” method
+## IPsec bench "Equilibrium throughput" method
 
-Once the lab is set up, the BSDRP `equilibrium` tool provides a fast method for measuring the “IPsec equilibrium throughput” of the DUT.
+Once the lab is set up, the BSDRP `equilibrium` tool provides a fast method for measuring the "IPsec equilibrium throughput" of the DUT.
 
 ```
 [root@packet-generator]/# equilibrium

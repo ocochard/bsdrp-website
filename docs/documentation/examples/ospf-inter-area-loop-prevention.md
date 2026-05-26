@@ -220,7 +220,7 @@ Routing entry for 192.168.1.0/24
   * 10.0.0.5, via em0
 ```
 
-**R3 didn’t choose the “best” path** to reach 192.168.1.0/24: the installed route has a metric of 101. Check its OSPF database state:
+**R3 didn’t choose the "best" path** to reach 192.168.1.0/24: the installed route has a metric of 101. Check its OSPF database state:
 
 ```
 R3.bsdrp.net# sh ip ospf database summary 192.168.1.0

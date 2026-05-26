@@ -200,7 +200,7 @@ config save
 
 ## Shaping tests
 
-Start 3 iperf3 servers on the “Internet server” on 3 different TCP ports (using tmux).
+Start 3 iperf3 servers on the "Internet server" on 3 different TCP ports (using tmux).
 
 ```
 [root@R5]~# iperf3 -s -p 9091
@@ -244,7 +244,7 @@ iperf Done.
 
 Upload is correctly shaped to 50 Mb/s.
 
-Now a “reverse” bench (the server sends data to the user) to test the download shaping:
+Now a "reverse" bench (the server sends data to the user) to test the download shaping:
 
 ```
 [root@r3]~# iperf3 -c 10.0.5.5 -t 60 -i 10 -f m -R -p 9093

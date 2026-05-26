@@ -83,7 +83,7 @@ sudo umount -f /dev/disk3s1
 xzcat BSDRP_full_amd64_vga.1.0.img.xz | sudo dd of=/dev/rdisk3 bs=1m
 ```
 
-If successful, macOS will show an error dialog saying it doesn’t recognize the disk. Click “Eject”, remove the USB key, and you’re done.
+If successful, macOS will show an error dialog saying it doesn’t recognize the disk. Click "Eject", remove the USB key, and you’re done.
 
 ### To a hard drive
 

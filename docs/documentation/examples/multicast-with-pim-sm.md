@@ -212,7 +212,7 @@ UDP buffer size: 41.1 KByte (default)
 (...)
 ```
 
-No traffic is received and the server stays in “waiting” mode forever.
+No traffic is received and the server stays in "waiting" mode forever.
 
 ## Checking pimd behavior
 
