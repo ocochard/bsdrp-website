@@ -504,15 +504,15 @@ You can now start the customer jails and let customers SSH into their firewalls 
 pass all flags S/SA keep state
 ```
 
-## Under the hood: jails on NanoBSD
+## Under the hood: jails on a read-only-root host
 
-[BSDRP’s tenant shell script](https://github.com/ocochard/BSDRP/blob/master/BSDRP/Files/usr/local/sbin/tenant) creates jail configurations compatible with a NanoBSD host.
+[BSDRP’s tenant shell script](https://github.com/ocochard/BSDRP/blob/master/BSDRP/Files/usr/local/sbin/tenant) creates jail configurations compatible with a BSDRP host (which runs on a read-only root filesystem).
 
-These jails must be configured for NanoBSD:
+These jails must be set up accordingly:
 
 1.  Use nullfs so they can run on a read-only root filesystem.
 2.  Mount `/etc` and `/var` on tmpfs (which means we have to populate these directories before each start).
-3.  Configuration changes must be saved using NanoBSD configuration tools, such as BSDRP’s `config save`.
+3.  Configuration changes must be saved using BSDRP's configuration tools, such as `config save`.
 
 And on the host:
 
@@ -526,7 +526,7 @@ Host `jail.conf`:
 customer1 {
     jid = 1;
     path          = "/var/jails/customer1";
-    # Because we are using jail on nanobsd, the jail directories are volatil (mounted into /var/jails)
+    # Because we are using jails on a read-only-root host, the jail directories are volatile (mounted into /var/jails)
     # They didn't exist after a reboot, then we need to create jail directories with exec.prestart
     # But mount.* instructions are called before exec.prestart, then we need to call mount manually
     # into the exec.prestart

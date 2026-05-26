@@ -34,7 +34,7 @@ virtualbox.sh -i BSDRP_1.93_full_amd64_vga.img -n 4 -c
 The output should be like that:
 
 ```
-~>/usr/src/tools/tools/nanobsd/BSDRP/virtualbox.sh -n 4 -c
+~>virtualbox.sh -n 4 -c
 BSD Router Project: VirtualBox lab script
 Creating lab with 4 router(s):
 - 0 LAN between all routers

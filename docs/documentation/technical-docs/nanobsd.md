@@ -1,7 +1,15 @@
 ---
 title: NanoBSD
-description: Unofficial NanoBSD technical resources
+description: Historical NanoBSD technical resources
 ---
+
+!!! warning "Historical reference"
+
+    BSDRP no longer uses NanoBSD. Images are built with the [poudriere
+    image](poudriere.md) feature. This page is kept for historical context
+    and for anyone studying older BSDRP releases or other NanoBSD-based
+    projects.
+
 ## External links about NanoBSD
 
 Documentation and tutorials about NanoBSD:

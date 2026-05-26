@@ -2,19 +2,27 @@
 title: Technical documentation for developers
 description: Advanced technical documentation for contributing to BSD Router Project
 ---
-## poudriere-image
 
-A migration from the old NanoBSD build to the [new poudriere image framework](technical-docs/poudriere.md) is in progress.
+This page explains how to build a BSDRP image and how to customize
+the build for your own appliance. The build is driven by
+[poudriere image](technical-docs/poudriere.md); the page below
+focuses on the BSDRP-side workflow.
 
 ## How to build BSDRP images
 
-All these steps are run on a FreeBSD system.
+All these steps run on a FreeBSD host.
 
 ### Prerequisites
 
-You need 21 GB of free space (1 GB for the FreeBSD installation, 3 GB for the FreeBSD sources, 3 GB for the ports tree, and 8 GB for the working directory).
+- FreeBSD 15.0 or higher
+- `ports-mgmt/poudriere` (or `poudriere-devel`)
+- `devel/git`
 
-#### Getting the BSDRP source code
+You also need enough free space for a FreeBSD source tree, a ports
+tree, the poudriere jail, the packages, and the final images. Plan
+for at least 20 GB on the build host.
+
+### Getting the BSDRP source code
 
 Clone the repository:
 
@@ -23,318 +31,183 @@ pkg install git sudo poudriere-devel
 git clone https://github.com/ocochard/BSDRP.git BSDRP
 ```
 
-### Running the build script
+### Running the build
 
-Display the options offered by the `make.sh` script:
+The top-level `Makefile` is the single entry point. To build the
+default images:
 
 ```
+cd BSDRP
 make
 ```
 
-The FreeBSD source tree supports multiple architectures with limited cross-compilation. You can generate an i386 BSDRP image from a FreeBSD amd64 host, but you cannot generate a sparc64 image from an i386 or amd64 host.
+Useful targets:
 
-Once you have the source, you can keep your BSDRP tree up to date with:
+| Target              | Description |
+|:--------------------|:------------|
+| `all` (default)     | Build the firmware images |
+| `clean`             | Remove generated images |
+| `clean-packages`    | Remove built packages |
+| `clean-jail`        | Remove the poudriere jail and its object directories |
+| `clean-src`         | Remove patched source trees (useful when an old FreeBSD obj tree blocks an upgrade) |
+| `clean-all`         | Remove everything |
+| `upstream-sync`     | Fetch the latest FreeBSD and ports sources and update the hashes in `Makefile.vars` |
+| `compress-images`   | Compress the generated images |
+| `checksum-images`   | Compute checksums of the generated images |
+| `release`           | Build, compress, and checksum (used to cut a release) |
 
-```
-make upstream-sync
-```
+Run `make help` for the complete list.
+
+The FreeBSD source tree supports multiple architectures with limited
+cross-compilation; for example you can generate an i386 BSDRP image
+from a FreeBSD amd64 host, but not the other way around.
 
 ## How to generate customized BSDRP images
 
-If you want to build a customized BSDRP image, first build a generic BSDRP image from source.
+If you want to ship your own appliance based on the BSDRP build
+system, the simplest approach is to first build a stock BSDRP image
+end-to-end, then customize the parts you care about. The build is a
+chain of poudriere steps, so customization is mostly a matter of
+swapping configuration files.
 
-Look at the files in the `BSDRP` project and its child project `BSDRPcur`. A child project overrides the parent's files and kernel settings.
+The interesting locations in the BSDRP repository are:
 
-Once you can build the generic image, you can start customizing.
+- `poudriere.etc/poudriere.d/` - jail, port-tree, and image configuration files
+- `BSDRP/kernels/` - kernel configuration files used by the build
+- `BSDRP/Files/` - overlay directory copied onto the image
+- `Makefile` and `Makefile.vars` - high-level build orchestration and source-tree pins
 
-### Customizing BSDRP in a few slides
+### Main configuration files
 
-[Short presentation of NanoBSD and BSD Router Project](https://docs.google.com/presentation/pubid=1d-CqdLljaCcO-sdyfqOn4pLR-wzWaIGC9JeetcU97ks&start=false&loop=false&delayms=5000).
+The build pulls together several files; see the [poudriere image
+page](technical-docs/poudriere.md#how-bsdrp-customizes-the-poudriere-image-build)
+for the full list. The most useful starting points when customizing:
 
-### Main files
+- `poudriere.d/BSDRPj-src.conf` - `src.conf` knobs for the buildworld
+  step (controls which parts of the base system get compiled)
+- `poudriere.d/image-BSDRPj-src.conf` - extra knobs applied during
+  installworld into the final image (typically `WITHOUT_` toggles
+  that strip the final image)
+- `poudriere.d/BSDRPj-make.conf` - port build options shared across
+  every port in the bulk build
+- `poudriere.d/BSDRP-pkglist*` - list of packages to build and install
+  on the image
+- `poudriere.d/excluded.files` - paths to exclude during installworld
+- `BSDRP/Files/usr/local/etc/pkg.conf` - `FILES_IGNORE_GLOB` rules
+  that prevent specific files from being extracted from packages
+- `BSDRP/kernels/<arch>` - kernel configuration files
 
-#### make.conf
+### Customizing the package list
 
-This file holds the main global settings for the image build:
-
-- NAME: name of the project
-- MASTER_PROJECT: for a child project, the name of the parent project
-- SVN_SRC_PATH: SVN URL for the source tree
-- SVN_PORTS_PATH: SVN URL for the ports source tree
-- FREEBSD_SRC: directory for the locally stored FreeBSD source tree
-- SRC_PATCH_DIR: directory for FreeBSD patches
-- PORTS_SRC: directory for the locally stored ports tree
-- PORT_PATCH_DIR: directory for port patches
-- DISK_SIZE: size in MB of the destination disk
-- NANOBSD_DIR: where the NanoBSD tree lives
-- NANO_MODULES_ARCH: list of kernel modules to build for ARCH
-
-#### \$PROJECT/\$PROJECT.nano
-
-This file holds all of the customization steps.
-
-You can change:
-
-- the size of the configuration partition (NANO_CONFSIZE)
-- the size of the data partition (NANO_DATASIZE)
-- the size of the /etc RAM disk (NANO_RAM_ETCSIZE)
-- the size of the /tmp and /var RAM disk (NANO_RAM_TMPVARSIZE)
-- and so on...
-
-<!-- -->
-
-    * 
-
-You can declare new packages to install (and their dependencies, but only if they need special build options). For example, to add `vim-lite`, add these lines:
+To add `vim` and `tmux` to the image, append them to the package
+list:
 
 ```
-add_port "converters/libiconv" "-DNO_INSTALL_MANPAGES -DFORCE_PKG_REGISTER -DNOPORTDOCS"
-add_port "editors/vim-lite" "-DWITHOUT_X11 -DNO_INSTALL_MANPAGES -DNOPORTDOCS"
+echo "editors/vim@console" >> poudriere.etc/poudriere.d/BSDRP-pkglist.common
+echo "sysutils/tmux"       >> poudriere.etc/poudriere.d/BSDRP-pkglist.common
 ```
 
-If you need to set special permissions on some files after installation, add those steps to the `bsdrp_custom ()` function.
+Then rebuild. The `Makefile` re-runs the poudriere bulk and image
+steps as needed.
 
-#### \$PROJECT/kernels/\$ARCH
+### Customizing the kernel
 
-This directory holds the kernel configuration files. Edit these files and the `NANO_MODULES_$ARCH` variable in `make.conf` to customize your kernel and modules.
+Edit (or replace) the kernel configuration file under
+`BSDRP/kernels/` for the architecture you are building. The file is
+copied into the patched FreeBSD source tree by `make patch-sources`
+and picked up by the jail's `buildkernel`.
 
-#### \$PROJECT/Files directory
+### Customizing the overlay
 
-All files placed in the Files/ directory will be copied into the BSDRP image. Pay attention to the owner, group, and permissions.
+Anything placed under `BSDRP/Files/` is copied onto the image during
+the `poudriere image` step (the `-c` flag in the image command).
+Watch ownership and permissions; they are preserved verbatim.
 
-### Small child project example
+### Stripping more of the base system from the image
 
-Here is a minimal example for building a new project based on BSDRP, this time for a web server appliance. The new project will be a child project of BSDRP.
+Add `WITHOUT_` knobs to
+`poudriere.etc/poudriere.d/image-BSDRPj-src.conf`. They are applied
+during the installworld into the image only, so they will not
+prevent ports from finding the headers and libraries they need at
+build time.
 
-Start by downloading the BSDRP source code (see the "Getting the BSDRP source code" section) and change into the BSDRP directory.
-
-Then create a new directory using your project name:
-
-```
-mkdir WEBSRV
-```
-
-#### make.conf
-
-Configure a minimal project configuration file:
-
-```
-echo 'NAME="WEBSRV"' > WEBSRV/make.conf
-echo 'MASTER_PROJECT="BSDRP"' >> WEBSRV/make.conf
-```
-
-#### Listing all run-dependencies of your ports
-
-We want to add the port `www/mohawk`.
-
-The first step is to list all of its run-time dependencies.
-
-The FreeBSD ports tree must already be downloaded (which is done automatically if you have already built a BSDRP image).
-
-Assuming BSDRP is installed in /usr/local/BSDRP, here is how to list the run-time dependencies:
-
-```
-setenv PORTSDIR /usr/local/BSDRP/BSDRP/FreeBSD/ports
-cd $PORTSDIR/www/mohawk
-make run-depends-list
-devel/libevent
-```
-
-So `devel/libevent` is a run-time dependency of `www/mohawk`.
-
-#### project.nano
-
-Copy the NanoBSD configuration file from BSDRP:
-
-```
-cp BSDRP/BSDRP.nano WEBSRV/WEBSRV.nano
-```
-
-Edit `WEBSRV/WEBSRV.nano` and delete all lines that add routing-related ports, of the form:
-
-```
-add_port "category/port_name" "build options"
-```
-
-Then, in the `#### Ports list section #####`, add all run-time dependencies along with your port:
-
-```
-add_port "devel/libevent"
-add_port "www/mohawk"
-```
-
-Also remove these lines that compile and install extra small tools:
-
-```
-customize_cmd add_netrate
-```
-
-And edit the `bsdrp_custom ()` function in the same file to remove the Quagga chown hack.
-
-#### Files/etc/version
-
-Set the version number:
-
-```
-mkdir -p WEBSRV/Files/etc
-echo '1' > WEBSRV/Files/etc/version 
-```
-
-#### Generating the image
-
-You can now generate a full image:
-
-```
-root@laptop:/usr/local/BSDRP # ./make.sh -p WEBSRV
-BSD Router Project image build script
-
-Will generate an WEBSRV image with theses values:
-- Target architecture: amd64
-- Console : -vga
-- Source Updating/installing: NO
-- Build the full world (take about 1 hour): YES
-- FAST mode (skip compression and checksumming): NO
-- TMPFS: NO
-- Debug image type: NO
-Copying amd64 Kernel configuration file
-Launching NanoBSD build process...
-00:00:00 # NanoBSD image WEBSRV build starting
-00:00:00 ## Clean and create object directory (/usr/obj/WEBSRV.amd64)
-00:00:00 ## Construct build make.conf (/usr/obj/WEBSRV.amd64/make.conf.build)
-00:00:00 ## run buildworld
-00:00:00 ### log: /usr/obj/WEBSRV.amd64/_.bw
-00:15:03 ## build kernel (amd64)
-00:15:03 ### log: /usr/obj/WEBSRV.amd64/_.bk
-00:17:50 ## Clean and create world directory (/usr/obj/WEBSRV.amd64/_.w)
-00:17:50 ## Construct install make.conf (/usr/obj/WEBSRV.amd64/make.conf.install)
-00:17:50 ## installworld
-00:17:50 ### log: /usr/obj/WEBSRV.amd64/_.iw
-00:18:29 ## install /etc
-00:18:29 ### log: /usr/obj/WEBSRV.amd64/_.etc
-00:18:30 ## configure nanobsd /etc
-00:18:30 ## install kernel (amd64)
-00:18:30 ### log: /usr/obj/WEBSRV.amd64/_.ik
-00:18:33 ## run customize scripts
-00:18:33 ## customize "add_port_devel_libevent2"
-00:18:33 ### log: /usr/obj/WEBSRV.amd64/_.cust.add_port_devel_libevent2
-00:18:33 ## customize "add_port_www_mohawk"
-00:18:33 ### log: /usr/obj/WEBSRV.amd64/_.cust.add_port_www_mohawk
-00:18:34 ## customize "cleanup_ports"
-00:18:34 ### log: /usr/obj/WEBSRV.amd64/_.cust.cleanup_ports
-00:18:34 ## customize "shrink_md_fbsize"
-00:18:34 ### log: /usr/obj/WEBSRV.amd64/_.cust.shrink_md_fbsize
-00:18:34 ## customize "cust_install_files"
-00:18:34 ### log: /usr/obj/WEBSRV.amd64/_.cust.cust_install_files
-00:18:34 ## customize "bsdrp_custom"
-00:18:34 ### log: /usr/obj/WEBSRV.amd64/_.cust.bsdrp_custom
-00:18:38 ## customize "cust_allow_ssh_root"
-00:18:38 ### log: /usr/obj/WEBSRV.amd64/_.cust.cust_allow_ssh_root
-00:18:38 ## customize "bsdrp_console_vga"
-00:18:38 ### log: /usr/obj/WEBSRV.amd64/_.cust.bsdrp_console_vga
-00:18:38 ## configure nanobsd setup
-00:18:38 ### log: /usr/obj/WEBSRV.amd64/_.dl
-00:18:39 ## run late customize scripts
-00:18:39 ## build diskimage
-00:18:39 ### log: /usr/obj/WEBSRV.amd64/_.di
-00:19:02 # NanoBSD image WEBSRV completed
-unmounting  /usr/local/BSDRP/WEBSRV/kernels
- /usr/local/BSDRP/WEBSRV/Files
-NanoBSD build seems finish successfully.
-Compressing WEBSRV upgrade image...
-/usr/obj/WEBSRV.amd64/WEBSRV-1-upgrade-amd64-vga.img (1/1)
-  100 %        26.2 MiB / 101.9 MiB = 0.257   3.0 MiB/s       0:34             
-Generating checksum for WEBSRV upgrade image...
-WEBSRV upgrade image file here:
-/usr/obj/WEBSRV.amd64/WEBSRV-1-upgrade-amd64-vga.img.xz
-Compressing WEBSRV full image...
-/usr/obj/WEBSRV.amd64/WEBSRV-1-full-amd64-vga.img (1/1)
-  100 %        26.2 MiB / 244.1 MiB = 0.107   5.3 MiB/s       0:45             
-Generating checksum for WEBSRV full image...
-Zipped WEBSRV full image file here:
-/usr/obj/WEBSRV.amd64/WEBSRV-1-full-amd64-vga.img.xz
-Zipping and renaming mtree...
-/usr/obj/WEBSRV.amd64/WEBSRV-1-amd64-vga.mtree (1/1)
-  100 %      262.3 KiB / 1753.4 KiB = 0.150                                    
-HIDS reference file here:
-/usr/obj/WEBSRV.amd64/WEBSRV-1-amd64-vga.mtree.xz
-Done !
-```
+If a file you want gone is not covered by a `WITHOUT_` knob, add it
+to `poudriere.etc/poudriere.d/excluded.files` instead.
 
 ## How to modify an existing image
 
-All of these steps are run on a FreeBSD system, using a decompressed BSDRP full image.
+All of these steps are run on a FreeBSD system, using a decompressed
+BSDRP full image.
 
 ### Partition layout of a BSDRP image
 
-A BSDRP full image contains:
+A BSDRP full image is a GPT disk with these partitions:
 
-- s1a: first system partition (UFS labeled `BSDRPs1a`)
-- s2a: second system partition; does not exist if the system has never been upgraded (UFS labeled `BSDRPs2a`)
-- s3: cfg partition (UFS labeled `BSDRPs3`)
-- s4: data partition (UFS labeled `BSDRPs4`)
+- EFI system partition (10 M) with the boot loader
+- First system partition, labelled `gpt/${IMAGENAME}1`
+- Second system partition, labelled `gpt/${IMAGENAME}2` (used by the
+  upgrade process to receive the new image)
+- Configuration partition (32 M), labelled `gpt/cfg`
+- Data partition (32 M), labelled `gpt/data`
 
-FreeBSD calls an MBR partition a "slice" (s).
+See the [poudriere image page](technical-docs/poudriere.md#partition-scheme)
+for an annotated `gpart show` output.
 
 ### Mounting a BSDRP image as a memory disk
 
 #### Automated way
 
-Use the script shipped with the BSDRP sources: `./image_tool.sh mount <filename>` and `./image_tool.sh umount`.
+Use the script shipped with the BSDRP sources: `./image_tool.sh
+mount <filename>` and `./image_tool.sh umount`.
 
 #### Manual way
 
-Create a memory disk (md) from the BSDRP image file:
+Attach the image to a memory disk:
 
 ```
-mdconfig -a -t vnode -f BSDRP_0.35_full_i386_serial.img -x 63 -y 16
+mdconfig -a -t vnode -f BSDRP-amd64.img
 ```
 
-The system will display the md name created:
+The system prints the md name created (for example `md0`). List the
+partitions:
 
 ```
-md0
+gpart show -l md0
 ```
 
-Now list all partitions on this md:
+Mount the first system partition (replace `BSDRP1` with the image's
+partition label if you named it differently):
 
 ```
-# ls /dev/md0*
-# /dev/md0    /dev/md0s1  /dev/md0s1a /dev/md0s2  /dev/md0s3
+mount /dev/gpt/BSDRP1 /mnt
 ```
 
-You should see the s1a (system) and s3 (cfg) partitions. Mount the system partition, for example:
-
-```
-mount /dev/md0s1a /mnt
-```
-
-You can now make changes to the image.
-
-When you are done, unmount and detach the memory disk:
+When you are done, unmount and detach:
 
 ```
 umount /mnt
 mdconfig -d -u 0
 ```
 
-#### Increasing /etc and /var RAM disk size
+### Increasing /etc and /var RAM disk size
 
-Remount the filesystem read-write:
+On a running BSDRP system, remount the root filesystem read-write:
 
 ```
 [root@BSDRP]/# mount -uw /
 ```
 
-Change the value in these files:
+Change the size values in these files:
 
-- /conf/base/etc/md_size
-- /conf/base/var/md_size
+- `/conf/base/etc/md_size`
+- `/conf/base/var/md_size`
 
-Then remount the filesystem read-only and reboot (answer "no" if it detects configuration changes):
+Then remount read-only and reboot (answer "no" if it detects
+configuration changes):
 
 ```
-[root@BSDRP]/conf/base/var# mount -ur /
-[root@BSDRP]/conf/base/var# reboot
+[root@BSDRP]/# mount -ur /
+[root@BSDRP]/# reboot
 ```
 
 ## How to debug
@@ -343,7 +216,8 @@ Some tips for debugging.
 
 ### Performance optimization
 
-See the [FreeBSD forwarding performance](technical-docs/performance.md) page for more information.
+See the [FreeBSD forwarding performance](technical-docs/performance.md)
+page for more information.
 
 ### Shell scripts
 
@@ -355,4 +229,5 @@ Run your script with `sh -x`:
 
 ### RC scripts
 
-If you want to write rc scripts, start by reading [Practical rc.d scripting in BSD](http://www.freebsd.org/doc/en_US.ISO8859-1/articles/rc-scripting/).
+If you want to write rc scripts, start by reading [Practical rc.d
+scripting in BSD](http://www.freebsd.org/doc/en_US.ISO8859-1/articles/rc-scripting/).

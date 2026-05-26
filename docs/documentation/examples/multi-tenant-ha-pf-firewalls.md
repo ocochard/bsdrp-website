@@ -68,7 +68,7 @@ For connecting to VM'serial console, you can use:
 
 ### With BSDRP's labconfig
 
-All these routers can be quickly configured with [BSDRP's labconfig tool](https://github.com/ocochard/BSDRP/blob/master/BSDRP/Files/usr/local/sbin/labconfig) (only use it in a lab, because it will replace your current running configuration). This example uses [another BSDRP shell script](https://github.com/ocochard/BSDRP/blob/master/BSDRP/Files/usr/local/sbin/tenant) to simplify nullfs jail creation on a NanoBSD.
+All these routers can be quickly configured with [BSDRP's labconfig tool](https://github.com/ocochard/BSDRP/blob/master/BSDRP/Files/usr/local/sbin/labconfig) (only use it in a lab, because it will replace your current running configuration). This example uses [another BSDRP shell script](https://github.com/ocochard/BSDRP/blob/master/BSDRP/Files/usr/local/sbin/tenant) to simplify nullfs jail creation on BSDRP's read-only root.
 
 ```
 labconfig jailpf_vm[VM-NUMBER]
