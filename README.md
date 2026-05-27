@@ -26,7 +26,7 @@ mkdocs build --strict
 ## Contributing
 
 Patches and pull requests are welcome. See
-`docs/community/how-to-contribute.md` for guidelines, and `CLAUDE.md` for
+`docs/community/how-to-contribute.md` for guidelines, and `AGENTS.md` for
 the copyediting and formatting conventions used across the site.
 
 ## License
