@@ -1,0 +1,48 @@
+# BSD Router Project
+
+> BSD Router Project (BSDRP) is an embedded, free and open-source router
+> distribution based on FreeBSD, with FRRouting and Bird. It targets
+> small-to-large networks and runs on x86_64 (amd64) and arm64 (aarch64),
+> requiring 4 GB of storage and 1 GB of RAM.
+
+## About
+
+- [Home](https://bsdrp.net/): project overview and latest release news
+- [Features](https://bsdrp.net/features/): routing, VPN, QoS, multi-tenant, monitoring
+- [Downloads](https://bsdrp.net/downloads/): images and how to write them
+- [License](https://bsdrp.net/license/): BSD 2-clause
+- [Contributors](https://bsdrp.net/contributors/)
+
+## Documentation
+
+- [User Guide](https://bsdrp.net/documentation/end-users-docs/): boot, configure, upgrade, common operations
+- [FAQ](https://bsdrp.net/documentation/faq/)
+- [cloud-init](https://bsdrp.net/documentation/cloud-init/): provisioning BSDRP on cloud platforms
+
+## Technical documentation
+
+- [Technical documentation overview](https://bsdrp.net/documentation/technical-docs/)
+- [Poudriere image build](https://bsdrp.net/documentation/technical-docs/poudriere/): how the BSDRP image is built
+- [FreeBSD forwarding performance](https://bsdrp.net/documentation/technical-docs/performance/)
+- [FreeBSD networking performance lab](https://bsdrp.net/documentation/technical-docs/bench-lab/)
+
+## Examples and labs
+
+- [Examples overview](https://bsdrp.net/documentation/examples/)
+- [How to build a BSDRP router lab](https://bsdrp.net/documentation/examples/how-to-build-a-bsdrp-router-lab/)
+- [Multi-tenant router and firewall (jail/vnet)](https://bsdrp.net/documentation/examples/multi-tenant-router-and-firewall/)
+- [Simple BGP/RIP/OSPF/IS-IS/BABEL lab with FRRouting](https://bsdrp.net/documentation/examples/simple-bgp-rip-ospf-lab/)
+- [Multi-tenant HA pf firewalls](https://bsdrp.net/documentation/examples/multi-tenant-ha-pf-firewalls/)
+- [pf, pfsync, carp and pflog lab](https://bsdrp.net/documentation/examples/pf-and-carp-lab/)
+- [GRE, GIF, IPsec, OpenVPN and WireGuard](https://bsdrp.net/documentation/examples/gre-ipsec-and-openvpn/)
+- [NAT64](https://bsdrp.net/documentation/examples/nat64/)
+- [Dropping packets at high rate](https://bsdrp.net/documentation/examples/dropping-packets-at-high-rate/)
+- [Setting up a forwarding benchmark lab](https://bsdrp.net/documentation/examples/setting-up-a-forwarding-performance-benchmark-lab/)
+- [Setting up a VPN performance benchmark lab](https://bsdrp.net/documentation/examples/setting-up-a-vpn-ipsec-gre-etc-performance-benchmark-lab/)
+
+## Community
+
+- [Mailing Lists](https://bsdrp.net/community/mailing-lists/)
+- [How to contribute](https://bsdrp.net/community/how-to-contribute/)
+- [Source code (GitHub)](https://github.com/ocochard/BSDRP)
+- [Bug tracker](https://github.com/ocochard/BSDRP/issues)
