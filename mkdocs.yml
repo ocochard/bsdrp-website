@@ -62,6 +62,7 @@ nav:
       - Contributors: contributors.md
   - Documentation:
       - User Guide: documentation/end-users-docs.md
+      - cloud-init: documentation/cloud-init.md
       - FAQ: documentation/faq.md
       - Technical Documentation:
           - Overview: documentation/technical-docs.md

@@ -83,10 +83,27 @@ fi
 #
 # mirror -R           reverse mirror (local -> remote)
 # --delete            remove remote files that no longer exist locally
-# --parallel=4        4 concurrent transfers
+# --parallel=N        N concurrent transfers (tunable; see PARALLEL below)
 # --verbose=2         per-file progress
 # --exclude-glob ...  never touch these even if they exist remotely
+#
+# PARALLEL is overridable from the environment so we can A/B test values
+# without editing the script:  PARALLEL=8 ./deploy.sh
+PARALLEL="${PARALLEL:-4}"
+
+# Count local files and total size for a baseline.
+local_file_count=$(find "${LOCAL_DIR}" -type f | wc -l | tr -d ' ')
+local_size=$(du -sh "${LOCAL_DIR}" | awk '{print $1}')
+
 echo "deploy.sh: uploading to sftp://${REMOTE_HOST}${REMOTE_DIR} ${DRY_RUN:+(dry-run)}"
+echo "deploy.sh: ${local_file_count} files, ${local_size} total, parallel=${PARALLEL}"
+
+upload_start=$(date +%s)
+
+# Tee lftp's stdout so we can count transfers after the run. lftp's --verbose=2
+# emits "Transferring file `...'" on each upload start.
+upload_out=$(mktemp -t deploy_lftp.XXXXXX)
+trap 'rm -f "${upload_out}"' EXIT
 
 lftp -c "
 set cmd:fail-exit true;
@@ -98,7 +115,7 @@ debug -o ${LOG_FILE} 3;
 open sftp://${REMOTE_USER}@${REMOTE_HOST};
 cd ${REMOTE_DIR};
 lcd ${REPO_DIR}/${LOCAL_DIR};
-mirror -R --delete --parallel=4 --verbose=2 ${DRY_RUN} \
+mirror -R --delete --parallel=${PARALLEL} --verbose=2 ${DRY_RUN} \
 	--exclude-glob sessions/ \
 	--exclude-glob HTTPCS55470.html \
 	--exclude-glob LiveSearchSiteAuth.xml \
@@ -106,6 +123,12 @@ mirror -R --delete --parallel=4 --verbose=2 ${DRY_RUN} \
 	--exclude-glob ppxfkyy3gk.txt \
 	--exclude-glob y_key_e97cb3e97accaeb1.html \
 	. .;
-"
+" 2>&1 | tee "${upload_out}"
 
-echo "deploy.sh: done."
+upload_end=$(date +%s)
+elapsed=$((upload_end - upload_start))
+
+transferred=$(grep -c '^Transferring file ' "${upload_out}" || true)
+removed=$(grep -c '^Removing old file ' "${upload_out}" || true)
+
+echo "deploy.sh: done in ${elapsed}s (parallel=${PARALLEL}, transferred=${transferred:-0}, removed=${removed:-0})"
