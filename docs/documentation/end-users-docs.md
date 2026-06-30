@@ -15,12 +15,13 @@ All hardware supported by the latest FreeBSD release is compatible with BSDRP, e
 
 BSDRP image filenames follow this pattern:
 
-BSDRP_*release*_*image type*_*arch*.img.xz
+BSDRP-*release*-*image type*-*arch*.img.xz
 
 The *image type* can be:
 
 - full: for a full installation; includes the bootloader, system, and data partitions
 - upgrade: for system upgrades; includes only one system partition
+- debug: tarball of kernel/userland debug symbols (`.tar.xz`)
 
 The *arch* can be:
 
@@ -29,10 +30,13 @@ The *arch* can be:
 
 Examples:
 
-- BSDRP_2.0_full_amd64.img: full image for x86_64
-- BSDRP_2.0_upgrade_aarch64.img: upgrade image for ARM
+- BSDRP-2.2-full-amd64.img.xz: full image for x86_64
+- BSDRP-2.2-upgrade-aarch64.img.xz: upgrade image for ARM
 
-The `*.mtree.xz` files are used for system integrity checks.
+The `*.mtree.xz` files are used for system integrity checks. Note
+that mtree artifacts omit the image-type segment (for example
+`BSDRP-2.2-amd64.mtree.xz`), since the same reference applies to both
+the full and upgrade images.
 
 ## Installation
 
@@ -50,7 +54,7 @@ The two steps for writing the image to a CF/flash/USB removable medium:
 Connect your flash or USB drive and note its device name. Decompress the image and copy it to the drive using a byte-copy command (**Warning: be sure to double-check the destination disk!**):
 
 ```
-xzcat BSDRP_full_amd64_vga.1.0.img.xz | dd of=/dev/sd4 bs=256k
+xzcat BSDRP-2.2-full-amd64.img.xz | dd of=/dev/sd4 bs=256k
 ```
 
 You can boot from this media now.
@@ -80,7 +84,7 @@ The last line is your USB device. Unmount it and write the BSDRP image to the de
 
 ```
 sudo umount -f /dev/disk3s1
-xzcat BSDRP_full_amd64_vga.1.0.img.xz | sudo dd of=/dev/rdisk3 bs=1m
+xzcat BSDRP-2.2-full-amd64.img.xz | sudo dd of=/dev/rdisk3 bs=1m
 ```
 
 If successful, macOS will show an error dialog saying it doesn’t recognize the disk. Click "Eject", remove the USB key, and you’re done.
@@ -91,9 +95,9 @@ Boot BSDRP from the USB key you just created. From BSDRP, display the BSDRP syst
 
 ```
 [root@router]~# glabel status | grep BSDRP
- ufs/BSDRPs3     N/A  da1s3
- ufs/BSDRPs4     N/A  da1s4
-ufs/BSDRPs1a     N/A  da1s1a
+gpt/BSDRPs1     N/A  da1p3
+gpt/BSDRPs2     N/A  da1p4
+ gpt/BSDRP      N/A  da1p5
 ```
 
 In this example, BSDRP is on disk `da1` (the USB key).
@@ -124,12 +128,6 @@ Once rebooted from your hard drive, you can expand the `/data` slice to use all 
 ```
 system expand-data-slice
 ```
-
-### Special notes for PC Engines
-
-#### Alix platform
-
-You need at least [BIOS revision 0.99h](http://www.pcengines.ch/alix2.htm). You can use the [pfSense Alix BIOS update FreeDOS image disk](https://doc.pfsense.org/index.php/ALIX_BIOS_Update_Procedure) for an easy upgrade.
 
 ## Quick start
 
@@ -182,16 +180,22 @@ Use the `config` command to save the configuration:
 [root@R1]~#config
 BSD Router Project configuration tool
 Usage: /usr/local/sbin/config option
-  - diff     : Show diff between current and saved config
-  - save     : Save current config
-  - apply    : Apply current config
-  - rollback : Revert to previous config
-  - put      : Put the saved config to a remote server
-  - get      : Get config from remote server
-  - reset    : Return to default configuration
-  - help (h) [option]  : Display this help message.
-                        If [option] given, display more detail about the option
+  - diff [quiet|factory]  : Show diff between current and saved config
+  - save [name]           : Save current config, optional name to store the config
+  - apply                 : Apply current config
+  - rollback [name]       : Revert to previous config, optional name of config to use
+  - put                   : Put the saved config to a remote server
+  - get                   : Get config from remote server
+  - factory               : Return to default configuration
+  - help (h) [option]     : Display this help message.
+                            If [option] given, display more detail about the option
 ```
+
+The `apply` subcommand supports extra options for staged or supervised
+rollouts: `apply secure <minutes>` arms an auto-rollback that fires
+unless followed by `apply confirm`; `apply in <minutes>` and
+`apply at <date/time>` schedule the apply for later; `apply cancel`
+cancels a scheduled apply.
 
 
 !!! note
@@ -210,10 +214,10 @@ Download the image directly and pipe the output through xzcat into upgrade:
 fetch 'http://URL/BSDRP-upgrade.image.xz' -o - | xzcat | upgrade
 ```
 
-Real example to upgrade to 1.96:
+Real example to upgrade to 2.2:
 
 ```
-fetch 'https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/1.96/amd64/BSDRP-1.96-upgrade-amd64-serial.img.xz/download' -o - | xzcat | upgrade
+fetch 'https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.2/amd64/BSDRP-2.2-upgrade-amd64.img.xz/download' -o - | xzcat | upgrade
 ```
 
 #### SSH fetch without checking SHA256
@@ -275,7 +279,7 @@ This method requires an SSH client (Linux and Unix systems include one by defaul
 From the client, run:
 
 ```
-cat BSDRP_1.2_upgrade_amd64_vga.img.xz | ssh root@a.b.c.d "xzcat | upgrade"
+cat BSDRP-2.2-upgrade-amd64.img.xz | ssh root@a.b.c.d "xzcat | upgrade"
 ```
 
 ## Security
@@ -299,12 +303,12 @@ Retype New Password: XXXXXXXX
 
 To check the integrity of your BSDRP system, download the corresponding reference file onto your router and run the `system integrity` command.
 
-For example, on a 0.35 amd64-serial release (assuming the router has DNS resolution and internet access):
+For example, on a 2.2 amd64 release (assuming the router has DNS resolution and internet access):
 
 ```
 cd /tmp
-fetch http://downloads.sourceforge.net/project/bsdrp/BSD_Router_Project/0.35/BSDRP_0.35_amd64_serial.mtree.xz
-system integrity BSDRP_0.35_amd64_serial.mtree.xz
+fetch https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.2/amd64/BSDRP-2.2-amd64.mtree.xz/download -o BSDRP-2.2-amd64.mtree.xz
+system integrity BSDRP-2.2-amd64.mtree.xz
 ```
 
 ## System management
@@ -332,24 +336,18 @@ system dual-console
 
 #### Baud rate
 
-The serial port baud rate must be changed in two files:
+The serial port baud rate is set in two places:
 
-- /boot.config
-- /etc/ttys
+- /boot/loader.conf.local (for the boot loader and early kernel console)
+- /etc/ttys (for `getty` once userland is up)
 
-To edit /boot.config, first remount / read-write:
+BSDRP no longer ships a `/boot.config` file; configure the loader
+through `/boot/loader.conf.local` instead. Remount / read-write,
+add the speed setting, then remount read-only:
 
 ```
 mount -uw /
-```
-
-Change the speed value just after the `-S` option in /boot.config (do not remove the other `-D` or `-h` options).
-
-Check that there are no legacy values (`boot_serial`, `comconsole_speed`, `console`) in /boot/loader.conf.local. They are unnecessary when /boot.config is in use.
-
-Once done, remount / read-only:
-
-```
+echo 'comconsole_speed="115200"' >> /boot/loader.conf.local
 mount -ur /
 ```
 
@@ -402,11 +400,12 @@ ipmitool -H 192.168.1.11 -U USERID -P PASSW0RD -I lanplus -a sol activate
 
 ### Watchdog
 
-Add to /etc/rc.conf:
+BSDRP ships the `ipmi(4)` kernel module, which `watchdogd(8)` can use
+on server hardware that exposes a BMC watchdog. Add to /etc/rc.conf:
 
 ```
-# Load Intel ICH watchdog interrupt timer driver
-kld_list='ichwd'
+# Load the IPMI driver (provides a watchdog on BMC-equipped boards)
+kld_list='ipmi'
 # Start watchdogd daemon
 watchdogd_enable="yes"
 ```
@@ -414,11 +413,15 @@ watchdogd_enable="yes"
 And start it:
 
 ```
-kldload ichwd
+kldload ipmi
 service watchdogd start
 ```
 
-If the `ipmi` module is already loaded, `watchdogd` can use IPMI instead of `ichwd`.
+!!! note
+    The Intel ICH watchdog driver (`ichwd`) is not shipped on BSDRP
+    images. If you need a non-IPMI watchdog, rebuild the image with
+    `ichwd` added to `MODULES_OVERRIDE` in
+    `poudriere.etc/poudriere.d/BSDRPj-src.conf.common`.
 
 ### SNMP
 
@@ -438,7 +441,7 @@ You can then check it locally (the default SNMP community is `public`):
 
 ```
 [root@BSDRP]~# bsnmpget sysDescr.0
-sysDescr.0 = router.bsdrp.net 2059309898 FreeBSD 9.1-RELEASE-p1
+sysDescr.0 = router.bsdrp.net 2059309898 FreeBSD 15.0-RELEASE
 ```
 
 ### Syslog
@@ -461,72 +464,49 @@ service syslogd restart
     BSDRP v1.4 and earlier ship with a default configuration that blocks remote syslog. To change this, edit /etc/rc.conf.misc and replace `syslogd_flags="-ss"` with `syslogd_flags="-s"`.
 
 
-### Firmware upgrade
+### NIC firmware upgrade
 
-#### Mellanox
+#### Mellanox / Nvidia ConnectX
 
-Start by identifying your NIC:
+BSDRP ships the open-source [`mstflint`](https://github.com/Mellanox/mstflint)
+suite (binaries `mstflint`, `mstconfig`, `mstfwreset`,
+`mstdevices_info`, etc.). It does **not** ship the proprietary
+`mstfwmanager` from Nvidia's MFT bundle, so firmware images cannot be
+auto-resolved from PSID; you fetch the `.bin` yourself from the Nvidia
+firmware site and burn it with `mstflint`.
+
+Identify the device and current versions:
 
 ```
-# mstfwmanager
-Querying Mellanox devices firmware ...
-
-Device #1:
-----------
-
-  Device Type:      ConnectX4
-  Part Number:      MCX416A-CCA_Ax
-  Description:      ConnectX-4 EN network interface card; 100GbE dual-port QSFP28; PCIe3.0 x16; ROHS R6
-  PSID:             MT_2150110033
-  PCI Device Name:  pci0:2:0:0
-  Base GUID:        e41d2d0300fdbd90
-  Base MAC:         e41d2dfdbd90
-  Versions:         Current        Available
-     FW             12.26.1040     N/A
-     PXE            3.5.0803       N/A
-     UEFI           14.19.0014     N/A
-
-  Status:           No matching image found
+# mstdevices_info
+# mstflint -d pci0:2:0:0 query
 ```
 
-Go to the [Mellanox firmware download site](https://www.mellanox.com/page/firmware_download), navigate to "Device Type" -> "Part Number" -> "PSID", then fetch the firmware on your BSDRP router and apply the upgrade:
+Note the PSID in the output, fetch the matching firmware `.bin` from
+the [Nvidia firmware download
+site](https://network.nvidia.com/support/firmware/firmware-downloads/),
+then burn:
 
 ```
 # mount /data
 # cd /data
-# fetch http://www.mellanox.com/downloads/firmware/fw-ConnectX4-rel-12_26_4012-MCX416A-CCA_Ax-UEFI-14.19.17-FlexBoot-3.5.805.bin.zip
-# unzip fw-ConnectX4-rel-12_26_4012-MCX416A-CCA_Ax-UEFI-14.19.17-FlexBoot-3.5.805.bin.zip
-# mstfwmanager -u -i fw-ConnectX4-rel-12_26_4012-MCX416A-CCA_Ax-UEFI-14.19.17-FlexBoot-3.5.805.bin
-Querying Mellanox devices firmware ...
-
-Device #1:
-----------
-
-  Device Type:      ConnectX4
-  Part Number:      MCX416A-CCA_Ax
-  Description:      ConnectX-4 EN network interface card; 100GbE dual-port QSFP28; PCIe3.0 x16; ROHS R6
-  PSID:             MT_2150110033
-  PCI Device Name:  pci0:2:0:0
-  Base GUID:        e41d2d0300fdbd90
-  Base MAC:         e41d2dfdbd90
-  Versions:         Current        Available
-     FW             12.26.1040     12.26.4012
-     PXE            3.5.0803       3.5.0805
-     UEFI           14.19.0014     14.19.0017
-
-  Status:           Update required
-
----------
-Found 1 device(s) requiring firmware update...
-
-Perform FW update? [y/N]: y
-Device #1: Updating FW ...
-Initializing image partition -   OK
-Writing Boot image component -   OK
-Done
-
-Restart needed for updates to take effect.
+# fetch <URL to .bin>
+# mstflint -d pci0:2:0:0 -i fw-ConnectX*.bin burn
+# mstfwreset -d pci0:2:0:0 reset
 ```
+
+A full reboot is the safest fallback if `mstfwreset` cannot hot-reset
+the card.
+
+#### Chelsio
+
+Use `cxgbetool(8)` from FreeBSD base; no extra package is needed.
+
+#### Other vendors
+
+BSDRP does not bundle Intel `nvmupdate` or other proprietary vendor
+firmware tools. Boot a vendor-provided live OS or run the tool from a
+host OS that has it packaged, then reboot into BSDRP.
 
 ## Debugging
 
@@ -889,25 +869,21 @@ mount -uw /
 
 You can now modify any file, or install and remove packages.
 
-For example, to remove ucarp:
+For example, to remove tayga (NAT64 daemon) if you do not need it:
 
 ```
-[root@router]~# pkg info | grep ucarp
-ucarp-1.5.2.20171201           Userlevel Common Address Redundancy Protocol
-[root@router]~# pkg remove ucarp
+[root@router]~# pkg info | grep tayga
+tayga-0.9.2_3                  Out-of-kernel stateless NAT64 implementation for Linux/FreeBSD
+[root@router]~# pkg remove tayga
 Checking integrity... done (0 conflicting)
-Deinstallation has been requested for the following 1 packages (of 0 packages in the universe):
+Deinstallation has been requested for the following 1 packages:
 
 Installed packages to be REMOVED:
-        ucarp-1.5.2.20171201
-
-Number of packages to be removed: 1
+        tayga-0.9.2_3
 
 Proceed with deinstalling packages? [y/N]: y
-[1/1] Deinstalling ucarp-1.5.2.20171201...
-[1/1] Deleting files for ucarp-1.5.2.20171201:   0%
-pkg: /usr/local/etc/rc.d/ucarp different from original checksum, not removing
-[1/1] Deleting files for ucarp-1.5.2.20171201: 100%
+[1/1] Deinstalling tayga-0.9.2_3...
+[1/1] Deleting files for tayga-0.9.2_3: 100%
 ```
 
 After your changes, remount it read-only:
