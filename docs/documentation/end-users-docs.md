@@ -83,7 +83,7 @@ map auto_home on /home (autofs, automounted)
 The last line is your USB device. Unmount it and write the BSDRP image to the device, prefixing the device name with `r`:
 
 ```
-sudo umount -f /dev/disk3s1
+diskutil unmountDisk /dev/disk3
 xzcat BSDRP-2.2-full-amd64.img.xz | sudo dd of=/dev/rdisk3 bs=1m
 ```
 

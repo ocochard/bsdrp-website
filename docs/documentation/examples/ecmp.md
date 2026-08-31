@@ -3,16 +3,34 @@ title: Equal-cost multi-path routing (ECMP)
 ---
 ## Overview
 
-
-!!! warning
-    bhyve does not emulate multiqueue NICs, so RSS flow-id cannot be tested in a bhyve-based lab; a physical lab is required.
+!!! danger "A bhyve lab will NOT exercise ECMP"
+    bhyve's `virtio-net` (vtnet) does not support multi-queue, so the host
+    network stack has only a single RSS bucket per interface and assigns the
+    same flow-id to every packet. As a result, the FreeBSD ECMP next-hop
+    selection collapses onto a single path and **all traffic ends up using
+    one link, regardless of how many equal-cost routes are installed**.
+    The bhyve labconfig (`ecmp_vm1`..`ecmp_vm4`) is useful only to verify the
+    routing configuration; to actually observe load distribution across the
+    two paths you need a **physical lab** with multi-queue NICs (`igb(4)`,
+    `cxgbe(4)`, `mlxen(4)`, etc.).
 
 
 ### Network diagram
 
 Here is the logical and physical view:
 
-![bsdrp-lab-mpath.png](../../assets/images/documentation/examples/bsdrp-lab-mpath.png)
+```mermaid
+flowchart TD
+    VM1["VM1 (client)<br/>vtnet0: .1"]
+    VM2["VM2 (ECMP router)<br/>vtnet0: .2<br/>vtnet1: .2 &nbsp; vtnet3: .2"]
+    VM3["VM3 (ECMP router)<br/>vtnet1: .3 &nbsp; vtnet3: .3<br/>vtnet2: .3"]
+    VM4["VM4 (server)<br/>vtnet2: .4"]
+
+    VM1 ---|"vtnet0<br/>10.0.12.0/24<br/>2001:db8:12::/64"| VM2
+    VM2 ---|"vtnet1<br/>10.0.231.0/24<br/>2001:db8:231::/64"| VM3
+    VM2 ---|"vtnet3 (shared LAN)<br/>10.0.232.0/24<br/>2001:db8:232::/64"| VM3
+    VM3 ---|"vtnet2<br/>10.0.34.0/24<br/>2001:db8:34::/64"| VM4
+```
 
 ## Setting up the lab
 

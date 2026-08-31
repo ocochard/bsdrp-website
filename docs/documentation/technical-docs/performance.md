@@ -665,7 +665,7 @@ kldload hwpmc
 
 You can display the most time-consuming processes with:
 
-- AMD: ls_not_halted_cyc
+- AMD: ls_not_halted_cyc (zen) or BU_CPU_CLK_UNHALTED (K8 class)
 - Intel: cpu_clk_unhalted.thread_p
 - ARM: CPU_CYCLES
 
