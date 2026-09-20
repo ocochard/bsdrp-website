@@ -20,17 +20,17 @@ Image types:
 
 | Arch | Purpose | File | Checksum |
 |----|----|----|----|
-| amd64 | full | [BSDRP-2.2-full-amd64.img.xz](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.2/amd64/BSDRP-2.2-full-amd64.img.xz/download) | [sha256](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.2/amd64/BSDRP-2.2-full-amd64.img.xz.sha256/download) |
-| aarch64 | full | [BSDRP-2.2-full-aarch64.img.xz](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.2/aarch64/BSDRP-2.2-full-aarch64.img.xz/download) | [sha256](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.2/aarch64/BSDRP-2.2-full-aarch64.img.xz.sha256/download) |
+| amd64 | full | [BSDRP-2.3-full-amd64.img.xz](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.3/amd64/BSDRP-2.3-full-amd64.img.xz/download) | [sha256](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.3/amd64/BSDRP-2.3-full-amd64.img.xz.sha256/download) |
+| aarch64 | full | [BSDRP-2.3-full-aarch64.img.xz](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.3/aarch64/BSDRP-2.3-full-aarch64.img.xz/download) | [sha256](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.3/aarch64/BSDRP-2.3-full-aarch64.img.xz.sha256/download) |
 | Arch | Purpose | File | Checksum |
-| amd64 | upgrade | [BSDRP-2.2-upgrade-amd64.img.xz](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.2/amd64/BSDRP-2.2-upgrade-amd64.img.xz/download) | [sha256](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.2/amd64/BSDRP-2.2-upgrade-amd64.img.xz.sha256/download) |
-| aarch64 | upgrade | [BSDRP-2.2-upgrade-aarch64.img.xz](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.2/aarch64/BSDRP-2.2-upgrade-aarch64.img.xz/download) | [sha256](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.2/aarch64/BSDRP-2.2-upgrade-aarch64.img.xz.sha256/download) |
+| amd64 | upgrade | [BSDRP-2.3-upgrade-amd64.img.xz](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.3/amd64/BSDRP-2.3-upgrade-amd64.img.xz/download) | [sha256](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.3/amd64/BSDRP-2.3-upgrade-amd64.img.xz.sha256/download) |
+| aarch64 | upgrade | [BSDRP-2.3-upgrade-aarch64.img.xz](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.3/aarch64/BSDRP-2.3-upgrade-aarch64.img.xz/download) | [sha256](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.3/aarch64/BSDRP-2.3-upgrade-aarch64.img.xz.sha256/download) |
 | Arch | Purpose | File | Checksum |
-| amd64 | mtree | [BSDRP-2.2-amd64.mtree.xz](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.2/amd64/BSDRP-2.2-amd64.mtree.xz/download) | [sha256](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.2/amd64/BSDRP-2.2-amd64.mtree.xz.sha256/download) |
-| aarch64 | mtree | [BSDRP-2.2-aarch64.mtree.xz](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.2/aarch64/BSDRP-2.2-aarch64.mtree.xz/download) | [sha256](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.2/aarch64/BSDRP-2.2-aarch64.mtree.xz.sha256/download) |
+| amd64 | mtree | [BSDRP-2.3-amd64.mtree.xz](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.3/amd64/BSDRP-2.3-amd64.mtree.xz/download) | [sha256](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.3/amd64/BSDRP-2.3-amd64.mtree.xz.sha256/download) |
+| aarch64 | mtree | [BSDRP-2.3-aarch64.mtree.xz](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.3/aarch64/BSDRP-2.3-aarch64.mtree.xz/download) | [sha256](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.3/aarch64/BSDRP-2.3-aarch64.mtree.xz.sha256/download) |
 | Arch | Purpose | File | Checksum |
-| amd64 | debug | [BSDRP-2.2-debug-amd64.tar.xz](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.2/amd64/BSDRP-2.2-debug-amd64.tar.xz/download) | [sha256](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.2/amd64/BSDRP-2.2-debug-amd64.tar.xz.sha256/download) |
-| aarch64 | debug | [BSDRP-2.2-debug-aarch64.tar.xz](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.2/aarch64/BSDRP-2.2-debug-aarch64.tar.xz/download) | [sha256](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.2/aarch64/BSDRP-2.2-debug-aarch64.tar.xz.sha256/download) |
+| amd64 | debug | [BSDRP-2.3-debug-amd64.tar.xz](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.3/amd64/BSDRP-2.3-debug-amd64.tar.xz/download) | [sha256](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.3/amd64/BSDRP-2.3-debug-amd64.tar.xz.sha256/download) |
+| aarch64 | debug | [BSDRP-2.3-debug-aarch64.tar.xz](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.3/aarch64/BSDRP-2.3-debug-aarch64.tar.xz/download) | [sha256](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.3/aarch64/BSDRP-2.3-debug-aarch64.tar.xz.sha256/download) |
 
 ## Nightly builds
 

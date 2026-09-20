@@ -17,7 +17,7 @@ description: BSD Router Project features list
 
 - All routing protocols supported by [FRRouting](https://frrouting.org/): BGP, RIP and RIPng (IPv6), OSPF v2 and OSPF v3 (IPv6), IS-IS
 - All routing protocols supported by [Bird](http://bird.network.cz/): BGP, RIP and RIPng (IPv6), OSPF v2 and OSPF v3 (IPv6)
-- Multicast: [DVMRP](http://freecode.com/projects/mrouted), PIM Dense Mode, [PIM Sparse Mode](http://troglobit.com/pimd.html), and [static](https://github.com/troglobit/smcroute/)
+- Multicast: [DVMRP](http://freecode.com/projects/mrouted), PIM Dense Mode, [PIM Sparse Mode and SSM](https://github.com/ocochard/pimd), and [static](https://github.com/troglobit/smcroute/)
 - Multiple FIB: 16 routing tables available
 - High availability with CARP (which also supports load balancing of incoming connections) and VRRP
 - [Multi-link PPP](http://mpd.sourceforge.net/): PPTP, PPPoE, L2TP, etc.

@@ -30,12 +30,12 @@ The *arch* can be:
 
 Examples:
 
-- BSDRP-2.2-full-amd64.img.xz: full image for x86_64
-- BSDRP-2.2-upgrade-aarch64.img.xz: upgrade image for ARM
+- BSDRP-2.3-full-amd64.img.xz: full image for x86_64
+- BSDRP-2.3-upgrade-aarch64.img.xz: upgrade image for ARM
 
 The `*.mtree.xz` files are used for system integrity checks. Note
 that mtree artifacts omit the image-type segment (for example
-`BSDRP-2.2-amd64.mtree.xz`), since the same reference applies to both
+`BSDRP-2.3-amd64.mtree.xz`), since the same reference applies to both
 the full and upgrade images.
 
 ## Installation
@@ -54,7 +54,7 @@ The two steps for writing the image to a CF/flash/USB removable medium:
 Connect your flash or USB drive and note its device name. Decompress the image and copy it to the drive using a byte-copy command (**Warning: be sure to double-check the destination disk!**):
 
 ```
-xzcat BSDRP-2.2-full-amd64.img.xz | dd of=/dev/sd4 bs=256k
+xzcat BSDRP-2.3-full-amd64.img.xz | dd of=/dev/sd4 bs=256k
 ```
 
 You can boot from this media now.
@@ -84,7 +84,7 @@ The last line is your USB device. Unmount it and write the BSDRP image to the de
 
 ```
 diskutil unmountDisk /dev/disk3
-xzcat BSDRP-2.2-full-amd64.img.xz | sudo dd of=/dev/rdisk3 bs=1m
+xzcat BSDRP-2.3-full-amd64.img.xz | sudo dd of=/dev/rdisk3 bs=1m
 ```
 
 If successful, macOS will show an error dialog saying it doesn’t recognize the disk. Click "Eject", remove the USB key, and you’re done.
@@ -214,10 +214,10 @@ Download the image directly and pipe the output through xzcat into upgrade:
 fetch 'http://URL/BSDRP-upgrade.image.xz' -o - | xzcat | upgrade
 ```
 
-Real example to upgrade to 2.2:
+Real example to upgrade to 2.3:
 
 ```
-fetch 'https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.2/amd64/BSDRP-2.2-upgrade-amd64.img.xz/download' -o - | xzcat | upgrade
+fetch 'https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.3/amd64/BSDRP-2.3-upgrade-amd64.img.xz/download' -o - | xzcat | upgrade
 ```
 
 #### SSH fetch without checking SHA256
@@ -279,7 +279,7 @@ This method requires an SSH client (Linux and Unix systems include one by defaul
 From the client, run:
 
 ```
-cat BSDRP-2.2-upgrade-amd64.img.xz | ssh root@a.b.c.d "xzcat | upgrade"
+cat BSDRP-2.3-upgrade-amd64.img.xz | ssh root@a.b.c.d "xzcat | upgrade"
 ```
 
 ## Security
@@ -303,12 +303,12 @@ Retype New Password: XXXXXXXX
 
 To check the integrity of your BSDRP system, download the corresponding reference file onto your router and run the `system integrity` command.
 
-For example, on a 2.2 amd64 release (assuming the router has DNS resolution and internet access):
+For example, on a 2.3 amd64 release (assuming the router has DNS resolution and internet access):
 
 ```
 cd /tmp
-fetch https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.2/amd64/BSDRP-2.2-amd64.mtree.xz/download -o BSDRP-2.2-amd64.mtree.xz
-system integrity BSDRP-2.2-amd64.mtree.xz
+fetch https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/2.3/amd64/BSDRP-2.3-amd64.mtree.xz/download -o BSDRP-2.3-amd64.mtree.xz
+system integrity BSDRP-2.3-amd64.mtree.xz
 ```
 
 ## System management
