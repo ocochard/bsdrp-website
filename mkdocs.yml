@@ -77,7 +77,7 @@ nav:
               - Multi-tenant router and firewall: documentation/examples/multi-tenant-router-and-firewall.md
               - Simple BGP/RIP/OSPF/ISIS/BABEL with FRRouting: documentation/examples/simple-bgp-rip-ospf-lab.md
               - Simple BGP/RIP/OSPF/BABEL with bird: documentation/examples/simple-bgp-rip-ospf-lab-with-bird.md
-              - BGP Route Reflector and Confederation: documentation/examples/bgp-route-reflector-and-confederation-using-quagga-and-bird.md
+              - BGP Route Reflector and Confederation: documentation/examples/bgp-route-reflector-and-confederation-using-frr-and-bird.md
               - OSPF inter-area loop prevention: documentation/examples/ospf-inter-area-loop-prevention.md
               - Multicast with PIM-DM: documentation/examples/multicast-with-pim-dm.md
               - Multicast with PIM-SM: documentation/examples/multicast-with-pim-sm.md

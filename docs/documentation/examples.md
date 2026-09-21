@@ -7,7 +7,7 @@ Routing lab examples:
 - [Multi-tenant router and firewall](examples/multi-tenant-router-and-firewall.md)
 - [Simple BGP/RIP/OSPF/ISIS/BABEL lab with FRRouting](examples/simple-bgp-rip-ospf-lab.md)
 - [Simple BGP/RIP/OSPF/BABEL lab with bird](examples/simple-bgp-rip-ospf-lab-with-bird.md)
-- [BGP Route Reflector and Confederation using FRRouting and Bird](examples/bgp-route-reflector-and-confederation-using-quagga-and-bird.md)
+- [BGP Route Reflector and Confederation using FRRouting and Bird](examples/bgp-route-reflector-and-confederation-using-frr-and-bird.md)
 - [OSPF inter-area loop prevention](examples/ospf-inter-area-loop-prevention.md)
 - [Multicast with PIM-DM](examples/multicast-with-pim-dm.md)
 - [Multicast with PIM-SM](examples/multicast-with-pim-sm.md)
