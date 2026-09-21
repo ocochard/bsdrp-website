@@ -32,13 +32,10 @@ The *arch* can be:
 - amd64: for modern x86 64-bit CPUs (Intel and AMD)
 - aarch64: for ARM 64-bit CPUs
 
-An aarch64 kernel configuration is maintained in the source tree, but
-the published images are amd64.
-
 Examples:
 
 - BSDRP-2.3-full-amd64.img.xz: full image for x86_64
-- BSDRP-2.3-upgrade-amd64.img.xz: upgrade image for x86_64
+- BSDRP-2.3-upgrade-aarch64.img.xz: upgrade image for ARM
 
 The `*.mtree.xz` files are used for system integrity checks. Note
 that mtree artifacts omit the image-type segment (for example

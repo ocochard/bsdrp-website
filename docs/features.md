@@ -6,8 +6,7 @@ description: BSD Router Project features list
 
 - 4 GB USB key, CompactFlash, SSD or disk (the image is 3.95 GB)
 - 1 GB of RAM (512 MB is enough for virtualized tests)
-- Processor: x86_64 (amd64). An arm64 (aarch64) kernel configuration is
-  maintained in the source tree, but the published images are amd64.
+- Processors: x86_64 (amd64) and arm64 (aarch64)
 
 ## Base System
 
