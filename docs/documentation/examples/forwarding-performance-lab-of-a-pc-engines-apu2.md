@@ -14,7 +14,7 @@ This lab tests a [PC Engines APU 2C4](http://www.pcengines.ch/apu2.htm) ([dmesg]
 
 For more information about the full setup of this lab: [Setting up a forwarding performance benchmark lab](setting-up-a-forwarding-performance-benchmark-lab.md) (switch configuration, etc.).
 
-BSDRP release 1.92 based on FreeBSD 12-STABLE is used.
+BSDRP release 2.3, based on FreeBSD 16-CURRENT (n313366), is used.
 
 ### Diagram
 
@@ -135,25 +135,67 @@ harvest_mask="351"
 
 ## Default forwarding rate
 
-We start the first test with one packet generator at gigabit line rate (1.488 Mpps) and observe:
+The first test uses one packet generator at Gigabit line rate
+(1.489 Mpps inet4 / 1.453 Mpps inet6), with 2000 flows of smallest UDP
+packets. Each data point is 5 iterations with a reboot between each.
 
-- The APU2 is still responsive during this test: NIC multiqueue correctly distributes the load across all cores.
-- About 794 Kpps are accepted by the igb(4) Ethernet interface.
+- The APU2 stays responsive during the test: NIC multiqueue distributes the
+  load across all 4 cores.
+- About 966 Kpps are forwarded on inet4, 916 Kpps on inet6.
 
-<!-- -->
+The 5 inet4 iterations, in pps:
 
 ```
-110.375986 main_thread [2514] 794985 pps (795780 pkts 381974400 bps in 1001000 usec) 7.63 avg_batch 1001 min_space
-111.377986 main_thread [2514] 794692 pps (796281 pkts 382214880 bps in 1002000 usec) 7.58 avg_batch 1001 min_space
-112.378985 main_thread [2514] 794606 pps (795400 pkts 381792000 bps in 1000999 usec) 7.07 avg_batch 1005 min_space
-113.379987 main_thread [2514] 796200 pps (796998 pkts 382559040 bps in 1001002 usec) 6.78 avg_batch 999 min_space
-114.380986 main_thread [2514] 800465 pps (801265 pkts 384607200 bps in 1000999 usec) 6.88 avg_batch 1001 min_space
+965776
+970935
+957160
+967726
+956754
 ```
 
 ## Firewalls impact
 
-This test generates 2000 different flows by using 2000 different UDP destination ports.
+This test generates 2000 different flows by using 2000 different UDP
+destination ports.
 
 The pf and ipfw configurations used are detailed in the earlier [Forwarding performance lab of an IBM System x3550 M3 with Intel 82580](forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md#firewall-impact).
 
-![forwarding and firewalling rate with a PC Engines APU running FreeBSD 10.3](../../assets/images/documentation/examples/bench.forwarding.and.firewalling.rate.on.pc.engines.apu2.png)
+![Impact of enabling firewalls on forwarding performance, PC Engines APU2 running FreeBSD 16-CURRENT](../../assets/images/documentation/examples/bench.forwarding.and.firewalling.rate.on.pc.engines.apu2.png)
+
+Median values, in pps:
+
+| configuration  | inet4  | inet6  |
+|----------------|--------|--------|
+| forwarding     | 965776 | 915611 |
+| ipf-stateful   | 268170 | 275307 |
+| ipf-stateless  | 435643 | 364259 |
+| ipfw-stateful  | 566841 | 471844 |
+| ipfw-stateless | 740992 | 676658 |
+| pf-stateful    | 304591 | 309438 |
+| pf-stateless   | 278955 | 268687 |
+
+ipfw is the fastest of the three firewalls in both modes: stateless 741 Kpps
+(23% below plain forwarding), stateful 567 Kpps. ipf is the slowest in
+stateful mode (268 Kpps, a 72% drop from plain forwarding), and pf sits
+between the two.
+
+For ipf and pf in stateful mode the inet6 result equals or slightly exceeds
+inet4, because state lookup dominates and the larger IPv6 header stops being
+the limiting factor. Where the firewall is cheaper (plain forwarding,
+ipf-stateless, ipfw-*) inet6 costs 5 to 16% relative to inet4.
+
+!!! note
+    ipfw-stateful is the one noisy data point here. Its iterations cluster
+    into two groups (about 565 Kpps and 600 Kpps on inet4, about 465 Kpps
+    and 520 Kpps on inet6), giving a 6.5% inet4 and 12.7% inet6 spread
+    against under 1.5% for most other sets. The min/max bars in the graph
+    show it. The cause was not investigated.
+
+### pf with state is faster than pf without state
+
+In this run, pf is the one firewall where enabling state *increases*
+throughput: 304591 pps stateful against 278955 pps stateless on inet4.
+
+This is not a measurement artifact, since both sets have a spread under
+1.2%. It is not a standing property of pf on this platform either: the
+behavior is not present in every run of this lab.
