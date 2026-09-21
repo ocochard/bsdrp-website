@@ -9,7 +9,11 @@ To run BSDRP, you need:
 - A 4 GB flash disk (such as a CompactFlash card, USB stick, or mSATA module).
 - At least 1 GB of RAM.
 
-All hardware supported by the latest FreeBSD release is compatible with BSDRP, except for some drivers that have been removed (e.g., wireless, PCMCIA, SCSI, USB printer, and FireWire).
+All hardware supported by the latest FreeBSD release is compatible with BSDRP, except for some drivers that have been removed (e.g., wireless, PCMCIA, USB printer, and FireWire).
+
+Storage controllers are kept: AHCI, NVMe, and the usual SCSI/SAS
+adapters (`ahc`, `ahd`, `isp`, `mpt`, `mps`, `mpr`, `ciss`), so an
+installation to an internal SSD, NVMe module, or RAID controller works.
 
 ## Filename convention
 
@@ -28,10 +32,13 @@ The *arch* can be:
 - amd64: for modern x86 64-bit CPUs (Intel and AMD)
 - aarch64: for ARM 64-bit CPUs
 
+An aarch64 kernel configuration is maintained in the source tree, but
+the published images are amd64.
+
 Examples:
 
 - BSDRP-2.3-full-amd64.img.xz: full image for x86_64
-- BSDRP-2.3-upgrade-aarch64.img.xz: upgrade image for ARM
+- BSDRP-2.3-upgrade-amd64.img.xz: upgrade image for x86_64
 
 The `*.mtree.xz` files are used for system integrity checks. Note
 that mtree artifacts omit the image-type segment (for example
@@ -147,7 +154,7 @@ Set a password for root (mandatory for SSH):
 passwd
 ```
 
-For a routing protocol daemon, you can choose between Bird and FRRouting (a Quagga fork).
+For a routing protocol daemon, you can choose between Bird and FRRouting.
 
 As an example, to start FRR and enter its CLI mode:
 
@@ -191,11 +198,14 @@ Usage: /usr/local/sbin/config option
                             If [option] given, display more detail about the option
 ```
 
-The `apply` subcommand supports extra options for staged or supervised
-rollouts: `apply secure <minutes>` arms an auto-rollback that fires
-unless followed by `apply confirm`; `apply in <minutes>` and
-`apply at <date/time>` schedule the apply for later; `apply cancel`
-cancels a scheduled apply.
+!!! warning "`config apply` is not implemented yet"
+    `apply` and its options (`secure`, `confirm`, `in`, `at`, `cancel`)
+    are placeholders: they print what they would do and change nothing.
+    The staged rollout and the auto-rollback they describe do not exist,
+    so do not rely on them to protect a remote change. To apply a
+    configuration today, restart the service concerned, and use
+    `config save` plus `config rollback` to move between saved
+    configurations.
 
 
 !!! note
@@ -441,7 +451,7 @@ You can then check it locally (the default SNMP community is `public`):
 
 ```
 [root@BSDRP]~# bsnmpget sysDescr.0
-sysDescr.0 = router.bsdrp.net 2059309898 FreeBSD 15.0-RELEASE
+sysDescr.0 = router.bsdrp.net 2059309898 FreeBSD 16.0-CURRENT
 ```
 
 ### Syslog
@@ -458,10 +468,6 @@ Then restart syslogd:
 ```
 service syslogd restart
 ```
-
-
-!!! note
-    BSDRP v1.4 and earlier ship with a default configuration that blocks remote syslog. To change this, edit /etc/rc.conf.misc and replace `syslogd_flags="-ss"` with `syslogd_flags="-s"`.
 
 
 ### NIC firmware upgrade
@@ -502,11 +508,44 @@ the card.
 
 Use `cxgbetool(8)` from FreeBSD base; no extra package is needed.
 
+#### Intel
+
+BSDRP ships Intel's NVM Update utilities, each bundled with the
+firmware images it can flash, behind one wrapper per family:
+
+- `nvmupdate-i210` for the I210 series
+- `nvmupdate-i225-i226` for the I225 and I226 controllers
+- `nvmupdate-x550` for the X550 series
+
+Each wrapper is a one-line script that changes into the package
+directory and runs Intel's `nvmupdate64e` there, so the bundled
+firmware images and `nvmupdate.cfg` are picked up automatically and
+the utility can be called from anywhere:
+
+```
+# nvmupdate-i210
+```
+
+The options it accepts, and the adapters each firmware image applies
+to, are described in the documentation Intel ships inside the package,
+for example `/usr/local/intel-nvmupdate-i210/readme.txt`.
+
+A power cycle, not a warm reboot, is needed for a new NVM image to
+take effect.
+
+Two related Intel tools are shipped as well:
+
+- `epct`, the Ethernet Port Configuration Tool, to change the port
+  layout of X710/XXV710/X722 adapters (for example splitting a 40G
+  port into 4x10G)
+- `ixl_unlock`, to disable SFP module qualification on XL710 cards so
+  third-party optics are accepted
+
 #### Other vendors
 
-BSDRP does not bundle Intel `nvmupdate` or other proprietary vendor
-firmware tools. Boot a vendor-provided live OS or run the tool from a
-host OS that has it packaged, then reboot into BSDRP.
+For anything else, boot a vendor-provided live OS or run the tool from
+a host OS that has it packaged, then reboot into BSDRP. `flashrom` is
+shipped for the boards whose flash chip it supports.
 
 ## Debugging
 
@@ -666,7 +705,7 @@ Done
 [root@router]~# df -h /data/
 Filesystem          Size    Used   Avail Capacity  Mounted on
 /dev/ufs/BSDRPs4    1G     16M     974M     1%    /data
-[root@router]~# fetch "URL/BSDRP-1.60-debug-amd64.tar.xz" -o - | tar -C /data -xvf -
+[root@router]~# fetch "URL/BSDRP-2.3-debug-amd64.tar.xz" -o - | tar -C /data -xvf -
 ```
 
 ### Analysing a core dump
@@ -676,13 +715,7 @@ Install debug symbols first, then:
 ```
 kgdb /usr/lib/debug/boot/kernel/kernel.debug /data/crash/vmcore.0
 
-GNU gdb 6.1.1 [FreeBSD]
-Copyright 2004 Free Software Foundation, Inc.
-GDB is free software, covered by the GNU General Public License, and you are
-welcome to change it and/or distribute copies of it under certain conditions.
-Type "show copying" to see the conditions.
-There is absolutely no warranty for GDB.  Type "show warranty" for details.
-This GDB was configured as "amd64-marcel-freebsd"...
+(gdb banner omitted)
 
 Unread portion of the kernel message buffer:
 
