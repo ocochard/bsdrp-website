@@ -187,7 +187,7 @@ ${fwcmd} add queue 1 ip from any to any xmit $oif out
 ${fwcmd} add queue 2 ip from any to any recv $oif in
 # We don't want to block traffic, only shape some
 ${fwcmd} add 3000 allow ip from any to any
-'EOF'
+EOF
 
 service hostname restart
 service netif restart

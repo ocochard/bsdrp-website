@@ -21,7 +21,7 @@ Download the BSDRP serial image (which avoids the need for an X display) from So
 
 More information on the BSDRP lab scripts is available in [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
 
-Start the lab with 4 full-meshed routers and one shared LAN. This example uses the bhyve lab script on FreeBSD:
+Start the lab with 4 full-meshed routers. This example uses the bhyve lab script on FreeBSD:
 
 ```
 # tools/BSDRP-lab-bhyve.sh -i workdir/BSDRP.amd64/BSDRP-n257626-full-amd64-serial.img.xz -n 4
@@ -75,7 +75,7 @@ default:
         set link enable incoming
         create link template L2 l2tp
         set l2tp peer 10.0.23.3
-'EOF'
+EOF
 service netif restart
 service routing restart
 service mpd5 start
@@ -104,10 +104,10 @@ default:
         set auth authname Olivier
         set l2tp self 10.0.23.3
         set link enable incoming
-'EOF'
+EOF
 cat > /usr/local/etc/mpd5/mpd.secret <<'EOF'
 olivier         secret
-'EOF'
+EOF
 service netif restart
 service routing restart
 service mpd5 start
@@ -135,7 +135,7 @@ default:
         set auth password secret
         set pppoe iface vtnet0
         open
-'EOF'
+EOF
 service netif restart
 service routing restart
 service mpd5 start

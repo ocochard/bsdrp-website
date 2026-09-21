@@ -250,7 +250,7 @@ push "route 10.0.2.0 255.255.255.0"
 push "route-ipv6 2001:db8:2::/64"
 route 10.0.1.0 255.255.255.0
 route-ipv6 2001:db8:1::/64
-'EOF'
+EOF
 ```
 
 Create the client-configuration directory and declare the volatile route to the subnet behind the client R1:
@@ -260,7 +260,7 @@ mkdir /usr/local/etc/openvpn/ccd
 cat > /usr/local/etc/openvpn/ccd/R1 <<'EOF'
 iroute 10.0.1.0 255.255.255.0
 iroute-ipv6 2001:db8:1::/64
-'EOF'
+EOF
 ```
 
 Enable and start openvpn and sshd (we will fetch the certificate files via SCP later):
@@ -300,7 +300,7 @@ push "route 10.0.2.0 255.255.255.0"
 push "route-ipv6 2001:db8:2::/64"
 route 10.0.1.0 255.255.255.0
 route-ipv6 2001:db8:1::/64
-'EOF'
+EOF
 ```
 
 Create the client-configuration directory and declare the volatile route to the subnet behind the client R1:
@@ -310,7 +310,7 @@ mkdir /usr/local/etc/openvpn/ccd
 cat > /usr/local/etc/openvpn/ccd/R1 <<'EOF'
 iroute 10.0.1.0 255.255.255.0
 iroute-ipv6 2001:db8:1::/64
-'EOF'
+EOF
 ```
 
 Then fetch the CA and the host's own certificate from R2:
@@ -351,7 +351,7 @@ push "route 10.0.2.0 255.255.255.0"
 push "route-ipv6 2001:db8:2::/64"
 route 10.0.1.0 255.255.255.0
 route-ipv6 2001:db8:1::/64
-'EOF'
+EOF
 ```
 
 Create the client-configuration directory and declare the volatile route to the subnet behind the client R1:
@@ -361,7 +361,7 @@ mkdir /usr/local/etc/openvpn/ccd
 cat > /usr/local/etc/openvpn/ccd/R1 <<'EOF'
 iroute 10.0.1.0 255.255.255.0
 iroute-ipv6 2001:db8:1::/64
-'EOF'
+EOF
 ```
 
 Then fetch the CA and the host's own certificate from R2:
@@ -411,7 +411,7 @@ remote-cert-tls server
 ca ca.crt
 cert R1.crt
 key R1.key
-'EOF'
+EOF
 ```
 
 Check the latency of each server (200 ms, 100 ms, and less than 1 ms):

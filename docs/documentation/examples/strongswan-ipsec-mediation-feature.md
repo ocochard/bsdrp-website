@@ -161,12 +161,12 @@ conn peer
         mediated_by=medsrv
         me_peerid=r6@medsrv.org
         auto=start
-'EOF'
+EOF
 
 cat > /usr/local/etc/ipsec.secrets <<'EOF'
 r2@medsrv.org : PSK "MediaServerPassword"
 r2@bsdrp.net r6@bsdrp.net : PSK "IPsecPassword"
-'EOF'
+EOF
 
 cat > /usr/local/etc/strongswan.d/charon-logging.conf <<'EOF'
 charon {
@@ -176,7 +176,7 @@ charon {
     }
   }
 }
-'EOF'
+EOF
 service strongswan start
 config save
 ```
@@ -202,7 +202,7 @@ int_if = "vtnet1"
 localnet = $int_if:network
 nat on $ext_if from $localnet to any -> ($ext_if) static-port
 pass from { lo0, $localnet } to any keep state
-'EOF'
+EOF
 
 service pf start
 config save
@@ -242,12 +242,12 @@ conn medsrv
         rightauth=psk
         mediation=yes
         auto=add
-'EOF'
+EOF
 
 cat > /usr/local/etc/ipsec.secrets <<'EOF'
 r2@medsrv.org : PSK "MediaServerPassword"
 r6@medsrv.org : PSK "MediaServerPassword"
-'EOF'
+EOF
 
 cat > /usr/local/etc/strongswan.d/charon-logging.conf <<'EOF'
 charon {
@@ -257,7 +257,7 @@ charon {
     }
   }
 }
-'EOF'
+EOF
 
 service strongswan start
 config save
@@ -280,7 +280,7 @@ localnet = $int_if:network
 # ext_if IP address could be dynamic, hence ($ext_if)
 nat on $ext_if from $localnet to any -> ($ext_if) static-port
 pass from { lo0, $localnet } to any keep state
-'EOF'
+EOF
 
 hostname R5
 service netif restart
@@ -333,12 +333,12 @@ conn peer
         mediated_by=medsrv
         me_peerid=r2@medsrv.org
         auto=start
-'EOF'
+EOF
 
 cat > /usr/local/etc/ipsec.secrets <<'EOF'
 r6@medsrv.org : PSK "MediaServerPassword"
 r2@bsdrp.net r6@bsdrp.net : PSK "IPsecPassword"
-'EOF'
+EOF
 
 cat > /usr/local/etc/strongswan.d/charon-logging.conf <<'EOF'
 charon {
@@ -348,7 +348,7 @@ charon {
     }
   }
 }
-'EOF'
+EOF
 
 service strongswan start
 config save
@@ -449,7 +449,7 @@ ${fwcmd} nat 1 config if ${ext_if} same_ports deny_in unreg_only reset
 ${fwcmd} add pass ip from any to any via lo0
 ${fwcmd} add pass ip from any to any via ${int_if}
 ${fwcmd} add nat 1 ip from any to any via ${ext_if}
-'EOF'
+EOF
 service pf onestop
 service ipfw start
 ```
@@ -472,7 +472,7 @@ ${fwcmd} nat 1 config if ${ext_if} same_ports unreg_only reset
 ${fwcmd} add pass ip from any to any via lo0
 ${fwcmd} add pass ip from any to any via ${int_if}
 ${fwcmd} add nat 1 ip from any to any via ${ext_if}
-'EOF'
+EOF
 service pf onestop
 service ipfw start
 ```
@@ -543,7 +543,7 @@ ${fwcmd} add pass ip from any to any via lo0
 ${fwcmd} add pass ip from any to any via ${int_if}
 ${fwcmd} add nat 1 ip from 10.0.0.0/24 to any xmit ${ext_if}
 ${fwcmd} add nat 1 ip from any to any recv ${ext_if}
-'EOF'
+EOF
 ```
 
 And this fixes the strongSwan bug:

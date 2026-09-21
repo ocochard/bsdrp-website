@@ -13,7 +13,7 @@ The IPFW configuration file in standard mode:
 
 1.  The first rule denies traffic from a blacklist table (IP addresses).
 2.  The second rule allows everything else.
-3.  Disable the outgoing [pfil(9)](https://www.freebsd.org/cgi/man.cgiquery=pfil&apropos=0&sektion=0&manpath=FreeBSD+12.1-RELEASE+and+Ports&arch=default&format=html) hook at the IP level because we do not need to filter outgoing traffic in this case.
+3.  Disable the outgoing [pfil(9)](https://www.freebsd.org/cgi/man.cgi?query=pfil&apropos=0&sektion=0&manpath=FreeBSD+12.1-RELEASE+and+Ports&arch=default&format=html) hook at the IP level because we do not need to filter outgoing traffic in this case.
 
 <!-- -->
 
@@ -100,7 +100,7 @@ Out of 14 Mpps of legitimate traffic, this generic (i.e., supported by multiple 
 
 Chelsio NICs allow configuring a hardware firewall via cxgbetool(8). The [Linux user guide](https://service.chelsio.com/beta/drivers/ChelsioUwire-3.1.0.0/Chelsio-UnifiedWire-Linux-UserGuide.pdf) gives much more detail than the [FreeBSD user guide](https://service.chelsio.com/beta/drivers/ChelsioUwire-FBSD-3.3.0.1/Chelsio-UnifiedWire-FreeBSD-UserGuide.pdf).
 
-A Chelsio NIC is identified by its family name + id and the port id (for a 4-port NIC, ports 0 to 4).
+A Chelsio NIC is identified by its family name + id and the port id (for a 4-port NIC, ports 0 to 3).
 
 Example with only one Chelsio (t5nex0) with 2 ports (0 and 1):
 

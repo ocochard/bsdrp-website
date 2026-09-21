@@ -107,7 +107,7 @@ Attach the seed image when you boot the BSDRP image. Whether you attach it as a 
 - **VirtualBox**: add an additional optical drive on the VM's storage controller and mount `seed.iso`.
 - **VMware**: add a CD/DVD drive backed by `seed.iso`.
 
-Boot the VM. The first boot will take noticeably longer than a normal boot while `nuageinit` runs. After it finishes, you can SSH in with the `admin` user's key.
+Boot the VM. The first boot will take noticeably longer than a normal boot while `nuageinit` runs. After it finishes, you can SSH in as the `admin` user with the password set in the user-data.
 
 ### Verifying the run
 

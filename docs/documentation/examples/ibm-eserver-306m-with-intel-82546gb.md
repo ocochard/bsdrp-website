@@ -355,10 +355,10 @@ fwcmd="/sbin/ipfw"
 # Flush out the list before we begin.
 ${fwcmd} -f flush
 ${fwcmd} add 3000 allow ip from any to any
-'EOF'
+EOF
 
 echo 'firewall_enable="YES"' >> /etc/rc.conf
-echo 'firewall_script="/etc/ipfw.rules"  >> /etc/rc.conf
+echo 'firewall_script="/etc/ipfw.rules"' >> /etc/rc.conf
 ```
 
 Receiver results in Kpps for 5 tests (with a reboot between them):
@@ -379,7 +379,7 @@ Throughput is reduced to 320 Kpps: enabling ipfw has an impact of about 80 Kpps 
 cat >/etc/pf.conf <<'EOF'
 set skip on lo0
 pass
-'EOF'
+EOF
 
 echo 'pf_enable="YES"' >> /etc/rc.conf
 ```

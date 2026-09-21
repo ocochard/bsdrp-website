@@ -55,7 +55,7 @@ pkt-gen -N -f tx -w 2 -i vcxl0 -n 1000000000 -l 62 -6 -p 2 -S 00:07:43:2f:fe:b2 
 
 
 !!! warning
-    Netmap disables hardware checksum on the NIC. If you can't re-enable hardware checksum in netmap mode (as is the case with Intel NICs), you need to use a FreeBSD -head with SVN revision 257758 or later plus the [pkt-gen software-checksum patch](https://bugs.freebsd.org/bugzilla/show_bug.cgiid=187149) to use multiple src/dst IPs or ports with netmap's pkt-gen. This software checksum patch will reduce performance from line rate to about 10 Mpps.
+    Netmap disables hardware checksum on the NIC. If you can't re-enable hardware checksum in netmap mode (as is the case with Intel NICs), you need to use a FreeBSD -head with SVN revision 257758 or later plus the [pkt-gen software-checksum patch](https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=187149) to use multiple src/dst IPs or ports with netmap's pkt-gen. This software checksum patch will reduce performance from line rate to about 10 Mpps.
 
 The receiver will use this command:
 

@@ -137,7 +137,7 @@ Swap:
    11 root     -92    -     0K   816K CPU0    0  59:39  15.28% intr{irq283: igb3:que}
 ```
 
-## igb(4) driver tuning with 82546GB
+## igb(4) driver tuning
 
 ### Disabling multi-queue
 
@@ -328,7 +328,7 @@ fwcmd="/sbin/ipfw"
 # Flush out the list before we begin.
 ${fwcmd} -f flush
 ${fwcmd} add 3000 allow ip from any to any
-'EOF'
+EOF
 
 sysrc firewall_enable="YES"
 sysrc firewall_script="/etc/ipfw.rules"
@@ -345,7 +345,7 @@ fwcmd="/sbin/ipfw"
 # Flush out the list before we begin.
 ${fwcmd} -f flush
 ${fwcmd} add 3000 allow ip from any to any keep-state
-'EOF'
+EOF
 
 service ipfw restart
 ```
@@ -360,7 +360,7 @@ Test the impact of enabling simple stateless PF rules:
 cat >/etc/pf.conf <<'EOF'
 set skip on lo0
 pass no state
-'EOF'
+EOF
 
 sysrc pf_enable="YES"
 ```
@@ -373,7 +373,7 @@ Test the impact of enabling simple stateful PF rules:
 cat >/etc/pf.conf <<'EOF'
 set skip on lo0
 pass
-'EOF'
+EOF
 
 sysrc pf_enable="YES"
 ```

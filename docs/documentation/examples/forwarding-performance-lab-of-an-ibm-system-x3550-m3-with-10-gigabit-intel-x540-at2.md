@@ -42,7 +42,7 @@ pkt-gen -i ix0 -f tx -n 1000000000 -l 60 -d 9.1.1.1:2000-9.1.1.100 -D a0:36:9f:1
 
 
 !!! warning
-    Netmap disables hardware checksum on Intel NICs. You need to use FreeBSD -head with SVN revision 257758 or later plus the [pkt-gen software-checksum patch](https://bugs.freebsd.org/bugzilla/show_bug.cgiid=187149) to use multiple src/dst IPs or ports with netmap's pkt-gen.
+    Netmap disables hardware checksum on Intel NICs. You need to use FreeBSD -head with SVN revision 257758 or later plus the [pkt-gen software-checksum patch](https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=187149) to use multiple src/dst IPs or ports with netmap's pkt-gen.
 
 The receiver will use this command:
 
@@ -221,7 +221,7 @@ Some translation of pps to throughput using the [IMIX distribution](https://en.w
 |---------|------------------------------------|
 | pps     | Estimated Ethernet IMIX throughput |
 | 1817242 | 5 Gb/s                             |
-| 1228265 | 3,48 Gb/s                          |
+| 1228265 | 3.48 Gb/s                          |
 
 Formula used: PPS * ( 7*(40+14) + 4*(576+14) + (1500+14) )/12*8
 

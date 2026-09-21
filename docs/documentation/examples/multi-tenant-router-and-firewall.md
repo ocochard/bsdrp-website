@@ -317,7 +317,7 @@ ${fwcmd} nat 1 config if ${ext_if} same_ports deny_in unreg_only reset
 ${fwcmd} add pass ip from any to any via lo0
 ${fwcmd} add pass ip from any to any via ${int_if}
 ${fwcmd} add nat 1 ip from any to any via ${ext_if}
-'EOF'
+EOF
 service ipfw restart
 config save
 ```
@@ -387,7 +387,7 @@ ${fwcmd} nat 1 config if ${ext_if} same_ports deny_in unreg_only reset
 ${fwcmd} add pass ip from any to any via lo0
 ${fwcmd} add pass ip from any to any via ${int_if}
 ${fwcmd} add nat 1 ip from any to any via ${ext_if}
-'EOF'
+EOF
 service ipfw restart
 config save
 ```
@@ -457,7 +457,7 @@ ${fwcmd} nat 1 config if ${ext_if} same_ports deny_in unreg_only reset
 ${fwcmd} add pass ip from any to any via lo0
 ${fwcmd} add pass ip from any to any via ${int_if}
 ${fwcmd} add nat 1 ip from any to any via ${ext_if}
-'EOF'
+EOF
 service ipfw restart
 config save
 ```
@@ -505,7 +505,7 @@ add include $devfsrules_hide_all
 add include $devfsrules_unhide_basic
 add include $devfsrules_unhide_login
 add path 'pf' unhide
-'EOF'
+EOF
 pf_enable="YES"
 pf_flags="-d" 
 echo "set skip on {lo1 vtnet4}" > /etc/pf.conf

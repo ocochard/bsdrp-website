@@ -71,7 +71,7 @@ A detailed example configuration can be found in [IPsec performance lab of an IB
 
 The performance of a "Reference Device" is measured by setting up a bench lab with two identical DUTs if possible, or with a powerful "reference" device if only one DUT is available.
 
-If the CPU supports the [AES-NI feature](http://www.intel.com/content/dam/www/public/us/en/documents/white-papers/aes-ipsec-performance-linux-paper.pdf), the [aesni kernel module](https://www.freebsd.org/cgi/man.cgiquery=aesni&sektion=4) needs to be loaded.
+If the CPU supports the [AES-NI feature](http://www.intel.com/content/dam/www/public/us/en/documents/white-papers/aes-ipsec-performance-linux-paper.pdf), the [aesni kernel module](https://www.freebsd.org/cgi/man.cgi?query=aesni&sektion=4) needs to be loaded.
 
 ## IPsec bench "Equilibrium throughput" method
 

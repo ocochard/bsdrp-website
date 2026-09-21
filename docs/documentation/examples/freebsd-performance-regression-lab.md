@@ -19,7 +19,7 @@ The method follows these steps:
     2.  Upload the configuration set to be tested (in this example: forwarding-only, ipfw, or pf) and reboot the DUT.
     3.  Start the bench test and collect the result.
     4.  Reboot the DUT.
-    5.  Loop 5 times (for usable [ministat](http://www.freebsd.org/cgi/man.cgiquery=ministat) data).
+    5.  Loop 5 times (for usable [ministat](http://www.freebsd.org/cgi/man.cgi?query=ministat) data).
     6.  Loop to the next configuration set.
     7.  Loop to the next nanobsd release.
 6.  [A third script filters the raw output of each test](https://github.com/ocochard/netbenches/blob/master/scripts/bench-lab-ministat.sh) (heavily dependent on the tool used during the bench) and generates synthesis data files for each revision-number/configuration-set pair.
@@ -89,7 +89,7 @@ Creating different configuration sets is straightforward: create a main folder a
 
 Each configuration-set folder holds the configuration files that override default parameters.
 
-Here is a simple example from the [igb NIC driver tuning benchmarks](forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md#igb4-driver-tuning-with-82546gb) where different parameters in `/boot/loader.conf.local` were tested.
+Here is a simple example from the [igb NIC driver tuning benchmarks](forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md#igb4-driver-tuning) where different parameters in `/boot/loader.conf.local` were tested.
 
 We want 3 configuration sets:
 

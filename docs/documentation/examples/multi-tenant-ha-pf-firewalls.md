@@ -145,7 +145,7 @@ add include $devfsrules_unhide_login
 add path 'pf' unhide
 add path 'pflog*' unhide
 add path 'bpf*' unhide
-'EOF'
+EOF
 
 hostname VM1
 service devfs restart
@@ -248,7 +248,7 @@ add include $devfsrules_unhide_login
 add path 'pf' unhide
 add path 'pflog*' unhide
 add path 'bpf*' unhide
-'EOF'
+EOF
 
 hostname VM2
 service devfs restart

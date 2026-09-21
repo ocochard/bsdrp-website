@@ -193,7 +193,7 @@ ${fwcmd} add allow icmp6 from any to any icmp6types 135,136
 ${fwcmd} add nat64lsn NAT64 ip from 2001:db8:12::/64 to 64:ff9b::/96 in
 ${fwcmd} add nat64lsn NAT64 ip from any to 2.2.1.0/24 in
 ${fwcmd} add allow ip from any to any
-'EOF'
+EOF
 
 service ipfw start
 sysctl net.inet.ip.fw.nat64_direct_output=1
@@ -251,7 +251,7 @@ ${fwcmd} add allow icmp6 from any to any icmp6types 135,136
 ${fwcmd} add nat64stl NAT64 ip from any to table\(T46\)
 ${fwcmd} add nat64stl NAT64 ip6 from table\(T64\) to 64:ff9b::/96
 ${fwcmd} add allow log ip from any to any
-'EOF'
+EOF
 
 service ipfw start
 ```
@@ -272,7 +272,7 @@ PING6(56=40+8+8 bytes) 2001:db8:12::1 --> 64:ff9b::202:203
 round-trip min/avg/max/std-dev = 1.037/1.215/1.560/0.244 ms
 ```
 
-From the IPv4-only host, ping the NAT64 IPv4 address corresponding to VM3's IPv6 address:
+From the IPv4-only host, ping the NAT64 IPv4 address corresponding to VM1's IPv6 address:
 
 ```
 [root@VM3]~# ping -c 3 2.2.1.1

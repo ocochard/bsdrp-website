@@ -36,7 +36,7 @@ A clear definition of the relationship between bandwidth and frame rate is neces
 
 Benchmarks of FreeBSD network forwarding performance, conducted by the BSDRP team:
 
-- AsiaBSDCon 2018 - Tuning FreeBSD for routing and firewalling ([paper](https://people.freebsd.org/~olivier/talks/2018_AsiaBSDCon_Tuning_FreeBSD_for_routing_and_firewalling-Paper.pdf), [slides](https://people.freebsd.org/~olivier/talks/2018_AsiaBSDCon_Tuning_FreeBSD_for_routing_and_firewalling-Slides.pdf), and [video](https://www.youtube.com/watchv=SLlzep0IxVY))
+- AsiaBSDCon 2018 - Tuning FreeBSD for routing and firewalling ([paper](https://people.freebsd.org/~olivier/talks/2018_AsiaBSDCon_Tuning_FreeBSD_for_routing_and_firewalling-Paper.pdf), [slides](https://people.freebsd.org/~olivier/talks/2018_AsiaBSDCon_Tuning_FreeBSD_for_routing_and_firewalling-Slides.pdf), and [video](https://www.youtube.com/watch?v=SLlzep0IxVY))
 - [Recipe for building a 10 Mpps FreeBSD-based router](http://blog.cochard.me/2015/09/receipt-for-building-10mpps-freebsd.html)
 - [Impact of enabling ipfw or pf on fastforwarding performance with an 8-core Xeon E5-2650](https://github.com/ocochard/netbenches/blob/master/Xeon_E5-2650-8Cores-Chelsio_T540-CR/forwarding-pf-ipfw/results/fbsd11-routing.r287531/README.md): 9.5 Mpps
 - [Impact of enabling ipfw or pf on fastforwarding performance with a 4-core Xeon L5630](https://github.com/ocochard/netbenches/blob/master/Xeon_L5630-4Cores-Intel_82599EB/forwarding-pf-ipfw/results/fbsd11-routing.r287531/README.md): gigabit line-rate (1.48 Mpps) even with a few ipfw or pf rules enabled
@@ -59,11 +59,11 @@ Benchmarking and tuning the network stack:
 - [Brendan Gregg's performance analysis presentation](http://www.slideshare.net/brendangregg/meetbsd2014-performance-analysis): the "must-read" how-to
 - [FreeBSD Network Performance Project (netperf)](http://www.freebsd.org/projects/netperf/index.html)
 - [Introduction to Multithreading and Multiprocessing in the FreeBSD SMPng Network Stack](http://www.watson.org/~robert/freebsd/netperf/20051027-eurobsdcon2005-netperf.pdf), EuroBSDCon 2005 (PDF)
-- [man tuning](http://www.freebsd.org/cgi/man.cgiquery=tuning&apropos=0&sektion=0&manpath=FreeBSD+8.2-RELEASE&arch=default&format=html): performance tuning under FreeBSD
+- [man tuning](http://www.freebsd.org/cgi/man.cgi?query=tuning&apropos=0&sektion=0&manpath=FreeBSD+8.2-RELEASE&arch=default&format=html): performance tuning under FreeBSD
 - [Improving Memory and Interrupt Processing in FreeBSD Network Stack](http://wwwx.cs.unc.edu/~krishnan/classes/spring_07/os_impl/report.pdf) (PDF)
 - [Optimizing the BSD Routing System for Parallel Processing](http://conferences.sigcomm.org/sigcomm/2009/workshops/presto/papers/p37.pdf) (PDF)
 - [Using netstat and vmstat for performance analysis](https://people.sunyit.edu/~sengupta/CSC521/systemperformance.ppt) (PowerPoint)
-- [polling man page](http://www.freebsd.org/cgi/man.cgiquery=polling&sektion=4) (warning: enabling polling is not a good idea with modern Ethernet controllers that include interrupt moderation)
+- [polling man page](http://www.freebsd.org/cgi/man.cgi?query=polling&sektion=4) (warning: enabling polling is not a good idea with modern Ethernet controllers that include interrupt moderation)
 - [Device Polling support for FreeBSD](http://info.iet.unipi.it/~luigi/polling/): the original presentation of the polling implementation
 - [Tuning Kernel Limits](http://www.freebsd.org/doc/en_US.ISO8859-1/books/handbook/configtuning-kernel-limits.html) in the FreeBSD Handbook
 
@@ -444,10 +444,10 @@ No difference proven at 95.0% confidence
 Tools:
 
 - [MeetBSD 2014 - Brendan Gregg's performance analysis presentation](http://www.slideshare.net/brendangregg/meetbsd2014-performance-analysis): the ultimate guide to performance analysis on FreeBSD
-- [netstat](http://www.freebsd.org/cgi/man.cgiquery=netstat): show network status
-- [vmstat](http://www.freebsd.org/cgi/man.cgiquery=vmstat): report virtual memory statistics
-- [top](http://www.freebsd.org/cgi/man.cgiquery=top): display and update information about the top CPU processes
-- [pmcstat](https://www.freebsd.org/cgi/man.cgiquery=pmcstat): measure performance using hardware counters
+- [netstat](http://www.freebsd.org/cgi/man.cgi?query=netstat): show network status
+- [vmstat](http://www.freebsd.org/cgi/man.cgi?query=vmstat): report virtual memory statistics
+- [top](http://www.freebsd.org/cgi/man.cgi?query=top): display and update information about the top CPU processes
+- [pmcstat](https://www.freebsd.org/cgi/man.cgi?query=pmcstat): measure performance using hardware counters
 
 #### Packet load
 
@@ -655,7 +655,7 @@ Notice the high number of "drops due to buffer-group 0 overflows". This is a glo
 
 #### pmcstat
 
-While the router/firewall is under high load, load the [hwpmc(4)](https://www.freebsd.org/cgi/man.cgiquery=hwpmc&sektion=4) module:
+While the router/firewall is under high load, load the [hwpmc(4)](https://www.freebsd.org/cgi/man.cgi?query=hwpmc&sektion=4) module:
 
 ```
 kldload hwpmc

@@ -171,7 +171,7 @@ config save
 
 First example: a simple GRE tunnel.
 
-FreeBSD [GRE](http://www.freebsd.org/cgi/man.cgiquery=gre) support has a limitation: IPv6 cannot be used as an endpoint (this limitation is lifted by using a [gif](http://www.freebsd.org/cgi/man.cgiquery=gif) tunnel).
+FreeBSD [GRE](http://www.freebsd.org/cgi/man.cgi?query=gre) support has a limitation: IPv6 cannot be used as an endpoint (this limitation is lifted by using a [gif](http://www.freebsd.org/cgi/man.cgi?query=gif) tunnel).
 
 ### Router 2
 
@@ -499,7 +499,7 @@ spdadd 10.0.12.0/24 10.0.45.0/24 any -P out ipsec esp/tunnel/10.0.23.2-10.0.34.4
 spdadd 10.0.45.0/24 10.0.12.0/24 any -P in ipsec esp/tunnel/10.0.34.4-10.0.23.2/require;
 spdadd 2001:db8:12::/64 2001:db8:45::/64 any -P out ipsec esp/tunnel/2001:db8:23::2-2001:db8:34::4/require;
 spdadd 2001:db8:45::/64 2001:db8:12::/64 any -P in ipsec esp/tunnel/2001:db8:34::4-2001:db8:23::2/require;
-'EOF'
+EOF
 ```
 
 Then define the password to use for the remote site, and protect this password file (racoon will refuse to use it if the permissions are not strict enough):
@@ -508,7 +508,7 @@ Then define the password to use for the remote site, and protect this password f
 cat > /usr/local/etc/racoon/psk.txt <<'EOF'
 10.0.34.4 verylongpassword
 2001:db8:34::4 ipv6password
-'EOF'
+EOF
 chmod 600 /usr/local/etc/racoon/psk.txt
 ```
 
@@ -534,7 +534,7 @@ sainfo anonymous
   authentication_algorithm        hmac_sha1;
   compression_algorithm   deflate;
 }
-'EOF'
+EOF
 ```
 
 Enable the ipsec and racoon services:
@@ -560,7 +560,7 @@ spdadd 10.0.45.0/24 10.0.12.0/24 any -P out ipsec esp/tunnel/10.0.34.4-10.0.23.2
 spdadd 10.0.12.0/24 10.0.45.0/24 any -P in ipsec esp/tunnel/10.0.23.2-10.0.34.4/require;
 spdadd 2001:db8:45::/64 2001:db8:12::/64 any -P out ipsec esp/tunnel/2001:db8:34::4-2001:db8:23::2/require;
 spdadd 2001:db8:12::/64 2001:db8:45::/64 any -P in ipsec esp/tunnel/2001:db8:23::2-2001:db8:34::4/require;
-'EOF'
+EOF
 ```
 
 Then define the password to use for the remote site, and protect this password file (racoon will refuse to use it if the permissions are not strict enough):
@@ -569,7 +569,7 @@ Then define the password to use for the remote site, and protect this password f
 cat > /usr/local/etc/racoon/psk.txt <<'EOF'
 10.0.23.2 verylongpassword
 2001:db8:23::2 ipv6password
-'EOF'
+EOF
 chmod 600 /usr/local/etc/racoon/psk.txt
 ```
 
@@ -595,7 +595,7 @@ sainfo anonymous
   authentication_algorithm        hmac_sha1;
   compression_algorithm   deflate;
 }
-'EOF'
+EOF
 ```
 
 Then enable and start the services:
@@ -1119,7 +1119,7 @@ push "route 10.0.12.0 255.255.255.0"
 push "route-ipv6 2001:db8:12::/64"
 route 10.0.45.0 255.255.255.0
 route-ipv6 2001:db8:45::/64
-'EOF'
+EOF
 ```
 
 Create the client-configuration directory and declare the volatile route to the subnet behind the client VM4:
@@ -1129,7 +1129,7 @@ mkdir /usr/local/etc/openvpn/ccd
 cat > /usr/local/etc/openvpn/ccd/VM4 <<'EOF'
 iroute 10.0.45.0 255.255.255.0
 iroute-ipv6 2001:db8:45::/64
-'EOF'
+EOF
 ```
 
 Enable and start openvpn and sshd (we will fetch the certificate files via SCP later):

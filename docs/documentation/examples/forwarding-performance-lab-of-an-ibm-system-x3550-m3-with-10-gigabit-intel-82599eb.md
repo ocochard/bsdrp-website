@@ -54,8 +54,8 @@ The lab is detailed here: [Setting up a forwarding performance benchmark lab](se
 |                      (90:e2:ba:84:20:39) | +-------+ |        (00:07:43:2e:e4:7a)   |
 |                                          |           |                              |
 |            static routes                 |           |                              |
-| 192.18.0.0/16      => 198.18.0.110       |           |                              |
-| 192.19.0.0/16      => 198.19.0.110       |           |                              |
+| 198.18.0.0/16      => 198.18.0.110       |           |                              |
+| 198.19.0.0/16      => 198.19.0.110       |           |                              |
 | 2001:2::/49        => 2001:2::110        |           |                              |
 | 2001:2:0:8000::/49 => 2001:2:0:8000::110 |           |                              |
 |                                          |           |                              |
@@ -92,7 +92,6 @@ The receiver will use this command:
 pkt-gen -i vcxl1 -f rx -w 4
 ```
 
-\</code\>
 
 ### Basic configuration
 
@@ -244,7 +243,7 @@ PMC: [INSTR_RETIRED_ANY] Samples: 99530 (100.0%) , 0 unresolved
   0.5 kernel     ipsec4_capability    ip_input
 ```
 
-###### \> Time spent in ixgbe_rxeof
+###### Time spent in ixgbe_rxeof
 
 ### Equilibrium throughput
 
@@ -296,7 +295,7 @@ Iteration 7
 Estimated Equilibrium Ethernet throughput= 2948 Kpps (maximum value seen: 2949 Kpps)
 ```
 
-###### \> Same results with the equilibrium method: 2.9 Mpps.
+###### Same results with the equilibrium method: 2.9 Mpps.
 
 ### Firewall impact
 
@@ -308,7 +307,7 @@ One rule for each firewall and 2000 UDP "sessions"; more information is availabl
 
 ## Routing performance with multiple static routes
 
-FreeBSD has a route lookup contention problem. This setup uses only one static route (192.19.0.0/8) toward the traffic receiver.
+FreeBSD has a route lookup contention problem. This setup uses only one static route (198.19.0.0/16) toward the traffic receiver.
 
 By splitting this single route into 4 or 8, we should get better results.
 
@@ -348,7 +347,7 @@ sysrc route_receiver4="-net 198.19.10.96/27 198.19.2.2"
 
 ![Impact of number of static routes on forwarding on 4 cores Xeon 2.13 GHz with 10-Gigabit Intel 82599EB](../../assets/images/documentation/examples/bench.static-routes-contention.test.fbsd10.2.png)
 
-###### \> A small 4% increase from using 4 static routes instead of 1, and 5% with 8 routes.
+###### A small 4% increase from using 4 static routes instead of 1, and 5% with 8 routes.
 
 ### Ministat
 

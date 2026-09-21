@@ -497,7 +497,7 @@ l2tp_client:
         create link static link2 L
         set l2tp peer 10.1.23.3
         open link
-'EOF'
+EOF
 ```
 
 And apply your changes:
@@ -563,7 +563,7 @@ l2tp_server:
         create link static link2 L
         set l2tp self 10.1.23.3
         set link enable incoming
-'EOF'
+EOF
 ```
 
 if-up script (to install routes to the R1 subnet):
@@ -596,7 +596,7 @@ else
         logger "$0: $cmd failed"
         return 1
 fi
-'EOF'
+EOF
 chmod +x /usr/local/etc/mpd5/if-up.sh
 ```
 
@@ -628,7 +628,7 @@ else
         return 1
 fi
 
-'EOF'
+EOF
 chmod +x /usr/local/etc/mpd5/if-down.sh
 ```
 

@@ -197,7 +197,7 @@ Routing entry for 192.168.1.0/24
   * 10.0.0.13, via em2
 ```
 
-Notice the OSPF metric for this route: 4. This means the route should be R4 -\> R3 -\> R2 -\> R1.
+Notice the OSPF metric for this route: 4. This means the route should be R4 -> R3 -> R2 -> R1.
 
 Now check with a traceroute:
 

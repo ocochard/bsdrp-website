@@ -214,7 +214,7 @@ Iteration 9
 Estimated Equilibrium Ethernet throughput= 543 Mb/s (maximum value seen: 545 Mb/s)
 ```
 
-OpenVPN (userspace) reaches about 454 Mb/s, which is about half the IPsec performance (kernel space).
+OpenVPN (userspace) reaches about 543 Mb/s, roughly two thirds of the [872 Mb/s measured with IPsec](ipsec-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md) (kernel space) on the same hardware.
 
 ### Encryption algorithms
 

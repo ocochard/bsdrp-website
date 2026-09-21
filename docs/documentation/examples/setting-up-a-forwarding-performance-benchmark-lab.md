@@ -154,7 +154,7 @@ set protocols lldp-med interface xe-0/0/0 disable
 
 ### Hardware
 
-NICs supported by [netmap](http://www.freebsd.org/cgi/man.cgiquery=netmap) are mandatory on the server used as packet generator/receiver: Chelsio (the best one!) and Intel (em, ixgbe). RealTek (re) NICs are supported but should be avoided at all costs.
+NICs supported by [netmap](http://www.freebsd.org/cgi/man.cgi?query=netmap) are mandatory on the server used as packet generator/receiver: Chelsio (the best one!) and Intel (em, ixgbe). RealTek (re) NICs are supported but should be avoided at all costs.
 
 ### Static ARP
 
@@ -184,7 +184,7 @@ EOF
 
 #### Unleashing the power of the NIC chipset
 
-By default, FreeBSD uses conservative driver values, but BSDRP raises them ([source of benchmarks](forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md#igb4-driver-tuning-with-82546gb)).
+By default, FreeBSD uses conservative driver values, but BSDRP raises them ([source of benchmarks](forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md#igb4-driver-tuning)).
 
 For example, for em(4) or igb(4) drivers:
 
@@ -323,7 +323,7 @@ switch#sh int GigabitEthernet 1/0/6 | i output rate
 
 The switch stats confirm the 565 Kpps received.
 
-There was a problem with FreeBSD self-counters that miss about 10 Kpps in this case. Fortunately, a contributor gave me a hint: 564842 / 1024 = 551.6 Kpps. The [netstat `-h` (human-readable) flag has a bug that converts 1k packets/errors into 1024 packets/errors](http://www.freebsd.org/cgi/query-pr.cgipr=183598) (fixed in 11-head r287593).
+There was a problem with FreeBSD self-counters that miss about 10 Kpps in this case. Fortunately, a contributor gave me a hint: 564842 / 1024 = 551.6 Kpps. The [netstat `-h` (human-readable) flag has a bug that converts 1k packets/errors into 1024 packets/errors](http://www.freebsd.org/cgi/query-pr.cgi?pr=183598) (fixed in 11-head r287593).
 
 If we call netstat without `-h`, the problem disappears:
 
@@ -344,4 +344,4 @@ Now you can benchmark your servers for router use, like in the [forwarding perfo
 Once your test is ready, you need to run it multiple times without human interaction:
 
 - Script the test like the [FreeBSD performance regression lab](freebsd-performance-regression-lab.md), and publish the scripts used.
-- Run it multiple times and publish the [ministat](https://www.freebsd.org/cgi/man.cgiquery=ministat) output.
+- Run it multiple times and publish the [ministat](https://www.freebsd.org/cgi/man.cgi?query=ministat) output.
