@@ -2,7 +2,9 @@
 title: Multicast with PIM-SM
 ---
 This lab shows a multicast routing example using PIM in Sparse Mode, with
-[pimd](https://github.com/troglobit/pimd).
+[pimd](https://github.com/troglobit/pimd). For the source specific variant,
+which needs neither a Rendezvous Point nor a Bootstrap Router, see
+[Multicast with PIM-SSM](multicast-with-pim-ssm.md).
 
 ## Overview
 

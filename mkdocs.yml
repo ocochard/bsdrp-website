@@ -81,6 +81,7 @@ nav:
               - OSPF inter-area loop prevention: documentation/examples/ospf-inter-area-loop-prevention.md
               - Multicast with PIM-DM: documentation/examples/multicast-with-pim-dm.md
               - Multicast with PIM-SM: documentation/examples/multicast-with-pim-sm.md
+              - Multicast with PIM-SSM: documentation/examples/multicast-with-pim-ssm.md
               - Equal-cost multi-path (ECMP): documentation/examples/ecmp.md
           - High availability:
               - Multi-tenant HA pf firewalls: documentation/examples/multi-tenant-ha-pf-firewalls.md
