@@ -13,7 +13,7 @@ Here is the logical and physical view:
 
 ### Description and limitations
 
-This lab was built to improve IPv6 use and routing experience. The routers are configured in the simplest way. No authentication or logging is configured (and this is bad!).
+This lab was built to improve IPv6 and routing experience. The routers are configured in the simplest way. No authentication or logging is configured (and this is bad!).
 
 I also tried some "funny" BGP interconnections:
 

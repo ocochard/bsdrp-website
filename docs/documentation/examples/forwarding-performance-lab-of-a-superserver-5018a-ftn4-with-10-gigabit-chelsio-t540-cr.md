@@ -12,7 +12,7 @@ This lab tests a [SuperMicro](http://www.supermicro.com/products/system/1U/5018/
 
 ## Lab set-up
 
-For more information about full setup of this lab: [Setting up a forwarding performance benchmark lab](setting-up-a-forwarding-performance-benchmark-lab.md) (switch configuration, etc.).
+For more information about the full setup of this lab: [Setting up a forwarding performance benchmark lab](setting-up-a-forwarding-performance-benchmark-lab.md) (switch configuration, etc.).
 
 ### Diagram
 

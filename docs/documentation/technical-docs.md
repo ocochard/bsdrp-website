@@ -168,7 +168,7 @@ Attach the image to a memory disk:
 mdconfig -a -t vnode -f BSDRP-amd64.img
 ```
 
-The system prints the md name created (for example `md0`). List the
+The system prints the name of the md device created (for example `md0`). List the
 partitions:
 
 ```

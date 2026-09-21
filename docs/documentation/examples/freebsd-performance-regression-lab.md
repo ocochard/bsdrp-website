@@ -64,11 +64,11 @@ The goal is to generate BSDRP nanobsd images from a list of FreeBSD SVN revision
 
 You need to [download the BSDRP source code](../technical-docs.md#getting-the-bsdrp-source-code) on a FreeBSD machine.
 
-Then create or customize a BSDRP project to get a small image: remove as many [FreeBSD options](http://svnweb.freebsd.org/base/head/tools/build/options/) as possible and no ports, to improve image-generation speed. The BSDRP [TESTING project](https://github.com/ocochard/BSDRP/tree/master/TESTING) is a good example.
+Then create or customize a BSDRP project to get a small image: remove as many [FreeBSD options](http://svnweb.freebsd.org/base/head/tools/build/options/) as possible and include no ports, to improve image-generation speed. The BSDRP [TESTING project](https://github.com/ocochard/BSDRP/tree/master/TESTING) is a good example.
 
 Take care with the kernel configuration file: the head branch can impose kernel configuration parameters that are incompatible between different code revisions. The best way to avoid this is to start the kernel configuration with `include GENERIC` and add or remove unwanted parts (`nooptions XXX`, `nodevice XXX`). See the [kernel configuration file used for the BSDRP regression bench lab](https://github.com/ocochard/BSDRP/blob/master/TESTING/kernels/amd64) for an example.
 
-Once your BSDRP bench project is ready, edit the script [tools/bisection-gen.sh](https://github.com/ocochard/BSDRP/blob/master/tools/bisection-gen.sh) to adapt the project basic configuration (PROJECT name, CONSOLE type, ARCH) and fill in all SVN revision numbers (SVN_REV_LIST). Then start the image-generation script (from the top-level directory of the BSDRP source code):
+Once your BSDRP bench project is ready, edit the script [tools/bisection-gen.sh](https://github.com/ocochard/BSDRP/blob/master/tools/bisection-gen.sh) to adapt the project's basic configuration (PROJECT name, CONSOLE type, ARCH) and fill in all SVN revision numbers (SVN_REV_LIST). Then start the image-generation script (from the top-level directory of the BSDRP source code):
 
 ```
 root@dev:/usr/local/BSDRP # mkdir -p /root/benchs/nanobsd
@@ -81,7 +81,7 @@ All images were put in /root/benchs/nanobsd
 
 At the end, you will find all the nanobsd images in the chosen directory.
 
-An example of final images generated is available here: <http://dev.bsdrp.net/benchs/265145-274745/nanobsd.images/>
+An example of the final generated images is available here: <http://dev.bsdrp.net/benchs/265145-274745/nanobsd.images/>
 
 ## Configuration sets
 

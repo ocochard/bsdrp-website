@@ -9,7 +9,7 @@ Here is the concept:
 
 ![bsdrp-lab-mlvpn-global.png](../../assets/images/documentation/examples/bsdrp-lab-mlvpn-global.png)
 
-And here is this lab detailed diagram:
+And here is the detailed diagram of this lab:
 
 ![bsdrp-lab-mlvpn-details.png](../../assets/images/documentation/examples/bsdrp-lab-mlvpn-details.png)
 

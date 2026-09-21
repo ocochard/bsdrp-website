@@ -517,7 +517,7 @@ pflog is running as pid 2261.
     pflogd seems to have a problem running inside a jail.
 
 
-Trying to stop pflogd to force a flush, but it cannot be stopped:
+An attempt to stop pflogd to force a flush shows that it cannot be stopped:
 
 ```
 [root@jail11]~# ps -auxww | grep pflogd

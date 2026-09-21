@@ -9,7 +9,7 @@ Here is the concept:
 
 ![bsdrp.lab.aggregate.isp.links.concept.png](../../assets/images/documentation/examples/bsdrp.lab.aggregate.isp.links.concept.png)
 
-And here is this lab detailed diagram:
+And here is this lab's detailed diagram:
 
 ![bsdrp.lab.aggregate.isp.links.detail.png](../../assets/images/documentation/examples/bsdrp.lab.aggregate.isp.links.detail.png)
 
@@ -426,7 +426,7 @@ Here is the concept:
 
 ![bsdrp.lab.mpd5.performance.png](../../assets/images/documentation/examples/bsdrp.lab.mpd5.performance.png)
 
-This lab uses 3 [IBM System x3550 M3](ibm-system-x3550-m3.md) with **quad** cores (Intel Xeon L5630 2.13 GHz, hyper-threading disabled), a quad NIC 82580 connected to the PCI Express bus, and a dual-port Intel 10-Gigabit X540-AT2 connected to the PCI Express bus.
+This lab uses 3 [IBM System x3550 M3](ibm-system-x3550-m3.md) servers with **quad** cores (Intel Xeon L5630 2.13 GHz, hyper-threading disabled), a quad NIC 82580 connected to the PCI Express bus, and a dual-port Intel 10-Gigabit X540-AT2 connected to the PCI Express bus.
 
 ### Router 1
 
@@ -746,7 +746,7 @@ For reference, using netblast (a UDP packet generator) disturbs the links:
 netblast $DEST 9090 1470 30 `sysctl -n hw.ncpu`
 ```
 
-and measure the bandwidth received on R3:
+then measure the bandwidth received on R3:
 
 ```
          0 pps    0.000 Mbps - 0 pkts in 0.522753682 ns

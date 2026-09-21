@@ -37,7 +37,7 @@ NanoBSD manages a flash device and avoids fsck by mounting the filesystem read-o
 
 ### Command options
 
-Here are the command line options of NanoBSD:
+Here are the command-line options of NanoBSD:
 
 ```
 Usage: $0 [-bikqvw] [-c config_file]
@@ -103,7 +103,7 @@ FIXME
 | NANO_MD_BACKING | file | Backing type of md(4) device (file or swap) |
 | NANO_MEDIASIZE | 1200000 | Target media size in 512 bytes sectors |
 | NANO_NAME | BSDRP | Name of the obj dir |
-| NANO_NEWFS | -b 4096 -f 512 -i 8192 -O1 -m 2 -U | Newfs paramters to use |
+| NANO_NEWFS | -b 4096 -f 512 -i 8192 -O1 -m 2 -U | Newfs parameters to use |
 | NANO_OBJ | /usr/obj/nanobsd.BSDRP.{ARCH} | Object tree directory |
 | NANO_PACKAGE_DIR | /usr/src/tools/tools/nanobsd/BSDRP/Pkg | Where cust_pkg() finds packages to install |
 | NANO_PMAKE | make -j 3 | Parallel Make |
@@ -125,8 +125,8 @@ FIXME
 | clean_world | Clean and create object directory |
 | cust_install_files | Copy all files under Files to nanobsd target |
 | FlashDevice | Load FlashDevice.sub |
-| install_world | Install all binary (make installworld) |
-| install_etc | Install /etc (make distribution |
+| install_world | Install all binaries (make installworld) |
+| install_etc | Install /etc (make distribution) |
 | install_kernel | Install kernel (make installkernel) |
 | make_conf_build | Construct build make.conf using \$CONF_WORLD and \$CONF_BUILD |
 | make_conf_install | Construct install make.conf using \$CONF_WORLD and \$CONF_BUILD |
@@ -148,7 +148,7 @@ FIXME
 | _.di    | Disk image creation log                         |
 | _.dl    | nanobsd setup creation log (/etc, /conf, etc..) |
 | _.du    | nanobsd disk usage (du) output                  |
-| _.env   | All environnement used during nanobsd runs      |
+| _.env   | All environment used during nanobsd runs        |
 | _.etc   | Install etc log                                 |
 | _.fdisk | File used for fdisk the nanoBSD image           |
 | _.ik    | Install kernel log files                        |
@@ -167,4 +167,4 @@ The patch supports cross-compiling i386 ports from an amd64 release.
 
 You can find this patch as the `add_port ()` function in the [BSDRP NanoBSD configuration file](https://github.com/ocochard/BSDRP/blob/master/BSDRP/BSDRP.nano).
 
-The better solution today is to use poudriere to generate packages.
+A better solution today is to use poudriere to generate packages.

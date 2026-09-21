@@ -14,7 +14,7 @@ This lab tests a [PC Engines APU 1](http://www.pcengines.ch/apu.htm) ([dmesg](pc
 
 ## Lab set-up
 
-For more information about full setup of this lab: [Setting up a forwarding performance benchmark lab](setting-up-a-forwarding-performance-benchmark-lab.md) (switch configuration, etc.).
+For more information about the full setup of this lab: [Setting up a forwarding performance benchmark lab](setting-up-a-forwarding-performance-benchmark-lab.md) (switch configuration, etc.).
 
 ### Diagram
 
@@ -46,7 +46,7 @@ For more information about full setup of this lab: [Setting up a forwarding perf
  +------------------------------------------+
 ```
 
-The generator **MUST** generate lots of IP flows (multiple source/destination IP addresses and/or UDP src/dst ports) with the minimum packet size (to produce the maximum packet rate) with one of these commands:
+The generator **MUST** generate lots of IP flows (multiple source/destination IP addresses and/or UDP src/dst ports) with the minimum packet size (to produce the maximum packet rate) using one of these commands:
 
 Multiple source/destination IP addresses (don't forget to specify the UDP port to avoid using port 0, which is filtered by pf):
 
@@ -114,7 +114,7 @@ static_ndp_receiver="2001:2:0:8000::203 00:1b:21:c4:95:7b"
 
 We start the first test with one packet generator at gigabit line rate (1.488 Mpps) and observe:
 
-- The APU is still responsive during this test (thanks to the dual-core).
+- The APU is still responsive during this test (thanks to the dual-core CPU).
 - About 154 Kpps are accepted by the re(4) Ethernet interface.
 
 <!-- -->
@@ -195,7 +195,7 @@ Scale information about Gigabit Ethernet:
 - 1.488 Mpps is the maximum packet-per-second (pps) rate with the smallest 46-byte packets.
 - 81 Kpps is the minimum pps rate with the largest 1500-byte packets.
 
-![forwarding and firewalling rate with a PC Engines APU running FreeBSD FreeBSD 10.3](../../assets/images/documentation/examples/bench.forwarding.and.firewalling.rate.on.pc.engines.apu.png)
+![forwarding and firewalling rate with a PC Engines APU running FreeBSD 10.3](../../assets/images/documentation/examples/bench.forwarding.and.firewalling.rate.on.pc.engines.apu.png)
 
 ### Ministat
 
@@ -261,7 +261,7 @@ Receiving from netmap:re1: 1 queues, 1 threads and 2 cpus.
 903.204329 main_thread [1438] 577499 pps (578655 pkts in 1002001 usec)
 ```
 
-Netmap only improves the receiving packet rate to about 580 Kpps: it is strange that it does not reach the maximum Ethernet frame rate (1.48 Mpps) with netmap.
+Netmap only improves the receiving packet rate to about 580 Kpps: it is strange that it does not reach the maximum Ethernet frame rate (1.48 Mpps).
 
 As a packet generator:
 

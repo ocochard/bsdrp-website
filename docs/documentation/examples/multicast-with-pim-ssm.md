@@ -5,12 +5,12 @@ This lab shows a multicast routing example using PIM in Source Specific
 Multicast mode, with [pimd](https://github.com/troglobit/pimd).
 
 PIM-SSM is a simplification of [PIM-SM](multicast-with-pim-sm.md): a receiver
-does not ask for "everything sent to group G", it asks for "what source S sends
+does not ask for "everything sent to group G"; it asks for "what source S sends
 to group G". Because the source is known from the start, the router builds the
 (S,G) shortest-path tree immediately. There is no shared tree, so the lab needs
 **neither a Rendezvous Point nor a Bootstrap Router**.
 
-The counterpart is that receivers must use IGMPv3 (FreeBSD does by default) and
+The trade-off is that receivers must use IGMPv3 (FreeBSD does by default) and
 the group must belong to the SSM range, 232.0.0.0/8 per RFC 4607.
 
 ## Overview
@@ -53,7 +53,7 @@ first boot (through the `labconfig` script shipped in the image):
 tools/BSDRP-lab-bhyve.sh -i BSDRP-2.3-full-amd64.img.xz -n 4 -r pimssm
 ```
 
-Without `-r pimssm` the 4 VMs boot unconfigured and you can enter the
+Without `-r pimssm`, the 4 VMs boot unconfigured and you can enter the
 configuration of each router by hand, as described below.
 
 ## Router configuration
@@ -78,7 +78,7 @@ config save
 ### VM2 (PIM router, source side)
 
 No `rp-candidate`, no `bsr-candidate`: the only thing to declare is the group
-range handled as source specific. `ssm-range default` is 232.0.0.0/8, which is
+range handled as source-specific. `ssm-range default` is 232.0.0.0/8, which is
 also what pimd uses when nothing is configured, but writing it down documents
 the range for whoever reads the router configuration:
 
@@ -158,7 +158,7 @@ headings, which keeps the output copy-pasteable.
 
 ### No Rendezvous Point, no Bootstrap Router
 
-This is the visible difference with the PIM-SM lab: the RP set holds only the
+This is the visible difference from the PIM-SM lab: the RP set holds only the
 static SSM entry (169.254.0.1 is the placeholder pimd uses for "no RP needed"),
 and there is no BSR line at all.
 
@@ -188,7 +188,7 @@ vtnet1            10.0.23.3                 1  DR    0h0m7s/0h1m40s
 
 ### 1. Start the receiver on VM4
 
-iperf joins a source specific group with `-H` (`--ssm-host`), which makes it
+iperf joins a source-specific group with `-H` (`--ssm-host`), which makes it
 send an IGMPv3 include-mode report instead of a plain any-source join:
 
 ```
@@ -294,7 +294,7 @@ IPv4 Multicast Forwarding Table
  10.0.12.1       232.1.1.1            1368    1    2:1
 ```
 
-Compared to the PIM-SM lab there is no registration step and no switchover: the
+Compared to the PIM-SM lab, there is no registration step and no switchover: the
 traffic takes the source tree from the first packet.
 
 ### 4. An any-source join in the SSM range receives nothing
@@ -335,7 +335,7 @@ Number of Cache MIRRORs : 0
 ```
 
 !!! note "Check this test from a clean state"
-    An (S,G) entry created by a previous source specific join survives the
+    An (S,G) entry created by a previous source-specific join survives the
     receiver leaving, for the duration of its keepalive timer (the `KAT` flag),
     and keeps the traffic flowing to the receiver LAN in the meantime. Restart
     pimd on both routers, or wait for the entry to disappear from `pimctl show
@@ -397,4 +397,4 @@ listening on vtnet2, link-type EN10MB (Ethernet), snapshot length 262144 bytes
 ```
 
 The decoy traffic never leaves the source LAN: with SSM, a source that nobody
-subscribed to costs nothing to the rest of the network.
+subscribed to costs the rest of the network nothing.

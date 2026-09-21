@@ -515,7 +515,7 @@ fe80::1%lo1                       link#26                       UHS         lo0
 ff02::/16                         ::1                           UGRS        lo0
 ```
 
-And traceroute from jail1 to jail6:
+And a traceroute from jail1 to jail6:
 
 ```
 root@host:~ # jexec jail1 traceroute 192.168.60.6

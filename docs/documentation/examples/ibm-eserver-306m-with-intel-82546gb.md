@@ -51,7 +51,7 @@ sysctl hw.em.1.fc=0
 
 ### Static ARP entries
 
-Here is the modified value of the default BSDRP /etc/rc.conf for static ARP:
+Here are the modified values of the default BSDRP /etc/rc.conf for static ARP:
 
 ```
 ifconfig_em0="inet 1.1.1.3/24"
@@ -198,7 +198,7 @@ GigabitEthernet0/10 is up, line protocol is up
   30 second output rate 204464000 bits/sec, 399348 packets/sec
 ```
 
-Switch stats confirm the 400 Kpps figure: there is a problem with FreeBSD self-counters, which miss about 10 Kpps in this case.
+The switch stats confirm the 400 Kpps figure: there is a problem with FreeBSD self-counters, which miss about 10 Kpps in this case.
 
 
 !!! note
@@ -394,7 +394,7 @@ Receiver results in Kpps for 5 tests (with a reboot between them):
 274.51
 ```
 
-A very big performance impact here. Drops to 274 Kpps and the router is not responsive at all: if the watchdog is enabled, it will trigger a reboot of the router.
+A very big performance impact here: throughput drops to 274 Kpps, and the router is not responsive at all. If the watchdog is enabled, it will trigger a reboot of the router.
 
 ### Results
 

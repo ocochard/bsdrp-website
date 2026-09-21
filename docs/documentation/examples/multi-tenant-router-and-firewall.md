@@ -441,7 +441,7 @@ root has logged on pts/0 from 10.0.0.1.
 [root@customer3]~#
 ```
 
-Now connected to his firewall, this customer can configure its own firewall rules:
+Now connected to his firewall, the customer can configure his own firewall rules:
 
 ```
 sysrc -x firewall_type
@@ -472,7 +472,7 @@ Check firewall rules:
 65535  0    0 deny ip from any to any
 ```
 
-Now, from R3, try to public Internet server R5:
+Now, from R3, try to reach the public Internet server R5:
 
 ```
 [root@R3]~# ping -c 3 10.254.254.5

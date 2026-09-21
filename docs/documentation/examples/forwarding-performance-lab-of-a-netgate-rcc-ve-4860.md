@@ -13,7 +13,7 @@ This lab tests a [Netgate RCC-VE 4860](http://store.netgate.com/ADI/RCC-VE-4860.
 
 ## Lab set-up
 
-For more information about full setup of this lab: [Setting up a forwarding performance benchmark lab](setting-up-a-forwarding-performance-benchmark-lab.md) (switch configuration, etc.).
+For more information about the full setup of this lab: [Setting up a forwarding performance benchmark lab](setting-up-a-forwarding-performance-benchmark-lab.md) (switch configuration, etc.).
 
 ### Diagram
 
@@ -50,7 +50,7 @@ This device uses two kinds of Intel NIC:
 - igb0 and igb1: Intel i211 with 2 queues, intended for admin purposes
 - igb2 to igb5: Intel i350 with 4 queues (and iPXE support), intended for forwarding/firewalling
 
-The generator **MUST** generate lots of IP flows (multiple source/destination IP addresses and/or UDP src/dst ports) with the minimum packet size (to produce the maximum packet rate) with one of these commands:
+The generator **MUST** generate lots of IP flows (multiple source/destination IP addresses and/or UDP src/dst ports) with the minimum packet size (to produce the maximum packet rate) using one of these commands:
 
 Multiple source/destination IP addresses (don't forget to specify the UDP port to avoid using port 0, which is filtered by pf):
 

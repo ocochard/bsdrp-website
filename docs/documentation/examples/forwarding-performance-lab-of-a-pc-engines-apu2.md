@@ -12,7 +12,7 @@ This lab tests a [PC Engines APU 2C4](http://www.pcengines.ch/apu2.htm) ([dmesg]
 
 ## Lab set-up
 
-For more information about full setup of this lab: [Setting up a forwarding performance benchmark lab](setting-up-a-forwarding-performance-benchmark-lab.md) (switch configuration, etc.).
+For more information about the full setup of this lab: [Setting up a forwarding performance benchmark lab](setting-up-a-forwarding-performance-benchmark-lab.md) (switch configuration, etc.).
 
 BSDRP release 1.92 based on FreeBSD 12-STABLE is used.
 
@@ -45,7 +45,7 @@ BSDRP release 1.92 based on FreeBSD 12-STABLE is used.
  +------------------------------------------+      +-----------------------+
 ```
 
-The generator **MUST** generate lots of IP flows (multiple source/destination IP addresses and/or UDP src/dst ports) with the minimum packet size (to produce the maximum packet rate) with one of these commands:
+The generator **MUST** generate lots of IP flows (multiple source/destination IP addresses and/or UDP src/dst ports) with the minimum packet size (to produce the maximum packet rate), using one of these commands:
 
 Multiple source/destination IP addresses (don't forget to specify the UDP port to avoid using port 0, which is filtered by pf):
 

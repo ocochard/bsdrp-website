@@ -4,7 +4,7 @@ description: How to build a VPN (IPsec, GRE, etc...) performance benchmark lab w
 ---
 ## Global concept
 
-Benchmarking forwarding performance is not simple, and benchmarking VPN (IPsec, GRE, etc...) is much more complex.
+Benchmarking forwarding performance is not simple, and benchmarking VPNs (IPsec, GRE, etc...) is much more complex.
 
 - Methodology for Benchmarking IPsec Devices: [draft-ietf-bmwg-ipsec-meth-03](https://tools.ietf.org/html/draft-ietf-bmwg-ipsec-meth-03).
 - [Methodology for Benchmarking IPsec Gateways](http://www.mecs-press.org/ijcnis/ijcnis-v4-n9/IJCNIS-V4-N9-1.pdf) (from the Department of Telecommunications, Slovak University of Technology) which introduces the concept of equilibrium throughput.
@@ -63,7 +63,7 @@ To cross-check the packet counters, it’s possible to connect the devices to a 
 
 ## Switch configuration
 
-Same configuration as on [forwarding performance benchmark lab](setting-up-a-forwarding-performance-benchmark-lab.md)
+Same configuration as in the [forwarding performance benchmark lab](setting-up-a-forwarding-performance-benchmark-lab.md).
 
 ## Configuring packet generator/receiver and DUT
 

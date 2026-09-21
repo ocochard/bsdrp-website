@@ -185,7 +185,7 @@ cp -r /usr/local/share/easy-rsa /usr/local/etc/
 setenv EASYRSA /usr/local/etc/easy-rsa
 ```
 
-Initialize PKI and generate a DH:
+Initialize the PKI and generate a DH:
 
 ```
 cd /usr/local/etc/easy-rsa

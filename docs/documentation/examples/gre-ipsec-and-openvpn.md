@@ -707,7 +707,7 @@ PING6(56=40+8+8 bytes) 2001:db8:12::1 --> 2001:db8:45::5
 
 ### Tunnel with IKEv2 (strongswan)
 
-Using Strongswan, the SP will be installed automatically and the SA will be negotiated by strongswan.
+With strongswan, the SP is installed automatically and the SA is negotiated by strongswan.
 
 #### Router 2
 
@@ -716,8 +716,8 @@ Configure strongswan on VM2 with:
 - IKEv2 (version = 2)
 - Preshared-key (psk)
 - Disabling Mobile IP (mobike = no)
-- forcing the tunnel going UP (start_action = trap)
-- configuring Dead-Peer-Detection at 5 seconds
+- Forcing the tunnel up (start_action = trap)
+- Configuring Dead-Peer-Detection at 5 seconds
 
 <!-- -->
 
@@ -787,8 +787,8 @@ Configure strongswan on VM4 with:
 - IKEv2
 - Preshared-key
 - Disabling Mobile IP
-- automatic traffic detection
-- configuring Dead-Peer-Detection at 5 seconds
+- Automatic traffic detection
+- Configuring Dead-Peer-Detection at 5 seconds
 
 <!-- -->
 
@@ -941,7 +941,7 @@ service ipsec restart
 service routing restart
 ```
 
-and check the status:
+And check the status:
 
 ```
 [root@VM2]~# setkey -DP
@@ -1057,7 +1057,7 @@ setenv EASYRSA /usr/local/etc/easy-rsa
 setenv EASYRSA_PKI $EASYRSA/pki
 ```
 
-Initialize PKI and generate a DH:
+Initialize the PKI and generate a DH:
 
 ```
 easyrsa init-pki
@@ -1089,7 +1089,7 @@ Your new CA certificate file for publishing is at:
 /usr/local/etc/easy-rsa/pki/ca.crt
 ```
 
-Make a server certificate called VM2, and client certificate called VM4 using a locally generated root certificate:
+Make a server certificate called VM2 and a client certificate called VM4, using a locally generated root certificate:
 
 ```
 easyrsa build-server-full VM2 nopass
@@ -1383,7 +1383,7 @@ chmod 600 private
 wg pubkey < private > public
 ```
 
-In this example, we use static keys for illustration.
+In this example, we use static keys.
 
 ### Router 2
 
@@ -1410,7 +1410,7 @@ service wireguard start
 
 ### Router 4
 
-Generate example-only Router 4 wg keys, and declare the two public keys.
+Generate example-only Router 4 wg keys and declare the two public keys.
 
 ```
 echo "4HRXmxN77CVb5VykdNX6mqkzCh2ycu4hfWfYHTvkLGE=" > /usr/local/etc/wireguard/private

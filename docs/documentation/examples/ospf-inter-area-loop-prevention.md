@@ -31,7 +31,7 @@ If you want to use VirtualBox, start this lab with:
 virtualbox.sh -i BSDRP_1.93_full_amd64_vga.img -n 4 -c
 ```
 
-The output should be like that:
+The output should look like this:
 
 ```
 ~>virtualbox.sh -n 4 -c
@@ -103,7 +103,7 @@ config save
 
 ### Router 2
 
-Configure hostname:
+Configure the hostname:
 
 ```
 sysrc hostname=R2

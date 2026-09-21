@@ -83,7 +83,7 @@ To connect VM'serial console, you can use:
 
 Each router below is exactly what `labconfig bgp_vm<N>` applies; enter it by
 hand if you started the lab without `-r bgp`. Use `labconfig` only on a lab
-machine, it replaces the running configuration.
+machine; it replaces the running configuration.
 
 ```
 labconfig bgp_vm[VM-NUMBER]
@@ -448,7 +448,7 @@ Table master4:
         bgp_cluster_list: 0.0.0.102
 ```
 
-Those two attributes are what makes the reflected route loop-free: a router
+Those two attributes are what make the reflected route loop-free: a router
 that finds its own id in the cluster list drops the update.
 
 ### Confederation side
@@ -491,8 +491,8 @@ Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down Sta
 Total number of neighbors 2
 ```
 
-On R7, at the far end, the sub-AS numbers appear in the path between
-parentheses, which is how a confederation marks its internal hops. They are
+On R7, at the far end, the sub-AS numbers appear in the path
+in parentheses, which is how a confederation marks its internal hops. They are
 stripped before the route leaves AS 200, so AS 100 only ever sees `200`.
 
 ```

@@ -271,7 +271,7 @@ fetch URL/BSDRP-upgrade.image.xz
 fetch URL/BSDRP-upgrade.image.sha256
 ```
 
-Step 3: once the transfer is complete, run on BSDRP:
+Step 3: once the transfer is complete, run the following on BSDRP:
 
 ```
 sha256 -c `cat BSDRP-upgrade.image.sha256 | cut -d ' ' -f 4` BSDRP-upgrade.image.xz && echo "good" || echo "bad"
@@ -641,7 +641,7 @@ Dumping 1112 out of 16325 MB:..2%..11%..21%..31%..41%..51%..61%..71%..81%..91%
 Dump complete
 ```
 
-After the next reboot the dump is automatically extracted from the dump device and stored in /data/crash:
+After the next reboot, the dump is automatically extracted from the dump device and stored in /data/crash:
 
 ```
 [root@router]~# ll -h /data/crash/

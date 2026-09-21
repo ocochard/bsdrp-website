@@ -221,7 +221,7 @@ Server listening on 9093
 
 ### With only one user
 
-If there is only one user, it should get the full bandwidth. From only one client (R1, R2 or R3), start by generating traffic toward the iperf3 server to check that the maximum upload bandwidth is correctly shaped to 50 Mb/s:
+If there is only one user, that user should get the full bandwidth. From only one client (R1, R2 or R3), start by generating traffic toward the iperf3 server to check that the maximum upload bandwidth is correctly shaped to 50 Mb/s:
 
 ```
 [root@R3]~# iperf3 -c 10.0.5.5 -t 60 -i 10 -f m -p 9093
@@ -268,7 +268,7 @@ Download is correctly shaped to 100 Mb/s.
 
 ### With two users
 
-Now start iperf clients at the same time on 2 clients and check that upload is equally shared (25 Mb/s each):
+Now start iperf clients at the same time on 2 user PCs and check that upload is equally shared (25 Mb/s each):
 
 ```
 [root@R3]~# iperf3 -c 10.0.5.5 -t 60 -i 10 -f m -p 9093
@@ -350,7 +350,7 @@ iperf Done.
 
 Same correct behavior here.
 
-During this bench, on the router, queue 1 (upload) and queue 2 (download) status:
+During this bench, here is the status of queue 1 (upload) and queue 2 (download) on the router:
 
 ```
 [root@R4]~# ipfw queue 1 show

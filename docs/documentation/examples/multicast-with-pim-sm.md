@@ -252,8 +252,8 @@ Group Address     RP Address       Prio  Holdtime  Type
 ```
 
 VM2 sees VM3 as a PIM neighbor (and as the Designated Router of the
-10.0.23.0/24 link). It also learned, through the BSR 10.0.23.3, that itself
-(10.0.23.2) is the RP for 224.0.0.0/4.
+10.0.23.0/24 link). It also learned, through the BSR 10.0.23.3, that it
+(10.0.23.2) is itself the RP for 224.0.0.0/4.
 
 VM3 has the symmetric view:
 
@@ -293,7 +293,7 @@ lo0:
                 group 224.0.0.1 mode exclude
 ```
 
-The multicast group 224.0.0.13 is correctly subscribed on PIM-enabled interfaces.
+The multicast group 224.0.0.13 is correctly subscribed on the PIM-enabled interfaces.
 
 ## Testing
 

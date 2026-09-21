@@ -86,7 +86,7 @@ ipsec_enable="YES"
 kld_list="aesni"
 ```
 
-/etc/ipsec.conf
+/etc/ipsec.conf:
 
 ```
 flush;
@@ -136,7 +136,7 @@ kld_list="aesni"
 ipsec_enable="YES"
 ```
 
-/etc/ipsec.conf
+/etc/ipsec.conf:
 
 ```
 flush;
@@ -155,7 +155,7 @@ add 2001:2:0:1::205 2001:2:0:1::203 esp 0x1003 -E aes-gcm-16 "123456789012345678
 
 Once that is done, we use a fast method to measure the "IPsec equilibrium throughput" of the DUT.
 
-Note that the reference device (IBM x3550-M3) used in front of the PC Engines APU2 has an [equilibrium throughput of 843 Mb/s](ipsec-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md). If the value measured during this benchmark approaches 843 Mb/s, we would need a more powerful reference device.
+Note that the reference device (IBM x3550-M3) used in front of the PC Engines APU2 has an [equilibrium throughput of 843 Mb/s](ipsec-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md). If the value measured during this benchmark approaches 843 Mb/s, we will need a more powerful reference device.
 
 ```
 root@pkt-gen # equilibrium -4 -u -d 00:0d:b9:41:ca:3d -t igb2 -r igb3

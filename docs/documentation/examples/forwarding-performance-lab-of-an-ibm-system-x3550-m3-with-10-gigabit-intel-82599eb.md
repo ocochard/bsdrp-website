@@ -6,7 +6,7 @@ description: Forwarding performance lab of a quad-core Xeon 2.13 GHz and dual-po
 
 ### Hardware detail
 
-This lab tests an [IBM System x3550 M3](ibm-system-x3550-m3.md) with **quad** cores (Intel Xeon L5630 2.13 GHz, hyper-threading disabled), a dual-port Intel 82599EB 10-Gigabit, and OPT SFPs (SFP-10G-LR).
+This lab tests an [IBM System x3550 M3](ibm-system-x3550-m3.md) with **four** cores (Intel Xeon L5630 2.13 GHz, hyper-threading disabled), a dual-port Intel 82599EB 10-Gigabit, and OPT SFPs (SFP-10G-LR).
 
 NIC details:
 
@@ -119,7 +119,7 @@ mount -ur /
 
 A router [should not use LRO and TSO](../technical-docs/performance.md). BSDRP disables them by default via an RC script (`disablelrotso_enable="YES"` in `/etc/rc.conf.misc`).
 
-On a standard FreeBSD:
+On standard FreeBSD:
 
 ```
 ifconfig ix0 -tso4 -tso6 -lro
@@ -157,7 +157,7 @@ static_ndp_HPvcxl1="2001:2:0:8000::110 00:07:43:2e:e4:7a"
 
 ### Default fast-forwarding performance in front of a line-rate generator
 
-Behavior in front of a multi-flow traffic generator at line rate 14.8 Mpps (thanks Chelsio!), netstat on the DUT reports:
+In front of a multi-flow traffic generator at line rate 14.8 Mpps (thanks Chelsio!), netstat on the DUT reports:
 
 You can't enter any command on the DUT during the load: all 4 cores are overloaded.
 
@@ -177,7 +177,7 @@ On the receiver, only 2.8 Mpps are received (and therefore forwarded):
 252.862699 main_thread [2277] 2870795 pps (2873669 pkts 1379361120 bps in 1001001 usec) 17.78 avg_batch 2024 min_space
 ```
 
-The traffic is correctly load-balanced across each queue:
+The traffic is correctly load-balanced across the queues:
 
 ```
 [root@DUT]~# sysctl dev.ix.0. | grep rx_packet
@@ -192,7 +192,7 @@ dev.ix.1.queue1.tx_packets: 140704643
 dev.ix.1.queue0.tx_packets: 139301734
 ```
 
-Where does the system spend this time?
+Where does the system spend its time?
 
 ```
 [root@DUT]~# kldload hwpmc
@@ -248,9 +248,9 @@ PMC: [INSTR_RETIRED_ANY] Samples: 99530 (100.0%) , 0 unresolved
 
 ### Equilibrium throughput
 
-The previous methodology, generating 14.8 Mpps, is like testing the DUT under a denial-of-service attack. Try another methodology known as [equilibrium throughput](setting-up-a-vpn-ipsec-gre-etc-performance-benchmark-lab.md).
+The previous methodology, generating 14.8 Mpps, is like testing the DUT under a denial-of-service attack. Let's try another methodology, known as [equilibrium throughput](setting-up-a-vpn-ipsec-gre-etc-performance-benchmark-lab.md).
 
-From the pkt-generator, start an estimation of the equilibrium throughput, starting at 4 Mpps:
+From the pkt-generator, estimate the equilibrium throughput, starting at 4 Mpps:
 
 ```
 [root@pkt-gen]~# equilibrium -d 90:e2:ba:84:20:38 -p -l 4000 -t vcxl0 -r vcxl1

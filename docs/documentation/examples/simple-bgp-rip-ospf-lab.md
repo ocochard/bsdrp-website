@@ -25,7 +25,7 @@ More information on the BSDRP lab scripts is available in [How to build a BSDRP 
 
 #### VM mode: 7 VMs
 
-All these routers can be configured with the `labconfig` tool (use it only on a lab, since it replaces the current running configuration):
+All these routers can be configured with the `labconfig` tool (use it only on a lab, since it replaces the current running configuration).
 
 Start the lab with 7 routers. Here is an example with VirtualBox:
 

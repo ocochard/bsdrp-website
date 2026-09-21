@@ -4,7 +4,7 @@ description: Forwarding performance lab of a quad-core Xeon 2.13 GHz and quad-po
 ---
 ## Hardware detail
 
-This lab tests an [IBM System x3550 M3](ibm-system-x3550-m3.md) with **quad** cores (Intel Xeon L5630 2.13 GHz, hyper-threading disabled) and a quad-port 82580 NIC connected to the PCI-Express bus.
+This lab tests an [IBM System x3550 M3](ibm-system-x3550-m3.md) with **four** cores (Intel Xeon L5630 2.13 GHz, hyper-threading disabled) and a quad-port 82580 NIC connected to the PCI-Express bus.
 
 ## Lab set-up
 
@@ -141,7 +141,7 @@ Swap:
 
 ### Disabling multi-queue
 
-To disable multi-queue (which means no IRQ load-sharing between CPUs), there are two methods.
+There are two methods for disabling multi-queue (which means no IRQ load-sharing between CPUs).
 
 The first method is to use pkt-gen to generate a single IP flow (same src/dst IP and same src/dst port) like this:
 
@@ -160,7 +160,7 @@ mount -ur /
 reboot
 ```
 
-And check via dmesg or the number of IRQs assigned to the NIC that multi-queue is not enabled:
+Then check, via dmesg or the number of IRQs assigned to the NIC, that multi-queue is not enabled:
 
 ```
 [root@BSDRP]~# grep 'igb[2-3]' /var/run/dmesg.boot 
@@ -307,7 +307,7 @@ Multi-queue is re-enabled for this test, and the best values from the previous t
 - hw.igb.rxd=2048
 - hw.igb.txd=2048
 - hw.igb.rx_process_limit=-1 (disabled)
-- hw.igb.num_queues=0 (automatically based on number of CPUs and max supported MSI-X messages = 4 on this lab hardware)
+- hw.igb.num_queues=0 (automatically based on the number of CPUs and the maximum number of supported MSI-X messages = 4 on this lab hardware)
 
 This test generates 2000 different flows by using 2000 different UDP destination ports:
 

@@ -4,7 +4,7 @@ description: Frequently Asked Questions
 ---
 ## What is the difference between BSDRP and OPNsense or pfSense?
 
-1.  BSDRP focuses on routing, not firewalling. If you are looking for a firewall, or for sharing your internet access, use [pfSense](http://www.pfsense.com/), [OPNsense](https://opnsense.org/), [SmallWall](http://smallwall.org/), or [t1n1wall](http://t1n1wall.com/) instead.
+1.  BSDRP focuses on routing, not firewalling. If you are looking for a firewall, or for sharing your Internet access, use [pfSense](http://www.pfsense.com/), [OPNsense](https://opnsense.org/), [SmallWall](http://smallwall.org/), or [t1n1wall](http://t1n1wall.com/) instead.
 2.  BSDRP does not have a web GUI. It is configured from a CLI only (like Cisco or Juniper), or through an API such as NETCONF (planned feature).
 3.  BSDRP is not intended for home use; it targets company use cases (a small ISP, for example).
 

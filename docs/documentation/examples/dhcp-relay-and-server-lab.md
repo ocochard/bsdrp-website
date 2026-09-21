@@ -70,7 +70,7 @@ To connect VM'serial console, you can use:
 - VM 3 : sudo cu -l /dev/nmdm-BSDRP.3B
 ```
 
-Without `-r dhcp` the 3 VMs boot unconfigured and you can enter the
+Without `-r dhcp`, the 3 VMs boot unconfigured and you can enter the
 configuration of each router by hand, as described below.
 
 ## Router configuration
@@ -102,9 +102,9 @@ config save
 ```
 
 !!! warning "A relayed pool needs an explicit netmask"
-    For a directly connected subnet dnsmasq reads the netmask off its own
+    For a directly connected subnet, dnsmasq reads the netmask off its own
     interface. Here 10.0.12.0/24 is only reachable through the relay, so the
-    netmask has to be the third field of `dhcp-range`. Without it dnsmasq
+    netmask has to be the third field of `dhcp-range`. Without it, dnsmasq
     refuses to serve the relayed requests.
 
     `dhcp-option=3,10.0.12.2` is the default router sent to the clients: the

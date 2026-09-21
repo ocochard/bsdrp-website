@@ -14,7 +14,7 @@ This lab tests a [PC Engines APU 1](http://www.pcengines.ch/apu.htm) ([dmesg](pc
 
 ## Lab set-up
 
-For more information about full setup of this lab: [Setting up a forwarding performance benchmark lab](setting-up-a-forwarding-performance-benchmark-lab.md) (switch configuration, etc.).
+For more information about the full setup of this lab: [Setting up a forwarding performance benchmark lab](setting-up-a-forwarding-performance-benchmark-lab.md) (switch configuration, etc.).
 
 A current version of [BSDRP-1.9997](https://sourceforge.net/projects/bsdrp/files/BSD_Router_Project/current/amd64/) based on FreeBSD 11-current r262847 (10-stable did not boot on this board) is used on the packet generator, the receiver, and the DUT.
 
@@ -61,7 +61,7 @@ ifconfig igb3 up
 
 Disable fastforwarding (not compatible with IPsec), then configure IP addresses, routes, and static IPsec.
 
-/etc/rc.conf
+/etc/rc.conf:
 
 ```
 # Hostname

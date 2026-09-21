@@ -99,7 +99,7 @@ ifconfig_ipsec0_ipv6="inet6 2001:2:0:2::208 prefixlen 64"
 ipsec_enable="YES"
 ```
 
-/etc/ipsec.conf
+/etc/ipsec.conf:
 
 ```
 flush;

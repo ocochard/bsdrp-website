@@ -4,7 +4,7 @@ description: IPsec performance lab of a quad-core Xeon 2.13 GHz and quad-port Gi
 ---
 ## Hardware detail
 
-This lab tests an [IBM System x3550 M3](ibm-system-x3550-m3.md) with **quad** cores (Intel Xeon L5630 2.13 GHz, hyper-threading disabled) and a quad-port 82580 NIC connected to the PCI-Express bus.
+This lab tests an [IBM System x3550 M3](ibm-system-x3550-m3.md) with **four** cores (Intel Xeon L5630 2.13 GHz, hyper-threading disabled) and a quad-port 82580 NIC connected to the PCI-Express bus.
 
 This CPU includes AES-NI: AES-CBC, AES-XTS, AES-GCM, AES-ICM.
 
@@ -83,7 +83,7 @@ ipsec_enable="YES"
 kld_list="aesni"
 ```
 
-/etc/ipsec.conf
+/etc/ipsec.conf:
 
 ```
 flush;

@@ -263,7 +263,7 @@ em2:
                         mcast-macaddr 01:00:5e:00:00:01
 ```
 
-The multicast group 224.0.0.13 is correctly subscribed on PIM-enabled interfaces.
+The PIM-enabled interfaces are correctly subscribed to the multicast group 224.0.0.13.
 
 ## Testing
 

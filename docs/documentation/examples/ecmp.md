@@ -301,13 +301,13 @@ Routing entry for 2001:db8::/32
 
 Flows from the client to the server should be flow-id-shared across the two paths. Verify this using multiple source and destination IP addresses with pkt-gen on the client and server, then use systat on R1 and R2 to check their load distribution.
 
-On server:
+On the server:
 
 ```
 root@server:~ # pkt-gen -i igb1 -f rx
 ```
 
-On client:
+On the client:
 
 ```
 root@client:~ # pkt-gen -i igb1 -f tx -n 8000000 -l 60 -d 10.0.255.1:2000-10.0.255.254 -D 00:0d:b9:41:ca:3c -s 10.0.254.1:2000-10.0.254.254 -S 00:0d:b9:45:7f:b0 -w 4 -R 20000

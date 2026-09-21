@@ -85,7 +85,7 @@ description: Instructions for using some FreeBSD networking performance lab
 | PC Engines APU1 | Management | bastion | re0 | 00:0d:b9:3c:a0:cc | Internet Access |  |  |  |
 | ::: | ::: | ::: | re1 | 00:0d:b9:3c:a0:ce | 192.168.1.100 | Catalyst-3750 | Gi1/0/9 | 3 |
 
-VLANs definition:
+VLAN definitions:
 
 - 3: management
 - 2: benches

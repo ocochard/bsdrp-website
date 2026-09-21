@@ -79,7 +79,7 @@ There is a VBScript for Windows on [irom's Blog: BSDRP - QEMU VBScript](http://i
 
 
 !!! info "Important"
-    Even with a 64-bit OS, that is not enough to run a 64-bit guest with VirtualBox: [your 64-bit processor must also support VT-x or AMD-V technology (and have it enabled in the BIOS)](http://www.virtualbox.org/manual/ch03.html#intro-64bitguests).
+    Having a 64-bit OS is not enough to run a 64-bit guest with VirtualBox: [your 64-bit processor must also support VT-x or AMD-V technology (and have it enabled in the BIOS)](http://www.virtualbox.org/manual/ch03.html#intro-64bitguests).
 
 
 #### Under Windows

@@ -4,7 +4,7 @@ description: Forwarding performance lab of a quad-core Xeon 2.13 GHz and dual-po
 ---
 ## Hardware detail
 
-This lab tests an [IBM System x3550 M3](ibm-system-x3550-m3.md) with **quad** cores (Intel Xeon L5630 2.13 GHz, hyper-threading disabled) and a dual-port Intel 10-Gigabit X540-AT2 connected to the PCI-Express bus.
+This lab tests an [IBM System x3550 M3](ibm-system-x3550-m3.md) with **four** cores (Intel Xeon L5630 2.13 GHz, hyper-threading disabled) and a dual-port Intel 10-Gigabit X540-AT2 connected to the PCI-Express bus.
 
 ## Lab set-up
 
@@ -42,7 +42,7 @@ pkt-gen -i ix0 -f tx -n 1000000000 -l 60 -d 9.1.1.1:2000-9.1.1.100 -D a0:36:9f:1
 
 
 !!! warning
-    Netmap disables hardware checksum on Intel NICs. You need to use a FreeBSD -head with SVN revision 257758 or later plus the [pkt-gen software-checksum patch](https://bugs.freebsd.org/bugzilla/show_bug.cgiid=187149) to use multiple src/dst IPs or ports with netmap's pkt-gen.
+    Netmap disables hardware checksum on Intel NICs. You need to use FreeBSD -head with SVN revision 257758 or later plus the [pkt-gen software-checksum patch](https://bugs.freebsd.org/bugzilla/show_bug.cgiid=187149) to use multiple src/dst IPs or ports with netmap's pkt-gen.
 
 The receiver will use this command:
 
@@ -65,7 +65,7 @@ echo "dev.ix.1.fc=0" >> /etc/sysctl.conf
 
 A router [should not use LRO and TSO](../technical-docs/performance.md). BSDRP disables them by default via an RC script (`disablelrotso_enable="YES"` in `/etc/rc.conf.misc`).
 
-On a standard FreeBSD:
+On standard FreeBSD:
 
 ```
 ifconfig ix0 -tso4 -tso6 -lro
@@ -99,7 +99,7 @@ sysrc static_arp_receiver="9.9.9.1 a0:36:9f:1e:1e:da"
 
 ## Default fast-forwarding speed
 
-With the default parameters, on multi-flow traffic generated at 11.2 Mpps (still not the maximum rate for 10 GigE), only 1.9 Mpps are correctly fast-forwarded (`net.inet.ip.fastforwarding=1`):
+Using the default parameters, with multi-flow traffic generated at 11.2 Mpps (still not the maximum rate for 10 GigE), only 1.9 Mpps are correctly fast-forwarded (`net.inet.ip.fastforwarding=1`):
 
 ```
 [root@BSDRP]~# netstat -i -w 1
@@ -215,7 +215,7 @@ One rule for each firewall and 2000 UDP "sessions"; more information is availabl
 
 ![Impact of ipfw and pf on 4 cores Xeon 2.13 GHz with 10-Gigabit Intel X540-AT2](../../assets/images/documentation/examples/bench.impact.of.ipfw-pf.tengig.png)
 
-Some translation of pps to throughput using [IMIX distribution](https://en.wikipedia.org/wiki/Internet_Mix):
+Some translation of pps to throughput using the [IMIX distribution](https://en.wikipedia.org/wiki/Internet_Mix):
 
 |         |                                    |
 |---------|------------------------------------|

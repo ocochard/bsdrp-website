@@ -7,9 +7,9 @@ description: How to build a forwarding performance benchmark lab with BSDRP
 Before starting a router benchmark, here are some RFCs to read:
 
 - Benchmarking Terminology for Network Interconnection Devices: [RFC1242](https://tools.ietf.org/html/rfc1242)
-- Benchmarking Methodology for Network Interconnect Devices: [RFC2544](http://www.ietf.org/rfc/rfc2544.txt) (notice usage of pool 198.18.0.0/15)
+- Benchmarking Methodology for Network Interconnect Devices: [RFC2544](http://www.ietf.org/rfc/rfc2544.txt) (note the use of pool 198.18.0.0/15)
 - Terminology for Forwarding Information Base (FIB) based Router Performance: [RFC3222](http://tools.ietf.org/html/rfc3222)
-- IPv6 Benchmarking Methodology for Network Interconnect Devices: [RFC5180](https://tools.ietf.org/html/rfc5180) (notice usage of pool 2001:0002::/48) for IPv6
+- IPv6 Benchmarking Methodology for Network Interconnect Devices: [RFC5180](https://tools.ietf.org/html/rfc5180) (note the use of pool 2001:0002::/48) for IPv6
 - Applicability Statement for RFC 2544: Use on Production Networks Considered Harmful [RFC6815](https://tools.ietf.org/html/rfc6815)
 
 We will start with a simpler lab by focusing on a wire-speed (line-rate) packet generator. We do not cover firewall benchmarks ([RFC3511](https://www.ietf.org/rfc/rfc3511.txt)), but there is [a VPN benchmark lab](setting-up-a-vpn-ipsec-gre-etc-performance-benchmark-lab.md).
@@ -33,7 +33,7 @@ Once this "worst-case" value is obtained, it is possible to estimate the expecte
 
 To cross-check the packet counters, we connect the devices to a non-blocking switch that has its own traffic counters.
 
-The same device can be used for packet generator and receiver:
+The same device can be used as both packet generator and receiver:
 
 ```
 +---------------------------+    +-------------------------+ 
@@ -46,7 +46,7 @@ The same device can be used for packet generator and receiver:
 +----------------------------------------------------------+
 ```
 
-or using two different devices for packet generator and receiver:
+or using two different devices as packet generator and receiver:
 
 ```
 +------------------+    +-------------------+     +-----------------+
@@ -76,7 +76,7 @@ Or, for a lab without a switch, the same device acts as both packet generator an
 
 The switch configuration needs some care:
 
-- The device used as "packet receiver" does not emit any packet, so the switch cannot learn its MAC address and would broadcast the traffic to all ports. We need to disable MAC-address aging or configure a static MAC entry on the switch.
+- The device used as "packet receiver" does not emit any packets, so the switch cannot learn its MAC address and would broadcast the traffic to all ports. We need to disable MAC-address aging or configure a static MAC entry on the switch.
 - The switch must also be configured not to send unwanted frames (spanning tree, keepalive, CDP, etc.) that would skew the counters.
 - Allowing Ethernet flow control is not a good idea (it is always better to drop some packets and let TCP windowing slow down the connection), and it is even worse when building a high-speed packet generator.
 
@@ -154,7 +154,7 @@ set protocols lldp-med interface xe-0/0/0 disable
 
 ### Hardware
 
-NICs supported by [netmap](http://www.freebsd.org/cgi/man.cgiquery=netmap) are mandatory on the server used as packet generator/receiver: Chelsio (the best one!) and Intel (em, ixgbe). RealTek (re) NICs are supported but should be avoided at all cost.
+NICs supported by [netmap](http://www.freebsd.org/cgi/man.cgiquery=netmap) are mandatory on the server used as packet generator/receiver: Chelsio (the best one!) and Intel (em, ixgbe). RealTek (re) NICs are supported but should be avoided at all costs.
 
 ### Static ARP
 
@@ -184,7 +184,7 @@ EOF
 
 #### Unleashing the power of the NIC chipset
 
-By default FreeBSD uses conservative driver values, but BSDRP raises them ([source of benchmarks](forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md#igb4-driver-tuning-with-82546gb)).
+By default, FreeBSD uses conservative driver values, but BSDRP raises them ([source of benchmarks](forwarding-performance-lab-of-an-ibm-system-x3550-m3-with-intel-82580.md#igb4-driver-tuning-with-82546gb)).
 
 For example, for em(4) or igb(4) drivers:
 
@@ -236,7 +236,7 @@ We need to generate:
 Here is an example for:
 
 - 2000 flows, using a source IP range of 198.18.0.1-198.18.0.100 and destination 198.19.0.1-198.19.0.20.
-- The source and destination UDP port are both 2000 (it is important to specify both ports to avoid port number 0, which is filtered by pf).
+- The source and destination UDP ports are both 2000 (it is important to specify both ports to avoid port number 0, which is filtered by pf).
 - The destination MAC address must be given.
 - One billion packets (10-Gigabit Ethernet links are fast).
 - A 4-second timer to let the link come up (pkt-gen brings the link down/up).
@@ -323,7 +323,7 @@ switch#sh int GigabitEthernet 1/0/6 | i output rate
 
 The switch stats confirm the 565 Kpps received.
 
-There was a problem with FreeBSD self-counters that misses about 10 Kpps in this case. Fortunately a contributor gave me a hint: 564842 / 1024 = 551.6 Kpps. The [netstat `-h` (human-readable) flag has a bug that converts 1k packets/errors into 1024 packets/errors](http://www.freebsd.org/cgi/query-pr.cgipr=183598) (fixed in 11-head r287593).
+There was a problem with FreeBSD self-counters that miss about 10 Kpps in this case. Fortunately, a contributor gave me a hint: 564842 / 1024 = 551.6 Kpps. The [netstat `-h` (human-readable) flag has a bug that converts 1k packets/errors into 1024 packets/errors](http://www.freebsd.org/cgi/query-pr.cgipr=183598) (fixed in 11-head r287593).
 
 If we call netstat without `-h`, the problem disappears:
 

@@ -95,11 +95,11 @@ VFAT, on FreeBSD with `makefs(8)`. This is the format BSDRP's [`BSDRP-lab-bhyve.
 makefs -t msdos -o volume_label=cidata -o fat_type=12 -s 2m seed.img seed
 ```
 
-The volume label must be exactly `cidata`, otherwise `nuageinit` will not pick it up.
+The volume label must be exactly `cidata`; otherwise `nuageinit` will not pick it up.
 
 ### Attaching the seed image to the VM
 
-Attach the seed image when you boot the BSDRP image. Whether you attach it as a CD-ROM or as a regular block device depends on the filesystem you chose: ISO 9660 is the obvious fit for a virtual CD-ROM, while a VFAT image can be plugged in as any other disk. The exact incantation depends on your hypervisor:
+Attach the seed image when you boot the BSDRP image. Whether you attach it as a CD-ROM or as a regular block device depends on the filesystem you chose: ISO 9660 is the obvious fit for a virtual CD-ROM, while a VFAT image can be plugged in like any other disk. The exact incantation depends on your hypervisor:
 
 - **bhyve, ISO 9660 as CD-ROM**: add another `-s` slot with `ahci-cd,seed.iso`, alongside your BSDRP image device.
 - **bhyve, VFAT as disk** (used by `BSDRP-lab-bhyve.sh`): add another `-s` slot with `virtio-blk,seed.img`.

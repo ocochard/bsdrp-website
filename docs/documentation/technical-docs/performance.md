@@ -260,7 +260,7 @@ On a Netgate RCC-VE 4860 the benefit is about 4.7%.
 
 On the FreeBSD `projects/routing` branch the impact is much larger:
 
-![Impact of disabling some entropy source on FreeBSD forwarding performance](../../assets/images/documentation/technical_docs/entropy_source_impact.png)
+![Impact of disabling some entropy sources on FreeBSD forwarding performance](../../assets/images/documentation/technical_docs/entropy_source_impact.png)
 
 ### NIC driver tuning
 
@@ -365,7 +365,7 @@ Difference at 95.0% confidence
         (Student's t, pooled s = 6366.72)
 ```
 
-Almost same improvement, 1.7% on a Netgate.
+Almost the same improvement, 1.7% on a Netgate.
 
 #### Increasing maximum interrupts per second
 

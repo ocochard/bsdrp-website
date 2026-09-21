@@ -4,7 +4,7 @@ description: OpenVPN performance lab of a quad-core Xeon 2.13 GHz and quad-port 
 ---
 ## Hardware detail
 
-This lab tests an [IBM System x3550 M3](ibm-system-x3550-m3.md) with **quad** cores (Intel Xeon L5630 2.13 GHz, hyper-threading disabled) and a quad-port 82580 NIC connected to the PCI-Express bus.
+This lab tests an [IBM System x3550 M3](ibm-system-x3550-m3.md) with **four** cores (Intel Xeon L5630 2.13 GHz, hyper-threading disabled) and a quad-port 82580 NIC connected to the PCI-Express bus.
 
 This CPU includes AES-NI: AES-CBC, AES-XTS, AES-GCM, AES-ICM.
 
@@ -214,8 +214,8 @@ Iteration 9
 Estimated Equilibrium Ethernet throughput= 543 Mb/s (maximum value seen: 545 Mb/s)
 ```
 
-OpenVPN (userspace) reaches about 454 Mb/s, which is about half of IPsec performance (kernel space).
+OpenVPN (userspace) reaches about 454 Mb/s, which is about half the IPsec performance (kernel space).
 
 ### Encryption algorithms
 
-![Impact of OpenVPN encryption algorithms on 4 cores Xeon 2.13 GHz with Intel 82580 NIC](../../assets/images/documentation/examples/openvpn-ibm3550-fbsd11.0.png)
+![Impact of OpenVPN encryption algorithms on a quad-core Xeon 2.13 GHz with Intel 82580 NIC](../../assets/images/documentation/examples/openvpn-ibm3550-fbsd11.0.png)

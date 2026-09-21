@@ -7,7 +7,7 @@ Refer to the [filename convention](documentation/end-users-docs.md#filename-conv
 These images are built for:
 
 - Architectures: x86_64 (amd64) and ARM 64 (aarch64)
-- A minimum 4 GB medium (flash device, USB key, hard drive, etc.)
+- A medium of at least 4 GB (flash device, USB key, hard drive, etc.)
 
 Image types:
 

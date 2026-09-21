@@ -22,7 +22,7 @@ Here is the logical and physical view:
 
 More information on the BSDRP lab scripts is available in [How to build a BSDRP router lab](how-to-build-a-bsdrp-router-lab.md).
 
-Start the lab with full-meshed 6 routers.
+Start the lab with 6 full-meshed routers.
 
 An example with bhyve under FreeBSD:
 
@@ -814,7 +814,7 @@ service sshd start
 
 ### IPv4 traffic shaping
 
-From R5, enter jail6 console and launch iperf in IPv4 (default) mode:
+From R5, enter the jail6 console and launch iperf in IPv4 (default) mode:
 
 ```
 [root@R5]~# service jail console jail6

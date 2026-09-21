@@ -221,7 +221,7 @@ Now the packet drop rate of the TCAM firewall matches the generator's 42 Mpps:
 42223090
 ```
 
-And the firewall is now able to forward all packets **without being too busy** at the same time:
+And at the same time the firewall is now able to forward all packets **without being too busy**:
 
 ```
 [root@firewall]~# netstat -ihw 1
