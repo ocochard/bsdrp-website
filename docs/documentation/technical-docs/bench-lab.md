@@ -17,9 +17,9 @@ description: Instructions for using some FreeBSD networking performance lab
 | ::: | ::: | ::: | ::: | 10-50G Mellanox ConnectX-4 LX (mlx5en) |
 | HP ProLiant DL360p Gen8 | Intel E5-2650 v2 | 8x2 | 2.6 | 10G Chelsio T540-CR (cxgbe) |
 | ::: | ::: | ::: | ::: | 10G Emulex OneConnect be3 (oce) |
-| SuperMicro 5018A-FTN4 | Intel Atom C2758 | 8 | 2.4 | 10G Chelsio T540-CR (cxgbe) |
+| SuperMicro 5018A-FTN4 (sm1) | Intel Atom C2758 | 8 | 2.4 | 10G Chelsio T520-SO (cxgbe) |
 | ::: | ::: | ::: | ::: | Gigabit Intel i354 (igb) |
-| SuperMicro 5018A-FTN4 | Intel Atom C2758 | 8 | 2.4 | 10G Intel 82599 (ixgbe) |
+| SuperMicro 5018A-FTN4 (sm2) | Intel Atom C2758 | 8 | 2.4 | 10G Intel X520 82599ES (ixgbe) |
 | ::: | ::: | ::: | ::: | Gigabit Intel i354 (igb) |
 | Netgate RCC-VE 4860 | Intel Atom C2558 | 4 | 2.4 | Gigabit Intel i350 (igb) |
 | ::: | ::: | ::: | ::: | Gigabit Intel i211 (igb) |

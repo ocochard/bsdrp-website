@@ -112,7 +112,7 @@ nav:
                   - Forwarding (10G Chelsio T540-CR): documentation/examples/forwarding-performance-lab-of-a-hp-proliant-dl360p-gen8-with-10-gigabit-with-10-gigabit-chelsio-t540-cr.md
               - SuperMicro 5018A-FTN4:
                   - Hardware: documentation/examples/superserver-5018a-ftn4.md
-                  - Forwarding (10G Chelsio T540-CR): documentation/examples/forwarding-performance-lab-of-a-superserver-5018a-ftn4-with-10-gigabit-chelsio-t540-cr.md
+                  - Firewall performance: documentation/examples/firewall-performance-lab-of-a-superserver-5018a-ftn4.md
                   - IPSec performance: documentation/examples/ipsec-performance-of-a-superserver-5018a-ftn4.md
               - PC Engines APU2:
                   - Hardware: documentation/examples/pc-engines-apu2.md

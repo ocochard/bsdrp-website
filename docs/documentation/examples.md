@@ -53,7 +53,7 @@ Benchmarks:
 - HP ProLiant DL360p Gen8 (Intel Xeon E5-2650, 8 cores)
   - [Forwarding performance lab of an HP ProLiant DL360p Gen8 with 10-Gigabit Chelsio T540-CR](examples/forwarding-performance-lab-of-a-hp-proliant-dl360p-gen8-with-10-gigabit-with-10-gigabit-chelsio-t540-cr.md)
 - SuperMicro SuperServer 5018A-FTN4 (Intel Rangeley Atom C2758, 8 cores)
-  - [Forwarding performance lab of a SuperServer 5018A-FTN4 with 10-Gigabit Chelsio T540-CR](examples/forwarding-performance-lab-of-a-superserver-5018a-ftn4-with-10-gigabit-chelsio-t540-cr.md)
+  - [Firewall performance lab of a SuperServer 5018A-FTN4](examples/firewall-performance-lab-of-a-superserver-5018a-ftn4.md)
   - [IPsec performance of a SuperServer 5018A-FTN4](examples/ipsec-performance-of-a-superserver-5018a-ftn4.md)
 - PC Engines APU 2 (quad-core AMD GX-412TC with Intel i210AT)
   - [Forwarding performance lab of a PC Engines APU2](examples/forwarding-performance-lab-of-a-pc-engines-apu2.md)

@@ -6,11 +6,18 @@ description: IPsec VTI performance lab of an 8-core Atom
 
 This lab tests a [SuperMicro](http://www.supermicro.com/products/system/1U/5018/SYS-5018A-FTN4.cfm) [SuperServer 5018A-FTN4](superserver-5018a-ftn4.md):
 
-- Intel Rangeley: [Atom C2758 (8 cores) at 2.4 GHz](http://ark.intel.com/products/77988/Intel-Atom-Processor-C2758-4M-Cache-2_40-GHz)
+- Intel Rangeley: [Atom C2758 (8 cores) at 2.4 GHz](https://ark.intel.com/content/www/us/en/ark/products/77988/intel-atom-processor-c2758-4m-cache-2-40-ghz.html)
 - 8 GB of RAM
 - Quad-port Chelsio 10-Gigabit T540-CR and OPT SFPs (SFP-10G-LR)
 
 This CPU includes AES-NI: AES-CBC, AES-XTS, AES-GCM, AES-ICM.
+
+!!! note
+    These results were measured on FreeBSD 13 in 2020-2022, when this
+    machine (`sm1`) was fitted with a quad-port Chelsio T540-CR and 8 GB of
+    RAM. It now carries a dual-port Chelsio T520-SO and 16 GB, so the
+    [hardware page](superserver-5018a-ftn4.md) no longer matches the setup
+    described here.
 
 ## Method used
 
