@@ -102,35 +102,6 @@ Values in Mpps.
 | pf-stateful    | 1.70          | 1.80        | 1.69          | 1.22        |
 | pf-stateless   | 1.39          | 1.55        | 1.29          | 1.05        |
 
-### Observations
-
-**Firewall ranking is the same on both NICs.** ipfw is the fastest of the
-three, stateless around 26 to 27% below plain forwarding. pf sits in the
-middle. ipf is the slowest, with ipf-stateful dropping 86 to 88% from plain
-forwarding.
-
-**The NIC matters far more for inet6 than for inet4.** On IPv4 the two
-cards land within about 15% of each other, and pf is even slightly faster on
-the Intel 82599. On IPv6 the Chelsio leads by 61 to 65% in the forwarding
-and ipfw configurations. The IPv6 forwarding path is the part that is
-sensitive to the driver here.
-
-**pf-stateful is faster than pf-stateless** on both NICs (+22.9% inet4 on
-the Chelsio, +16.6% on the Intel). This is not noise: the pf data points
-have the tightest spreads in both runs. The usual explanation is that the
-`no state` ruleset is evaluated in full for every packet, while a stateful
-match short-circuits on the state table.
-
-**ipf-stateful is the one configuration where inet6 beats inet4** on both
-NICs (+37% on the Chelsio, +22% on the Intel). State lookup dominates that
-configuration, so the larger IPv6 header stops being the limiting factor.
-
-!!! note
-    The fast configurations are the noisy ones. On the Chelsio run,
-    `forwarding` and the `ipfw-*` points have spreads of 8 to 16%, while the
-    pf and ipf points stay under 3%. Treat the top of the table as less
-    precise than the bottom.
-
 ### Full result sets
 
 Both runs, including the graphs, the min/max bars, the hwpmc flamegraphs and
