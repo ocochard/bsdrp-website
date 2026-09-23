@@ -5,7 +5,7 @@ This is the hardware reference for the SuperMicro
 [SuperServer 5018A-FTN4](https://www.supermicro.com/en/products/system/1U/5018/SYS-5018A-FTN4.cfm)
 used as a device under test in the [bench lab](../technical-docs/bench-lab.md).
 
-The capture below comes from the `sm1` unit running BSDRP 2.3
+The capture below comes from a system running BSDRP 2.3
 (FreeBSD 16.0-CURRENT), fitted with a dual-port Chelsio T520-SO in the
 PCIe slot alongside the on-board quad-port Intel i354.
 
