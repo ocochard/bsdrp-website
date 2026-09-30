@@ -125,6 +125,10 @@ sysrc -f /etc/jails/jail5/rc.conf hostname=jail5 \
  pimd_enable=YES
 ifconfig -l | grep -q vtnet && sed -i "" 's/em/vtnet/g' /etc/jails/jail5/rc.conf
 mkdir -p /etc/jails/jail5/local/frr
+cat > /etc/jails/jail5/local/pimd.conf <<EOF
+spt-threshold packets 0 interval 100
+EOF
+
 cat > /etc/jails/jail5/local/dhcpd.conf <<EOF
 option domain-name "bsdrp.net";
 default-lease-time 600;
@@ -415,6 +419,11 @@ bfd
 !
 EOF
 
+cat > /usr/local/etc/pimd.conf <<EOF
+bsr-candidate ng0 priority 200
+spt-threshold packets 0 interval 100
+EOF
+
 config save
 hostname R2
 service netif restart
@@ -424,6 +433,13 @@ service freevrrpd start
 service frr start
 service dhcprelya start
 service mpd5 start
+# pimd resolves its Candidate-BSR address from ng0 when it parses its
+# config, and needs the address, not just the interface: mpd5 creates the
+# netgraph node several seconds before IPCP assigns 10.4.24.2.
+for _ in $(jot 60); do
+  ifconfig ng0 2>/dev/null | grep -q "inet " && break
+  sleep 1
+done
 service pimd start
 ```
 
@@ -564,6 +580,27 @@ service bird start
 
 ### Router 4
 
+Router 4 is the multicast interoperability router of this lab: it runs
+FRRouting's `pimd` where routers 2 and 5 run `net/pimd`, so that every
+PIM-SM message on the wire is written by one implementation and parsed by
+the other. Sitting between R2 and R5, it is also the only router that can
+demonstrate a Bootstrap message being relayed onward.
+
+!!! warning "One multicast routing daemon per host"
+
+    `pimd_enable` is set to `NO` here. `net/pimd` and FRR's `pimd` cannot
+    run side by side: the kernel allows a single multicast forwarding
+    socket, and whichever daemon starts second fails. FRR's `pimd` is also
+    absent from the rc script's default `frr_daemons` list, so it has to be
+    named explicitly.
+
+The PIM roles are deliberately split across two routers, R2 being the
+Candidate-BSR and R4 the Candidate-RP. An FRR that is itself the BSR never
+places its own Candidate-RP into the Bootstrap it originates, which would
+leave the RP set empty; giving each daemon a single role avoids that and
+tests more, since every Bootstrap then carries an RP whose advertisement
+the other implementation wrote.
+
 You can use the script `labconfig vm4` to push the full configuration automatically:
 
 ```
@@ -585,8 +622,11 @@ sysrc ipfw_netflow_enable=YES
 sysrc ipfw_netflow_ip=10.0.45.5
 sysrc ipfw_netflow_port=2055
 sysrc ipfw_netflow_version=9
-sysrc pimd_enable=YES
+sysrc pimd_enable=NO
 ifconfig -l | grep -q vtnet && sed -i "" 's/em/vtnet/g' /etc/rc.conf
+# Set frr_daemons AFTER the rewrite above: that sed is a global substitution
+# and "frr_daemons" itself contains "em".
+sysrc frr_daemons="mgmtd zebra bfdd isisd ospfd ospf6d ripd ripngd staticd pimd"
 
 cat > /usr/local/etc/frr/frr.conf <<EOF
 frr version 7.0
@@ -598,20 +638,27 @@ interface em3
  ip router isis BSDRP
  ipv6 ospf6 passive
  ipv6 router isis BSDRP
+ ip pim
 !
 interface ng0
  ip ospf message-digest-key 1 md5 superpass
  ip ospf network point-to-point
  ipv6 ospf6 passive
+ ip pim
 !
 interface ng1
  ipv6 ospf6 network point-to-point
+ ip pim
 !
 !
 interface vtnet3
  ip router isis BSDRP
  ipv6 ospf6 passive
  ipv6 router isis BSDRP
+ ip pim
+!
+interface lo1
+ ip pim
 !
 router-id 0.0.0.4
 !
@@ -652,6 +699,10 @@ router isis BSDRP
 line vty
 !
 bfd
+!
+router pim
+ bsr candidate-rp priority 20 source address 10.0.0.4
+ bsr candidate-rp group 224.0.0.0/4
 !
 EOF
 
@@ -786,7 +837,6 @@ service mpd5 start
 service ipfw start
 service sysctl reload
 service ipfw_netflow start
-service pimd start
 ```
 
 ### Router 1
@@ -917,6 +967,66 @@ q131132  50 sl. 0 flows (1 buckets) sched 65596 weight 0 lmax 0 pri 0 droptail
  sched 65596 type FIFO flags 0x0 0 buckets 1 active
   0 ip           0.0.0.0/0             0.0.0.0/0      125    15881  0    0   0
 ```
+
+### Multicast (PIM-SM)
+
+R2 is the Candidate-BSR, R4 the Candidate-RP and so the elected RP, and
+jail5 a plain PIM router two hops from the BSR.
+
+Check that R2 won the BSR election and learned R4's Candidate-RP
+advertisement, which FRR wrote:
+
+```
+[root@R2]~# pimctl show status | head -6
+PIM Daemon Status
+Elected BSR
+    Address          : 10.4.24.2
+    Expiry Time      : 0h0m10s
+    Priority         : 200
+
+[root@R2]~# pimctl show rp
+PIM Rendez-Vous Point Set Table
+Group Address     RP Address       Prio  Holdtime  Type
+232.0.0.0/8       169.254.0.1         1   Forever  Static
+224.0.0.0/4       10.0.0.4           20       136  Dynamic
+```
+
+Then that R4 accepted R2's Bootstrap and won the RP election:
+
+```
+[root@R4]~# vtysh -c "show ip pim bsr"
+PIMv2 Bootstrap Router information
+Current preferred BSR address: 10.4.24.2
+Priority        Fragment-Tag       State           UpTime
+  200             36637           ACCEPT_PREFERRED    00:01:12
+
+[root@R4]~# vtysh -c "show ip pim rp-info"
+ RP address  group/prefix-list  OIF  I am RP  Source  Group-Type
+ 10.0.0.4    224.0.0.0/4        lo1  yes      BSR     ASM
+```
+
+Finally, that jail5 holds the same RP set. jail5 is neither a Candidate-BSR
+nor a Candidate-RP and has no adjacency with R2, so it can only know this
+if R4 parsed R2's Bootstrap and flooded it onward:
+
+```
+[root@R5]~# jexec jail5 pimctl show rp
+PIM Rendez-Vous Point Set Table
+Group Address     RP Address       Prio  Holdtime  Type
+232.0.0.0/8       169.254.0.1         1   Forever  Static
+224.0.0.0/4       10.0.0.4           20       136  Dynamic
+```
+
+!!! note "Why the BSR address is pinned to ng0"
+
+    R2's `pimd.conf` pins the Candidate-BSR to `ng0`. Bootstrap messages
+    are flooded hop by hop with an RPF check towards the BSR, so the BSR
+    address has to be reachable over a PIM-enabled path from every PIM
+    router. Router 3 runs no PIM, which rules out R2's `lo1` (10.0.0.2) and
+    its VLAN 23 address (10.0.23.2): R4's route to either goes through R3,
+    and the Bootstrap is dropped. Left unpinned, `pimd` takes its highest
+    active address, which at boot is 10.0.23.2 because the PPTP links are
+    not up yet, so it picks the one path that cannot work.
 
 ### NetFlow
 
