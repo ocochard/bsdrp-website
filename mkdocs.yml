@@ -117,7 +117,7 @@ nav:
               - PC Engines APU2:
                   - Hardware: documentation/examples/pc-engines-apu2.md
                   - Forwarding: documentation/examples/forwarding-performance-lab-of-a-pc-engines-apu2.md
-                  - IPSec performance: documentation/examples/ipsec-performance-of-a-pc-engines-apu2.md
+                  - VPN performance: documentation/examples/vpn-performance-of-a-pc-engines-apu2.md
               - Netgate RCC-VE 4860:
                   - Hardware: documentation/examples/netgate-rcc-ve-4860.md
                   - Forwarding: documentation/examples/forwarding-performance-lab-of-a-netgate-rcc-ve-4860.md

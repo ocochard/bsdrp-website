@@ -57,7 +57,7 @@ Benchmarks:
   - [IPsec performance of a SuperServer 5018A-FTN4](examples/ipsec-performance-of-a-superserver-5018a-ftn4.md)
 - PC Engines APU 2 (quad-core AMD GX-412TC with Intel i210AT)
   - [Forwarding performance lab of a PC Engines APU2](examples/forwarding-performance-lab-of-a-pc-engines-apu2.md)
-  - [IPsec performance of a PC Engines APU2](examples/ipsec-performance-of-a-pc-engines-apu2.md)
+  - [VPN performance of a PC Engines APU2](examples/vpn-performance-of-a-pc-engines-apu2.md)
 - Netgate RCC-VE 4860 (quad-core Intel Atom C2558 with 2 Intel i211 and 4 Intel i350 NICs)
   - [Forwarding performance lab of a Netgate RCC-VE 4860](examples/forwarding-performance-lab-of-a-netgate-rcc-ve-4860.md)
   - [IPsec performance of a Netgate RCC-VE 4860](examples/ipsec-performance-of-a-netgate-rcc-ve-4860.md)

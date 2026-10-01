@@ -10,7 +10,7 @@ This lab tests a [PC Engines APU 1](http://www.pcengines.ch/apu.htm) ([dmesg](pc
 - 3x Realtek RTL8111E Gigabit Ethernet ports
 - 2 GB of RAM
 
-[IPsec performance of APU version 2 is here.](ipsec-performance-of-a-pc-engines-apu2.md)
+[IPsec performance of APU version 2 is here.](vpn-performance-of-a-pc-engines-apu2.md)
 
 ## Lab set-up
 

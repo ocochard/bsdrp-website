@@ -88,6 +88,7 @@ RewriteRule ^documentation/technical_docs/poudriere/?$ /documentation/technical-
 
 # Renamed pages (kept so the mkdocs URL that was published stays valid)
 RewriteRule ^documentation/examples/bgp-route-reflector-and-confederation-using-quagga-and-bird/?$ /documentation/examples/bgp-route-reflector-and-confederation-using-frr-and-bird/ [R=301,L]
+RewriteRule ^documentation/examples/ipsec-performance-of-a-pc-engines-apu2/?$ /documentation/examples/vpn-performance-of-a-pc-engines-apu2/ [R=301,L]
 
 # Dropped namespaces (French, DokuWiki built-in pages, sandbox) -> home
 RewriteRule ^fr(/.*)?$ / [R=301,L]
