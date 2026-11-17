@@ -377,10 +377,12 @@ log syslog
 interface ng0
  ip ospf message-digest-key 1 md5 superpass
  ip ospf network point-to-point
+ ip ospf bfd
  ipv6 ospf6 passive
 !
 interface ng1
  ipv6 ospf6 network point-to-point
+ ipv6 ospf6 bfd
 !
 router-id 0.0.0.2
 !
@@ -643,11 +645,13 @@ interface em3
 interface ng0
  ip ospf message-digest-key 1 md5 superpass
  ip ospf network point-to-point
+ ip ospf bfd
  ipv6 ospf6 passive
  ip pim
 !
 interface ng1
  ipv6 ospf6 network point-to-point
+ ipv6 ospf6 bfd
  ip pim
 !
 !
@@ -1027,6 +1031,20 @@ Group Address     RP Address       Prio  Holdtime  Type
     and the Bootstrap is dropped. Left unpinned, `pimd` takes its highest
     active address, which at boot is 10.0.23.2 because the PPTP links are
     not up yet, so it picks the one path that cannot work.
+
+### BFD
+
+OSPF (on ng0) and OSPFv3 (on ng1) register a BFD session each over the
+PPTP tunnels between R2 and R4. The OSPFv3 one uses link-local endpoints:
+
+```
+[root@R2]~# vtysh -c "show bfd peers brief"
+Session count: 2
+SessionId  LocalAddress                             PeerAddress                             Status
+=========  ============                             ===========                             ======
+411385723  fe80::5a9c:fcff:fe01:202                 fe80::5a9c:fcff:fe03:404                up
+1132506637 10.4.24.2                                10.4.24.4                               up
+```
 
 ### NetFlow
 
