@@ -495,6 +495,11 @@ cat > /etc/pf.conf <<EOF
 #pass out quick on \$TO_R2_if proto gre from \$R4 to \$R2 queue VPN4_TO_R2
 
 # ALTQ is disabled since BSDRP 1.81 (too much performance impact)
+
+# Drop transit TCP to port 2323, IPv4 and IPv6. Nothing listens there:
+# without this rule a connection gets "Connection refused", with it the
+# SYN is silently dropped and the connection times out.
+block drop in quick proto tcp to port 2323 label "lab-block-2323"
 pass all
 EOF
 
@@ -1044,6 +1049,48 @@ SessionId  LocalAddress                             PeerAddress                 
 =========  ============                             ===========                             ======
 411385723  fe80::5a9c:fcff:fe01:202                 fe80::5a9c:fcff:fe03:404                up
 1132506637 10.4.24.2                                10.4.24.4                               up
+```
+
+### BGP TCP-MD5
+
+The BGP sessions between R2 and R3 are signed. Check that signed segments
+arrive and that none fails verification:
+
+```
+[root@R2]~# netstat -s -p tcp | grep signature
+        538 packets with matching signature received
+        0 packets with bad signature received
+        0 times failed to make signature due to no SA
+        0 times unexpected signature received
+        0 times no signature provided by segment
+```
+
+### pf
+
+R3's pf drops transit TCP to port 2323. From R2, a connection to R4's
+loopback (routed through R3) on that port times out, while another closed
+port is refused by R4 itself:
+
+```
+[root@R2]~# nc -v -z -w 3 10.0.0.4 2323
+nc: connect to 10.0.0.4 port 2323 (tcp) failed: Operation timed out
+[root@R2]~# nc -v -z -w 3 2001:db8::4 2323
+nc: connect to 2001:db8::4 port 2323 (tcp) failed: Operation timed out
+[root@R2]~# nc -v -z -w 3 10.0.0.4 2324
+nc: connect to 10.0.0.4 port 2324 (tcp) failed: Connection refused
+```
+
+The rule label counts the dropped SYNs (label, evaluations, packets, bytes,
+...), and pf keeps state for the PPTP GRE tunnels transiting R3:
+
+```
+[root@R3]~# pfctl -sl
+lab-block-2323 7 4 280 4 280 0 0 0
+[root@R3]~# pfctl -ss | grep gre
+all gre 2001:db8::4 <- 2001:db8::2       MULTIPLE:MULTIPLE
+all gre 2001:db8::2 -> 2001:db8::4       MULTIPLE:MULTIPLE
+all gre 10.0.0.4 <- 10.0.0.2       MULTIPLE:MULTIPLE
+all gre 10.0.0.2 -> 10.0.0.4       MULTIPLE:MULTIPLE
 ```
 
 ### NetFlow
