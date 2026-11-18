@@ -83,6 +83,7 @@ nav:
               - Multicast with PIM-SM: documentation/examples/multicast-with-pim-sm.md
               - Multicast with PIM-SSM: documentation/examples/multicast-with-pim-ssm.md
               - Equal-cost multi-path (ECMP): documentation/examples/ecmp.md
+              - IXP route servers with BIRD and FRR: documentation/examples/ixp-route-server.md
           - High availability:
               - Multi-tenant HA pf firewalls: documentation/examples/multi-tenant-ha-pf-firewalls.md
               - Simple VRRP lab: documentation/examples/simple-vrrp-lab.md

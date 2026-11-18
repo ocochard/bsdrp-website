@@ -12,6 +12,7 @@ Routing lab examples:
 - [Multicast with PIM-DM](examples/multicast-with-pim-dm.md)
 - [Multicast with PIM-SM](examples/multicast-with-pim-sm.md)
 - [Equal-cost multi-path routing (ECMP)](examples/ecmp.md)
+- [IXP route servers with BIRD and FRR](examples/ixp-route-server.md)
 
 High availability examples:
 
