@@ -88,6 +88,7 @@ nav:
               - Simple VRRP lab: documentation/examples/simple-vrrp-lab.md
               - Simple uCarp lab: documentation/examples/simple-ucarp-lab.md
               - pf, pfsync, carp and pflog lab: documentation/examples/pf-and-carp-lab.md
+              - Anycast DNS failover with ExaBGP: documentation/examples/anycast-dns-failover-with-exabgp.md
           - VPN:
               - PPPoE and L2TP with mpd: documentation/examples/pppoe-and-l2tp-lab.md
               - GRE, GIF, IPSec, OpenVPN and Wireguard: documentation/examples/gre-ipsec-and-openvpn.md

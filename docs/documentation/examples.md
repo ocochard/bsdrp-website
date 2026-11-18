@@ -19,6 +19,7 @@ High availability examples:
 - [Simple VRRP lab](examples/simple-vrrp-lab.md)
 - [Simple uCarp lab](examples/simple-ucarp-lab.md)
 - [pf, pfsync, carp and pflog lab](examples/pf-and-carp-lab.md)
+- [Anycast DNS failover with ExaBGP](examples/anycast-dns-failover-with-exabgp.md)
 
 VPN examples:
 
