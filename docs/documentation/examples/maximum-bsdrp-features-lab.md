@@ -445,6 +445,82 @@ done
 service pimd start
 ```
 
+
+Then the tunnels to R4: a route-based IPsec tunnel (`if_ipsec(4)` interface
+`ipsec0`, keyed by strongSwan with IKEv2), a VXLAN overlay over the IPv4
+loopbacks and a GENEVE overlay over the IPv6 ones. The IPsec underlay uses
+10.0.23.2 and 10.0.34.4, so it stays clear of the PPTP endpoints. Set these
+after the em/vtnet rewrite above: `vxlanremote` and `geneveremote` contain
+"em".
+
+```
+kldstat -q -m ipsec || kldload ipsec
+sysrc kld_list+=" ipsec" \
+ cloned_interfaces+=" ipsec0 vxlan0 geneve0" \
+ create_args_ipsec0="reqid 100" \
+ ifconfig_ipsec0="inet tunnel 10.0.23.2 10.0.34.4" \
+ ifconfig_ipsec0_alias0="inet 10.8.24.2/32 10.8.24.4" \
+ ifconfig_ipsec0_ipv6="inet6 2001:db8:824::2 prefixlen 64" \
+ create_args_vxlan0="vxlanid 42 vxlanlocal 10.0.0.2 vxlanremote 10.0.0.4" \
+ ifconfig_vxlan0="inet 10.7.24.2/24" \
+ create_args_geneve0="geneveid 43 genevelocal 2001:db8::2 geneveremote 2001:db8::4" \
+ ifconfig_geneve0="inet 10.7.25.2/24" \
+ ifconfig_geneve0_ipv6="inet6 2001:db8:725::2 prefixlen 64" \
+ strongswan_enable=YES \
+ strongswan_interface=vici
+cat > /usr/local/etc/swanctl/swanctl.conf <<EOF
+connections {
+        r2r4 {
+                version = 2
+                local_addrs = 10.0.23.2
+                remote_addrs = 10.0.34.4
+                keyingtries = 0
+                dpd_delay = 10s
+                local {
+                        auth = psk
+                        id = r2
+                }
+                remote {
+                        auth = psk
+                        id = r4
+                }
+                children {
+                        ipsec0 {
+                                mode = tunnel
+                                reqid = 100
+                                policies = no
+                                local_ts = 0.0.0.0/0, ::/0
+                                remote_ts = 0.0.0.0/0, ::/0
+                                esp_proposals = aes256gcm16
+                                start_action = start
+                                dpd_action = restart
+                                close_action = start
+                        }
+                }
+        }
+}
+secrets {
+        ike-r2r4 {
+                id-r2 = r2
+                id-r4 = r4
+                secret = "labsecret"
+        }
+}
+EOF
+config save
+service netif restart
+service ipsec restart
+service strongswan start
+```
+
+`reqid 100` ties `ipsec0` to the SAs strongSwan negotiates, and
+`policies = no` leaves the security policies to `ipsec0`: the tunnel
+carries whatever is routed into the interface. R2 initiates, and
+`close_action` brings the tunnel back if R4 tears it down. Start strongSwan
+after the `ipsec` service: its `ipsec.conf` begins with `flush`, which
+would remove the strongSwan SAs.
+
+
 ### Router 3
 
 You can use the script `labconfig vm3` to push the full configuration automatically:
@@ -848,6 +924,103 @@ service sysctl reload
 service ipfw_netflow start
 ```
 
+
+R4 ends the three tunnels from R2 (same settings with the addresses
+swapped, and R4 only responds to IKE), and serves the WireGuard tunnel from
+R1. Generate a key pair on R1 and on R4 with
+`wg genkey | tee private.key | wg pubkey`.
+
+```
+kldstat -q -m ipsec || kldload ipsec
+sysrc kld_list+=" ipsec" \
+ cloned_interfaces+=" ipsec0 vxlan0 geneve0" \
+ create_args_ipsec0="reqid 100" \
+ ifconfig_ipsec0="inet tunnel 10.0.34.4 10.0.23.2" \
+ ifconfig_ipsec0_alias0="inet 10.8.24.4/32 10.8.24.2" \
+ ifconfig_ipsec0_ipv6="inet6 2001:db8:824::4 prefixlen 64" \
+ create_args_vxlan0="vxlanid 42 vxlanlocal 10.0.0.4 vxlanremote 10.0.0.2" \
+ ifconfig_vxlan0="inet 10.7.24.4/24" \
+ create_args_geneve0="geneveid 43 genevelocal 2001:db8::4 geneveremote 2001:db8::2" \
+ ifconfig_geneve0="inet 10.7.25.4/24" \
+ ifconfig_geneve0_ipv6="inet6 2001:db8:725::4 prefixlen 64" \
+ strongswan_enable=YES \
+ strongswan_interface=vici \
+ wireguard_enable=YES \
+ wireguard_interfaces="wg0"
+cat > /usr/local/etc/swanctl/swanctl.conf <<EOF
+connections {
+        r2r4 {
+                version = 2
+                local_addrs = 10.0.34.4
+                remote_addrs = 10.0.23.2
+                dpd_delay = 10s
+                local {
+                        auth = psk
+                        id = r4
+                }
+                remote {
+                        auth = psk
+                        id = r2
+                }
+                children {
+                        ipsec0 {
+                                mode = tunnel
+                                reqid = 100
+                                policies = no
+                                local_ts = 0.0.0.0/0, ::/0
+                                remote_ts = 0.0.0.0/0, ::/0
+                                esp_proposals = aes256gcm16
+                        }
+                }
+        }
+}
+secrets {
+        ike-r2r4 {
+                id-r2 = r2
+                id-r4 = r4
+                secret = "labsecret"
+        }
+}
+EOF
+mkdir -p /usr/local/etc/wireguard
+cat > /usr/local/etc/wireguard/wg0.conf <<EOF
+[Interface]
+PrivateKey = <R4 private key>
+ListenPort = 51820
+Address = 10.9.14.4/24, 2001:db8:914::4/64
+
+[Peer]
+PublicKey = <R1 public key>
+AllowedIPs = 10.9.14.1/32, 2001:db8:914::1/128
+EOF
+chmod 600 /usr/local/etc/wireguard/wg0.conf
+config save
+service netif restart
+service strongswan start
+service wireguard start
+```
+
+R4 also NATs jail6's LAN (10.0.56.0/24) towards R3's 10.0.34.0/24, which
+has no route back to it. The translated address is a dedicated alias,
+10.0.34.44, so the inbound rule cannot catch any other flow to R4 (the IPsec
+underlay ends on 10.0.34.4). Add the alias, and these rules to
+`/etc/ipfw.rules` before the `65000` allow rule:
+
+```
+sysrc ifconfig_em2_alias0="inet 10.0.34.44/32"
+```
+
+```
+kldstat -q -m ipfw_nat || kldload ipfw_nat
+${fwcmd} nat 1 config ip 10.0.34.44 log
+${fwcmd} add 1100 nat 1 ip4 from 10.0.56.0/24 to 10.0.34.0/24 out
+${fwcmd} add 1200 nat 1 ip4 from any to 10.0.34.44 in
+```
+
+The NAT rules are numbered after the NetFlow `ngtee` rule (01000): with
+`net.inet.ip.fw.one_pass` set, a `nat` rule ends ipfw processing.
+
+
 ### Router 1
 
 This router will be used to back up the configuration files from all the other routers, so it needs a root password to allow SSH access. We will use the password "root" for this lab.
@@ -868,6 +1041,29 @@ service routing restart
 service netif restart
 service sshd start
 ```
+
+
+R1 is also a WireGuard road warrior towards R4's loopback:
+
+```
+sysrc wireguard_enable=YES wireguard_interfaces="wg0"
+mkdir -p /usr/local/etc/wireguard
+cat > /usr/local/etc/wireguard/wg0.conf <<EOF
+[Interface]
+PrivateKey = <R1 private key>
+Address = 10.9.14.1/24, 2001:db8:914::1/64
+
+[Peer]
+PublicKey = <R4 public key>
+Endpoint = 10.0.0.4:51820
+AllowedIPs = 10.9.14.0/24, 2001:db8:914::/64
+PersistentKeepalive = 10
+EOF
+chmod 600 /usr/local/etc/wireguard/wg0.conf
+config save
+service wireguard start
+```
+
 
 ## Final testing
 
@@ -1092,6 +1288,104 @@ all gre 2001:db8::2 -> 2001:db8::4       MULTIPLE:MULTIPLE
 all gre 10.0.0.4 <- 10.0.0.2       MULTIPLE:MULTIPLE
 all gre 10.0.0.2 -> 10.0.0.4       MULTIPLE:MULTIPLE
 ```
+
+### IPsec (IKEv2, route-based)
+
+strongSwan established the IKEv2 SA and installed the ESP SAs for
+`ipsec0` (reqid 100); IPv4 and IPv6 both go through the tunnel:
+
+```
+[root@R2]~# swanctl --list-sas
+r2r4: #1, ESTABLISHED, IKEv2, b816da68e582ff2f_i* b376c8bce3f7273b_r
+  local  'r2' @ 10.0.23.2[4500]
+  remote 'r4' @ 10.0.34.4[4500]
+  AES_CBC-128/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/ECP_256
+  established 35s ago, rekeying in 14322s
+  ipsec0: #1, reqid 100, INSTALLED, TUNNEL, ESP:AES_GCM_16-256
+    installed 35s ago, rekeying in 3239s, expires in 3925s
+    in  ce2947ca,    280 bytes,     4 packets
+    out cb336290,   1232 bytes,    10 packets
+    local  0.0.0.0/0 ::/0
+    remote 0.0.0.0/0 ::/0
+[root@R2]~# ping -c 2 10.8.24.4 | grep received
+2 packets transmitted, 2 packets received, 0.0% packet loss
+[root@R2]~# ping6 -c 2 2001:db8:824::4 | grep received
+2 packets transmitted, 2 packets received, 0.0% packet loss
+```
+
+### WireGuard
+
+```
+[root@R1]~# ping -c 2 10.9.14.4 | grep received
+2 packets transmitted, 2 packets received, 0.0% packet loss
+[root@R1]~# ping6 -c 2 2001:db8:914::4 | grep received
+2 packets transmitted, 2 packets received, 0.0% packet loss
+[root@R1]~# wg show wg0 | grep -E 'handshake|transfer'
+  latest handshake: 3 seconds ago
+  transfer: 532 B received, 628 B sent
+```
+
+### VXLAN and GENEVE
+
+```
+[root@R2]~# ifconfig vxlan0 | grep vni
+        vxlan vni 42 local 10.0.0.2:4789 remote 10.0.0.4:4789
+[root@R2]~# ping -c 2 10.7.24.4 | grep received
+2 packets transmitted, 2 packets received, 0.0% packet loss
+[root@R2]~# ping -c 2 10.7.25.4 | grep received
+2 packets transmitted, 2 packets received, 0.0% packet loss
+[root@R2]~# ping6 -c 2 2001:db8:725::4 | grep received
+2 packets transmitted, 2 packets received, 0.0% packet loss
+```
+
+### NAT
+
+R3 has no route to jail6's LAN, so jail6 only reaches R3 through R4's NAT.
+R3 sees the translated address, and the NAT instance logs the ICMP alias:
+
+```
+[root@jail6]~# ping -c 3 10.0.34.3 | grep received
+3 packets transmitted, 3 packets received, 0.0% packet loss
+[root@R3]~# pfctl -ss | grep 10.0.34.44
+all icmp 10.0.34.3:8 <- 10.0.34.44:53219       0:0
+[root@R4]~# ipfw nat 1 show log
+nat 1: icmp=1, udp=0, tcp=0, sctp=0, pptp=0, proto=0, frag_id=0 frag_ptr=0 / tot=1
+```
+
+### Multicast traffic (PIM-SSM)
+
+The PIM-SM checks above cover the control plane. To send real multicast
+traffic from jail6 to R1, use a source-specific channel: R2's route to the
+RP (10.0.0.4) goes through R3, which runs no PIM, so R2's (*,G) joins never
+reach the RP and an any-source stream is never delivered to R1. Its route to
+the source (10.0.56.6) goes through `ng0`, where PIM runs.
+
+R1 joins the channel (10.0.56.6, 232.1.1.1) with IGMPv3, and jail6 sends
+to it:
+
+```
+[root@R1]~# iperf -s -u -B 232.1.1.1 -H 10.0.56.6 -i 1
+[root@jail6]~# iperf -c 232.1.1.1 -u -T 32 -t 3 -b 1M -l 1000
+```
+
+R4 (FRR) forwards the channel to R2 over `ng0`, R2's kernel forwards it to
+R1, and R1 receives every datagram:
+
+```
+[root@R4]~# vtysh -c "show ip mroute"
+ Source     Group      Flags  Proto  Input   Output  TTL  Uptime
+ 10.0.56.6  232.1.1.1  S      PIM    vtnet3  ng0     1    00:00:14
+[root@R2]~# netstat -g -f inet | sed -n '/Forwarding/,$p'
+IPv4 Multicast Forwarding Table
+ Origin          Group             Packets In-Vif  Out-Vifs:Ttls
+ 10.0.56.6       232.1.1.1             388    5    1:1
+[root@R1]~# (iperf output)
+[  1] 0.00-3.01 sec   387 KBytes  1.05 Mbits/sec   5.126 ms 0/396 (0%)
+```
+
+`-l 1000` keeps the datagrams under the `ng0` MTU (1456). With iperf's
+default 1470-byte datagrams, R4 fragments the stream for `ng0` and R2
+forwards the fragments.
 
 ### NetFlow
 
