@@ -105,6 +105,8 @@ nav:
               - Dropping packets at high rate: documentation/examples/dropping-packets-at-high-rate.md
           - Traffic shaping:
               - Fair traffic shaping per IP (IPFW-Dummynet): documentation/examples/fair-traffic-shaping-per-ip-with-ipfw-dummynet.md
+          - Traffic accounting:
+              - Per-customer traffic accounting with NetFlow: documentation/examples/per-customer-traffic-accounting.md
           - IPv6:
               - NAT64: documentation/examples/nat64.md
               - IPv6-only BGP/OSPF/RIPNG/ISIS lab: documentation/examples/ipv6-only-bgp-ospf-ripng-isis-lab-frrouting.md

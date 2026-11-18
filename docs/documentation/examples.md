@@ -45,6 +45,10 @@ Traffic shaping:
 
 - [Fair traffic shaping per IP with IPFW-Dummynet](examples/fair-traffic-shaping-per-ip-with-ipfw-dummynet.md)
 
+Traffic accounting:
+
+- [Per-customer traffic accounting with NetFlow and pmacct](examples/per-customer-traffic-accounting.md)
+
 IPv6:
 
 - [NAT64](examples/nat64.md)
