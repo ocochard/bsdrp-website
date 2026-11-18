@@ -25,8 +25,8 @@ flowchart TB
         J6(("<b>jail6</b><br/>host"))
     end
 
-    R2 ---|"<b>iBGP</b> AS 100, TCP-MD5<br/>10.0.23.0/24, VLAN 23"| R3
-    R3 ---|"<b>RIP / RIPng</b><br/>10.0.34.0/24"| R4
+    R2 ---|"<b>iBGP</b> AS 100, TCP-MD5, BFD<br/>10.0.23.0/24, VLAN 23"| R3
+    R3 ---|"<b>RIP / RIPng</b>, eBGP to ExaBGP<br/>10.0.34.0/24"| R4
     R2 ===|"<b>2 PPTP tunnels</b> via R3<br/>OSPF, OSPFv3, BFD, PIM"| R4
     R2 ---|"<b>OSPF</b>, VRRP .254<br/>10.0.12.0/24"| R1
     R4 ---|"<b>IS-IS</b>, PIM<br/>10.0.45.0/24"| J5
@@ -50,12 +50,12 @@ flowchart TB
 
 | Router | Role |
 |--------|------|
-| R1 | iperf client, WireGuard peer, `lagg0` (loadbalance) over DHCP and SLAAC |
-| R2 | FRR (BGP, OSPF, OSPFv3, BFD), `net/pimd` Candidate-BSR, mpd5 PPTP server, DHCP relay, freevrrpd, rtadvd, strongSwan |
-| R3 | bird (BGP, RIP, RIPng), pf dropping transit tcp/2323 |
-| R4 | FRR (OSPF, OSPFv3, IS-IS, RIP, RIPng, BFD, PIM Candidate-RP), mpd5 PPTP client, strongSwan, WireGuard, ipfw shaping, NAT and NetFlow export |
-| jail5 | FRR (IS-IS), `net/pimd`, DHCP server, rtadvd, CARP, NetFlow collector (nfacctd) |
-| jail6 | iperf server, bsnmpd, `lagg0` (failover) over DHCP and SLAAC |
+| R1 | iperf client, WireGuard peer, `lagg0` (loadbalance) over DHCP, DHCPv6 and SLAAC |
+| R2 | FRR (BGP, OSPF, OSPFv3, BFD), `net/pimd` Candidate-BSR, mpd5 PPTP server, DHCP and DHCPv6 relay, freevrrpd, rtadvd, strongSwan, lldpd |
+| R3 | bird (BGP, RIP, RIPng, BFD), DHCPv6 server, pf dropping transit tcp/2323 |
+| R4 | FRR (OSPF, OSPFv3, IS-IS, RIP, RIPng, BFD, PIM Candidate-RP), ExaBGP, mpd5 PPTP client, strongSwan, WireGuard, ipfw shaping, NAT and NetFlow export, lldpd |
+| jail5 | FRR (IS-IS), `net/pimd`, DHCP server, rtadvd, CARP, NetFlow collector (nfacctd), lldpd |
+| jail6 | iperf server, bsnmpd, lldpd, `lagg0` (failover) over DHCP and SLAAC |
 
 The tunnels and overlays added on top of it, all ending on R4:
 
@@ -202,7 +202,8 @@ sysrc -f /etc/jails/jail5/rc.conf hostname=jail5 \
  frr_enable=YES \
  frr_vtysh_boot=YES \
  nfacctd_enable=YES \
- pimd_enable=YES
+ pimd_enable=YES \
+ lldpd_enable=YES
 ifconfig -l | grep -q vtnet && sed -i "" 's/em/vtnet/g' /etc/jails/jail5/rc.conf
 mkdir -p /etc/jails/jail5/local/frr
 cat > /etc/jails/jail5/local/pimd.conf <<EOF
@@ -288,6 +289,7 @@ sysrc -f /etc/jails/jail6/rc.conf hostname=jail6 \
  ifconfig_lagg0_ipv6="inet6 accept_rtadv" \
  rtsold_enable=YES \
  bsnmpd_enable=YES \
+ lldpd_enable=YES \
  gateway_enable=NO \
  ipv6_gateway_enable=NO
 service jail start
@@ -600,6 +602,28 @@ carries whatever is routed into the interface. R2 initiates, and
 after the `ipsec` service: its `ipsec.conf` begins with `flush`, which
 would remove the strongSwan SAs.
 
+R2 also runs BFD on its BGP sessions with R3, where bird answers, relays
+R1's DHCPv6 requests to the DHCPv6 server on R3, and runs lldpd:
+
+```
+vtysh -c 'conf t' -c 'router bgp 100' \
+ -c 'neighbor 10.0.23.3 bfd' -c 'neighbor 2001:db8:23::3 bfd' \
+ -c 'end' -c 'write'
+sysrc dhcp6relay_enable=YES \
+ dhcp6relay_interfaces=em0 \
+ dhcp6relay_flags="-r em1.23 -s 2001:db8:23::3" \
+ lldpd_enable=YES
+ifconfig -l | grep -q vtnet && sed -i "" 's/em/vtnet/g' /etc/rc.conf
+config save
+service dhcp6relay start
+service lldpd start
+```
+
+`-r` names the interface towards the server. `dhcp6relay` drops a server
+reply that arrives on any other interface than that one or the client one,
+which is why the server sits on R3, behind the VLAN 23 link, rather than
+behind a PPTP tunnel.
+
 
 ### Router 3
 
@@ -740,6 +764,60 @@ service netif restart
 service pf start
 service bird start
 ```
+
+Add BFD to the two BGP sessions with R2, and two BGP sessions to the
+ExaBGP speaker on R4 (AS 65004), whose routes bird passes on to R2. In
+`/usr/local/etc/bird.conf`, add `direct;` and `bfd on;` to the `R2inet4`
+and `R2inet6` protocols, then append:
+
+```
+protocol bfd {
+}
+
+protocol bgp EXA4 {
+    local as 100;
+    source address 10.0.34.3;
+    neighbor 10.0.34.4 as 65004;
+    ipv4 {
+        import all;
+        export none;
+    };
+}
+
+protocol bgp EXA6 {
+    local as 100;
+    source address 2001:db8:34::3;
+    neighbor 2001:db8:34::4 as 65004;
+    ipv6 {
+        import all;
+        export none;
+    };
+}
+```
+
+bird treats an iBGP neighbor as multihop unless told `direct`, and then
+requests a multihop BFD session, which never matches FRR's single-hop one.
+
+R3 is also the DHCPv6 server for R1's LAN, reached through R2's relay:
+
+```
+sysrc dhcp6s_enable=YES dhcp6s_interface=em1.23
+ifconfig -l | grep -q vtnet && sed -i "" 's/em/vtnet/g' /etc/rc.conf
+cat > /usr/local/etc/dhcp6s.conf <<EOF
+interface em1.23 {
+	address-pool r1lan 3600;
+};
+pool r1lan {
+	range 2001:db8:12::100 to 2001:db8:12::1ff;
+};
+EOF
+ifconfig -l | grep -q vtnet && sed -i "" 's/em/vtnet/g' /usr/local/etc/dhcp6s.conf
+config save
+birdc configure
+service dhcp6s start
+```
+
+The pool is bound to the interface the relayed requests arrive on.
 
 ### Router 4
 
@@ -1100,6 +1178,42 @@ ${fwcmd} add 1200 nat 1 ip4 from any to 10.0.34.44 in
 The NAT rules are numbered after the NetFlow `ngtee` rule (01000): with
 `net.inet.ip.fw.one_pass` set, a `nat` rule ends ipfw processing.
 
+Finally, R4 runs ExaBGP, which injects TEST-NET prefixes into bird on R3,
+and lldpd:
+
+```
+sysrc exabgp_enable=YES lldpd_enable=YES
+cat > /usr/local/etc/exabgp/exabgp.conf <<EOF
+neighbor 10.0.34.3 {
+	router-id 10.0.0.4;
+	local-address 10.0.34.4;
+	local-as 65004;
+	peer-as 100;
+	family {
+		ipv4 unicast;
+	}
+	static {
+		route 192.0.2.0/24 next-hop 10.0.34.4;
+	}
+}
+neighbor 2001:db8:34::3 {
+	router-id 10.0.0.4;
+	local-address 2001:db8:34::4;
+	local-as 65004;
+	peer-as 100;
+	family {
+		ipv6 unicast;
+	}
+	static {
+		route 2001:db8:ffff::/48 next-hop 2001:db8:34::4;
+	}
+}
+EOF
+config save
+service exabgp start
+service lldpd start
+```
+
 
 ### Router 1
 
@@ -1142,6 +1256,22 @@ EOF
 chmod 600 /usr/local/etc/wireguard/wg0.conf
 config save
 service wireguard start
+```
+
+R1 also takes a DHCPv6 address from R3, through R2's relay. SLAAC still
+provides its default route:
+
+```
+sysrc dhcp6c_enable=YES dhcp6c_interfaces=lagg0
+cat > /usr/local/etc/dhcp6c.conf <<EOF
+interface lagg0 {
+	send ia-na 0;
+};
+id-assoc na 0 {
+};
+EOF
+config save
+service dhcp6c start
 ```
 
 
@@ -1327,6 +1457,21 @@ SessionId  LocalAddress                             PeerAddress                 
 1132506637 10.4.24.2                                10.4.24.4                               up
 ```
 
+The BGP sessions between R2 and R3 register two more, with FRR's `bfdd` on
+one side and bird on the other:
+
+```
+[root@R2]~# vtysh -c "show bfd peers brief" | grep 23
+447863724  10.0.23.2                                10.0.23.3                               up
+371036550  2001:db8:23::2                           2001:db8:23::3                          up
+[root@R3]~# birdc show bfd sessions
+BIRD 3.4.0 ready.
+bfd1:
+IP address                Interface  State      Since         Interval  Timeout
+2001:db8:23::2            vtnet1.23  Up         11:35:58.994    0.300    0.900
+10.0.23.2                 vtnet1.23  Up         11:35:58.994    0.300    0.900
+```
+
 ### BGP TCP-MD5
 
 The BGP sessions between R2 and R3 are signed. Check that signed segments
@@ -1466,6 +1611,80 @@ IPv4 Multicast Forwarding Table
 `-l 1000` keeps the datagrams under the `ng0` MTU (1456). With iperf's
 default 1470-byte datagrams, R4 fragments the stream for `ng0` and R2
 forwards the fragments.
+
+### ExaBGP
+
+ExaBGP on R4 announces 192.0.2.0/24 and 2001:db8:ffff::/48 to bird on R3,
+which passes them on to FRR on R2 with ExaBGP's AS path and next hop:
+
+```
+[root@R3]~# birdc show route 192.0.2.0/24
+BIRD 3.4.0 ready.
+Table master4:
+192.0.2.0/24         unicast [EXA4 11:35:58.774] * (100) [AS65004i]
+        via 10.0.34.4 on vtnet2
+[root@R3]~# birdc show route 2001:db8:ffff::/48
+BIRD 3.4.0 ready.
+Table master6:
+2001:db8:ffff::/48   unicast [EXA6 11:35:58.774] * (100) [AS65004i]
+        via 2001:db8:34::4 on vtnet2
+[root@R2]~# vtysh -c "show ip bgp 192.0.2.0/24"
+BGP routing table entry for 192.0.2.0/24, version 4
+Paths: (1 available, best #1, table default)
+  Not advertised to any peer
+  65004
+    10.0.34.4 from 10.0.23.3 (0.0.0.3)
+      Origin IGP, localpref 100, valid, internal, best (First path received)
+      Last update: Wed Nov 18 11:35:58 2026
+```
+
+### DHCPv6
+
+R1 gets an address from the pool of `dhcp6s` on R3, relayed by
+`dhcp6relay` on R2, next to its SLAAC address:
+
+```
+[root@R1]~# ifconfig lagg0 inet6 | grep 2001
+        inet6 2001:db8:12:0:1450:e13b:c8ba:63fd prefixlen 64 autoconf pltime 604800 vltime 2592000
+        inet6 2001:db8:12::100 prefixlen 128 pltime 3600 vltime 3600
+```
+
+### LLDP
+
+The bridges that connect the virtual routers in the lab drop LLDP frames:
+01:80:c2:00:00:0e is in the 802.1D reserved range a bridge must not
+forward. So LLDP neighbors only show across the VXLAN overlay between R2
+and R4, and across the epair between jail5 and jail6, which no bridge
+sits on:
+
+```
+[root@R2]~# lldpcli show neighbors summary
+-------------------------------------------------------------------------------
+LLDP neighbors:
+-------------------------------------------------------------------------------
+Interface:    vxlan0, via: LLDP
+  Chassis:
+    ChassisID:    mac 58:9c:fc:01:04:04
+    SysName:      R4
+  Port:
+    PortID:       mac 58:9c:fc:10:81:1c
+    PortDescr:    vxlan0
+    TTL:          120
+-------------------------------------------------------------------------------
+[root@jail6]~# lldpcli show neighbors summary
+-------------------------------------------------------------------------------
+LLDP neighbors:
+-------------------------------------------------------------------------------
+Interface:    epair0b, via: LLDP
+  Chassis:
+    ChassisID:    mac 58:9c:fc:04:05:05
+    SysName:      jail5
+  Port:
+    PortID:       mac 58:9c:fc:10:18:36
+    PortDescr:    epair0a
+    TTL:          120
+-------------------------------------------------------------------------------
+```
 
 ### NetFlow
 
