@@ -69,6 +69,46 @@ the in-repo assets from there.
   When linking to a heading, use the kebab-case form (e.g.
   `#firewall-impact`).
 
+## Network diagram style
+
+Lab network diagrams are mermaid flowcharts, not PNGs. When converting an
+old PNG, rebuild the diagram from the page's router configs (the PNGs are
+often out of date) and keep the PNG file. All diagrams share one look:
+
+- **Nodes**: circles, `R2(("<b>R2</b><br/>FRR<br/>..."))`: bold name, then
+  the routing suite or role, then at most a couple of short lines. Long
+  daemon lists go in a Router/Role table under the diagram, and repetitive
+  addressing goes in a sentence (e.g. "10.0.XY.0/24 has an IPv6 twin
+  2001:db8:XY::/64").
+- **Node colors**, by routing suite, copied verbatim into each diagram:
+
+  ```
+  classDef frr fill:#fde2c4,stroke:#d9480f,stroke-width:2px,color:#222
+  classDef bird fill:#d0e4f7,stroke:#1c5fa8,stroke-width:2px,color:#222
+  classDef router fill:#ffe3e3,stroke:#c92a2a,stroke-width:2px,color:#222
+  classDef host fill:#e9ecef,stroke:#6c757d,stroke-width:2px,color:#222
+  ```
+
+  `router` is for any other routing/forwarding box (pimd, dnsmasq relay,
+  static routes, firewall jails), `host` for end hosts and servers. Keep
+  the explicit `color:#222` so the text stays readable in dark mode.
+- **Link colors**, by protocol or role, via `linkStyle <index>` (indexes
+  follow the order the links are declared): iBGP `#1c7ed6`, eBGP
+  `#5f3dc4`, confederation eBGP `#9775fa`, OSPF `#15aabf`, RIP `#f59f00`,
+  IS-IS `#2f9e44`, PIM `#d6336c`, DHCP `#f76707`, PPTP/tunnels `#0b7285`,
+  plain LAN `#868e96`. Width 4px (3px for plain LANs, 5-6px for an
+  emphasised link). Within a single diagram, distinct colors per tunnel
+  type or per customer are fine when that is what the reader must tell
+  apart.
+- **Link labels**: start with the protocol or role in bold, then the
+  subnet: `R2 ---|"<b>OSPF</b>, VRRP .254<br/>10.0.12.0/24"| R1`.
+- **Containers**: a host holding jails is a subgraph styled
+  `fill:#fff5f5,stroke:#e03131,stroke-width:2px,color:#222`; AS boxes
+  `fill:#f8f9fa,stroke:#495057`, nested sub-AS
+  `fill:#fff9db,stroke:#868e96,stroke-dasharray:5 5`.
+- Overlays and tunnels go in a second diagram with dashed links (`-.-`)
+  when drawing them on the physical view would clutter it.
+
 ## Copyediting rules
 
 ASCII-clean prose, with these rules:

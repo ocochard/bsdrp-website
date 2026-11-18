@@ -18,30 +18,47 @@ Same topology as a logical graph:
 
 ```mermaid
 flowchart TB
-    R5["R5 - Internet host<br/>vtnet3: 10.254.254.5/24"]
+    R5(("<b>R5</b><br/>Internet host<br/>10.254.254.5/24"))
 
-    subgraph R4box["R4 host"]
+    subgraph R4box["R4: multi-tenant firewall host"]
         VTNET3["vtnet3"]
-        BR0(("bridge0<br/>10.254.254.4/24"))
-        FW1["customer1 firewall jail"]
-        FW2["customer2 firewall jail"]
-        FW3["customer3 firewall jail"]
+        BR0(("<b>bridge0</b><br/>10.254.254.4/24"))
+        FW1(("<b>customer1</b><br/>firewall jail"))
+        FW2(("<b>customer2</b><br/>firewall jail"))
+        FW3(("<b>customer3</b><br/>firewall jail"))
 
         VTNET3 --- BR0
-        BR0 -- "epair1: 10.254.254.1/24" --- FW1
-        BR0 -- "epair2: 10.254.254.2/24" --- FW2
-        BR0 -- "epair3: 10.254.254.3/24" --- FW3
+        BR0 ---|"epair1<br/>10.254.254.1/24"| FW1
+        BR0 ---|"epair2<br/>10.254.254.2/24"| FW2
+        BR0 ---|"epair3<br/>10.254.254.3/24"| FW3
     end
 
     R5 --- VTNET3
 
-    R1["R1 - customer 1<br/>vtnet4.1: 10.0.0.1/24"]
-    R2["R2 - customer 2<br/>vtnet4.2: 10.0.0.1/24"]
-    R3["R3 - customer 3<br/>vtnet4.3: 10.0.0.1/24"]
+    R1(("<b>R1</b><br/>customer 1<br/>10.0.0.1/24"))
+    R2(("<b>R2</b><br/>customer 2<br/>10.0.0.1/24"))
+    R3(("<b>R3</b><br/>customer 3<br/>10.0.0.1/24"))
 
-    FW1 -- "vtnet4.1 (VLAN 1): 10.0.0.254/24" --- R1
-    FW2 -- "vtnet4.2 (VLAN 2): 10.0.0.254/24" --- R2
-    FW3 -- "vtnet4.3 (VLAN 3): 10.0.0.254/24" --- R3
+    FW1 ---|"<b>VLAN 1</b>, vtnet4.1<br/>10.0.0.254/24"| R1
+    FW2 ---|"<b>VLAN 2</b>, vtnet4.2<br/>10.0.0.254/24"| R2
+    FW3 ---|"<b>VLAN 3</b>, vtnet4.3<br/>10.0.0.254/24"| R3
+
+    classDef frr fill:#fde2c4,stroke:#d9480f,stroke-width:2px,color:#222
+    classDef bird fill:#d0e4f7,stroke:#1c5fa8,stroke-width:2px,color:#222
+    classDef router fill:#ffe3e3,stroke:#c92a2a,stroke-width:2px,color:#222
+    classDef host fill:#e9ecef,stroke:#6c757d,stroke-width:2px,color:#222
+    classDef bridge fill:#f3f0ff,stroke:#7048e8,stroke-width:2px,color:#222
+    classDef iface fill:#ffffff,stroke:#adb5bd,color:#222
+    class R5,R1,R2,R3 host
+    class FW1,FW2,FW3 router
+    class BR0 bridge
+    class VTNET3 iface
+    style R4box fill:#fff5f5,stroke:#e03131,stroke-width:2px,color:#222
+
+    linkStyle 0,4 stroke:#868e96,stroke-width:3px
+    linkStyle 1,5 stroke:#1c7ed6,stroke-width:4px
+    linkStyle 2,6 stroke:#2f9e44,stroke-width:4px
+    linkStyle 3,7 stroke:#f59f00,stroke-width:4px
 ```
 
 Each `customerN firewall jail` is a full vnet jail that the corresponding customer manages on their own: they SSH in as root, write their own `ipfw` (or `pf`) ruleset, and `config save` it. R4 only provides the bridge, VLANs, and the jail itself; everything inside is the customer's responsibility.

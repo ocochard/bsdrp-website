@@ -17,32 +17,48 @@ Here is the BGP and logical view:
 ```mermaid
 flowchart LR
     subgraph AS100["AS 100"]
-        R1["R1 (bird)<br/>10.0.6.1<br/>RR client"]
-        R2["R2 (bird)<br/>10.0.6.2<br/>route reflector"]
-        R3["R3 (bird)<br/>10.0.6.3 / 10.0.2.3<br/>RR client, border"]
+        R1(("<b>R1</b><br/>bird<br/>RR client"))
+        R2(("<b>R2</b><br/>bird<br/>route reflector"))
+        R3(("<b>R3</b><br/>bird<br/>RR client, border"))
     end
     subgraph AS200["AS 200 (confederation)"]
         subgraph SUB1["sub-AS 64512"]
-            R4["R4 (FRR)<br/>10.0.2.4 / 10.0.3.4"]
-            R5["R5 (FRR)<br/>10.0.3.5 / 10.0.4.5"]
+            R4(("<b>R4</b><br/>FRR"))
+            R5(("<b>R5</b><br/>FRR"))
         end
         subgraph SUB2["sub-AS 65535"]
-            R6["R6 (FRR)<br/>10.0.4.6 / 10.0.5.6"]
-            R7["R7 (FRR)<br/>10.0.5.7 / 10.0.7.7"]
+            R6(("<b>R6</b><br/>FRR"))
+            R7(("<b>R7</b><br/>FRR"))
         end
     end
 
-    R1 ---|"iBGP<br/>reflected"| R2
-    R2 ---|"iBGP<br/>reflected"| R3
-    R3 ---|"eBGP 100 to 200<br/>10.0.2.0/24, TCP-MD5"| R4
-    R4 ---|"intra sub-AS<br/>10.0.3.0/24"| R5
-    R5 ---|"inter sub-AS<br/>10.0.4.0/24"| R6
-    R6 ---|"intra sub-AS<br/>10.0.5.0/24, TCP-MD5"| R7
+    R1 ---|"<b>iBGP</b> reflected<br/>10.0.6.0/24"| R2
+    R2 ---|"<b>iBGP</b> reflected<br/>10.0.6.0/24"| R3
+    R3 ---|"<b>eBGP</b> 100 to 200, TCP-MD5<br/>10.0.2.0/24"| R4
+    R4 ---|"<b>iBGP</b> intra sub-AS<br/>10.0.3.0/24"| R5
+    R5 ---|"<b>confederation eBGP</b><br/>inter sub-AS<br/>10.0.4.0/24"| R6
+    R6 ---|"<b>iBGP</b> intra sub-AS, TCP-MD5<br/>10.0.5.0/24"| R7
+
+    classDef frr fill:#fde2c4,stroke:#d9480f,stroke-width:2px,color:#222
+    classDef bird fill:#d0e4f7,stroke:#1c5fa8,stroke-width:2px,color:#222
+    classDef router fill:#ffe3e3,stroke:#c92a2a,stroke-width:2px,color:#222
+    classDef host fill:#e9ecef,stroke:#6c757d,stroke-width:2px,color:#222
+    class R1,R2,R3 bird
+    class R4,R5,R6,R7 frr
+    style AS100 fill:#f8f9fa,stroke:#495057,stroke-width:2px,color:#222
+    style AS200 fill:#f8f9fa,stroke:#495057,stroke-width:2px,color:#222
+    style SUB1 fill:#fff9db,stroke:#868e96,stroke-dasharray:5 5,color:#222
+    style SUB2 fill:#fff9db,stroke:#868e96,stroke-dasharray:5 5,color:#222
+
+    linkStyle 0,1,3,5 stroke:#1c7ed6,stroke-width:4px
+    linkStyle 2 stroke:#5f3dc4,stroke-width:5px
+    linkStyle 4 stroke:#9775fa,stroke-width:4px
 ```
 
 R1, R2 and R3 share a LAN (10.0.6.0/24 and 2001:db8:6::/64); every other link
 is a point-to-point Ethernet segment. Each address family is configured, so
-the whole lab runs dual-stack.
+the whole lab runs dual-stack. On every link, a router takes its own number as
+the host part: R3 is 10.0.6.3 on the LAN and 10.0.2.3 towards R4.
 
 ## Preparing the lab
 

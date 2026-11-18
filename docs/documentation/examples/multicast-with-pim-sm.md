@@ -14,14 +14,24 @@ Here is the logical and physical view:
 
 ```mermaid
 flowchart TD
-    VM1["VM1 (multicast source)<br/>vtnet0: 10.0.12.1"]
-    VM2["VM2 (PIM router, Candidate-RP)<br/>vtnet0: 10.0.12.2<br/>vtnet1: 10.0.23.2"]
-    VM3["VM3 (PIM router, Candidate-BSR)<br/>vtnet1: 10.0.23.3<br/>vtnet2: 10.0.34.3"]
-    VM4["VM4 (multicast receiver)<br/>vtnet2: 10.0.34.4"]
+    VM1(("<b>VM1</b><br/>multicast source<br/>10.0.12.1"))
+    VM2(("<b>VM2</b><br/>pimd, Candidate-RP<br/>10.0.12.2<br/>10.0.23.2"))
+    VM3(("<b>VM3</b><br/>pimd, Candidate-BSR<br/>10.0.23.3<br/>10.0.34.3"))
+    VM4(("<b>VM4</b><br/>multicast receiver<br/>10.0.34.4"))
 
-    VM1 ---|"10.0.12.0/24<br/>source LAN"| VM2
-    VM2 ---|"10.0.23.0/24<br/>PIM adjacency"| VM3
-    VM3 ---|"10.0.34.0/24<br/>receiver LAN"| VM4
+    VM1 ---|"<b>source LAN</b><br/>10.0.12.0/24"| VM2
+    VM2 ---|"<b>PIM</b> adjacency<br/>10.0.23.0/24"| VM3
+    VM3 ---|"<b>receiver LAN</b><br/>10.0.34.0/24"| VM4
+
+    classDef frr fill:#fde2c4,stroke:#d9480f,stroke-width:2px,color:#222
+    classDef bird fill:#d0e4f7,stroke:#1c5fa8,stroke-width:2px,color:#222
+    classDef router fill:#ffe3e3,stroke:#c92a2a,stroke-width:2px,color:#222
+    classDef host fill:#e9ecef,stroke:#6c757d,stroke-width:2px,color:#222
+    class VM1,VM4 host
+    class VM2,VM3 router
+
+    linkStyle 0,2 stroke:#868e96,stroke-width:3px
+    linkStyle 1 stroke:#d6336c,stroke-width:4px
 ```
 
 VM2 is the Rendezvous Point (RP) for the whole `224.0.0.0/4` range and VM3 is

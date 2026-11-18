@@ -17,12 +17,22 @@ Here is the logical and physical view:
 
 ```mermaid
 flowchart TD
-    VM1["VM1 (DHCP client)<br/>vtnet0: 10.0.12.123<br/>(leased)"]
-    VM2["VM2 (router, DHCP relay)<br/>vtnet0: 10.0.12.2<br/>vtnet1: 10.0.23.2"]
-    VM3["VM3 (DHCP server)<br/>vtnet1: 10.0.23.3<br/>pool: 10.0.12.100-200"]
+    VM1(("<b>VM1</b><br/>DHCP client<br/>10.0.12.123 (leased)"))
+    VM2(("<b>VM2</b><br/>router, DHCP relay<br/>10.0.12.2<br/>10.0.23.2"))
+    VM3(("<b>VM3</b><br/>DHCP server<br/>10.0.23.3<br/>pool 10.0.12.100-200"))
 
-    VM1 ---|"10.0.12.0/24<br/>broadcast requests"| VM2
-    VM2 ---|"10.0.23.0/24<br/>relayed as unicast"| VM3
+    VM1 ---|"<b>broadcast</b> requests<br/>10.0.12.0/24"| VM2
+    VM2 ---|"<b>relayed</b> as unicast<br/>10.0.23.0/24"| VM3
+
+    classDef frr fill:#fde2c4,stroke:#d9480f,stroke-width:2px,color:#222
+    classDef bird fill:#d0e4f7,stroke:#1c5fa8,stroke-width:2px,color:#222
+    classDef router fill:#ffe3e3,stroke:#c92a2a,stroke-width:2px,color:#222
+    classDef host fill:#e9ecef,stroke:#6c757d,stroke-width:2px,color:#222
+    class VM1,VM3 host
+    class VM2 router
+
+    linkStyle 0 stroke:#f76707,stroke-width:4px,stroke-dasharray:6 4
+    linkStyle 1 stroke:#f76707,stroke-width:4px
 ```
 
 The server hands out addresses for 10.0.12.0/24, a subnet it has no interface

@@ -21,15 +21,25 @@ Here is the logical and physical view:
 
 ```mermaid
 flowchart TD
-    VM1["VM1 (client)<br/>vtnet0: .1"]
-    VM2["VM2 (ECMP router)<br/>vtnet0: .2<br/>vtnet1: .2 &nbsp; vtnet3: .2"]
-    VM3["VM3 (ECMP router)<br/>vtnet1: .3 &nbsp; vtnet3: .3<br/>vtnet2: .3"]
-    VM4["VM4 (server)<br/>vtnet2: .4"]
+    VM1(("<b>VM1</b><br/>client<br/>.1"))
+    VM2(("<b>VM2</b><br/>ECMP router<br/>.2 on each link"))
+    VM3(("<b>VM3</b><br/>ECMP router<br/>.3 on each link"))
+    VM4(("<b>VM4</b><br/>server<br/>.4"))
 
     VM1 ---|"vtnet0<br/>10.0.12.0/24<br/>2001:db8:12::/64"| VM2
-    VM2 ---|"vtnet1<br/>10.0.231.0/24<br/>2001:db8:231::/64"| VM3
-    VM2 ---|"vtnet3 (shared LAN)<br/>10.0.232.0/24<br/>2001:db8:232::/64"| VM3
+    VM2 ---|"<b>path 1</b>, vtnet1<br/>10.0.231.0/24<br/>2001:db8:231::/64"| VM3
+    VM2 ---|"<b>path 2</b>, vtnet3 (shared LAN)<br/>10.0.232.0/24<br/>2001:db8:232::/64"| VM3
     VM3 ---|"vtnet2<br/>10.0.34.0/24<br/>2001:db8:34::/64"| VM4
+
+    classDef frr fill:#fde2c4,stroke:#d9480f,stroke-width:2px,color:#222
+    classDef bird fill:#d0e4f7,stroke:#1c5fa8,stroke-width:2px,color:#222
+    classDef router fill:#ffe3e3,stroke:#c92a2a,stroke-width:2px,color:#222
+    classDef host fill:#e9ecef,stroke:#6c757d,stroke-width:2px,color:#222
+    class VM1,VM4 host
+    class VM2,VM3 router
+
+    linkStyle 0,3 stroke:#868e96,stroke-width:3px
+    linkStyle 1,2 stroke:#0ca678,stroke-width:4px
 ```
 
 ## Setting up the lab
