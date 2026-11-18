@@ -364,3 +364,28 @@ systat -ifstat -match igb0,igb1,igb2 -pps
 ```
 
 R2 receives the packets on igb1 and igb2 and forwards them out igb0.
+
+### On the bhyve lab
+
+Start the lab with four VMs and one shared LAN, the second link between
+VM2 and VM3:
+
+```
+tools/BSDRP-lab-bhyve.sh -i BSDRP-full-amd64.img -n 4 -l 1 -r ecmp
+```
+
+VM1 sends 256 UDP flows to VM4, one per source port, and VM2 counts the
+packets leaving on each link (`netstat -I vtnet1` and `netstat -I vtnet3`):
+
+```
+[root@VM1]~# for p in $(jot 256 20000); do echo x | nc -u -w0 -p $p 10.0.34.4 9; done
+```
+
+| net.route.hash_forward on VM2 | vtnet1 (path 1) | vtnet3 (path 2) |
+|---|---|---|
+| 0 | 256 | 0 |
+| 1 | 128 | 128 |
+
+IPv6 and the return direction, from VM4 through VM3, give the same split.
+`tools/regression-test.sh <image> ecmp` runs these checks, in both
+directions and over IPv4 and IPv6.
