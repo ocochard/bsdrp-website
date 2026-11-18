@@ -8,9 +8,89 @@ This lab is used to test BSDRP before each new release.
 
 ### Network diagram
 
-Here is the logical and physical view:
+Here is the physical and routing view. Link colors give the routing
+protocol and router colors the routing suite. Every IPv4 subnet
+10.0.XY.0/24 has an IPv6 twin 2001:db8:XY::/64, and the loopbacks are
+10.0.0.N/32 and 2001:db8::N/128.
 
-![maximum_bsdrp_features_lab.png](../../assets/images/documentation/examples/maximum_bsdrp_features_lab.png)
+```mermaid
+flowchart TB
+    R3(("<b>R3</b><br/>bird<br/>pf"))
+    R2(("<b>R2</b><br/>FRR<br/>lo1 .2"))
+    R4(("<b>R4</b><br/>FRR<br/>lo1 .4"))
+    R1(("<b>R1</b><br/>host"))
+
+    subgraph R5["R5: multi-tenant host router"]
+        J5(("<b>jail5</b><br/>FRR"))
+        J6(("<b>jail6</b><br/>host"))
+    end
+
+    R2 ---|"<b>iBGP</b> AS 100, TCP-MD5<br/>10.0.23.0/24, VLAN 23"| R3
+    R3 ---|"<b>RIP / RIPng</b><br/>10.0.34.0/24"| R4
+    R2 ===|"<b>2 PPTP tunnels</b> via R3<br/>OSPF, OSPFv3, BFD, PIM"| R4
+    R2 ---|"<b>OSPF</b>, VRRP .254<br/>10.0.12.0/24"| R1
+    R4 ---|"<b>IS-IS</b>, PIM<br/>10.0.45.0/24"| J5
+    J5 ---|"CARP .254<br/>10.0.56.0/24"| J6
+
+    classDef frr fill:#fde2c4,stroke:#d9480f,stroke-width:2px,color:#222
+    classDef bird fill:#d0e4f7,stroke:#1c5fa8,stroke-width:2px,color:#222
+    classDef host fill:#e9ecef,stroke:#6c757d,stroke-width:2px,color:#222
+    class R2,R4,J5 frr
+    class R3 bird
+    class R1,J6 host
+    style R5 fill:#fff5f5,stroke:#e03131,stroke-width:2px,color:#222
+
+    linkStyle 0 stroke:#1c7ed6,stroke-width:4px
+    linkStyle 1 stroke:#f59f00,stroke-width:4px
+    linkStyle 2 stroke:#0b7285,stroke-width:6px
+    linkStyle 3 stroke:#15aabf,stroke-width:4px
+    linkStyle 4 stroke:#2f9e44,stroke-width:4px
+    linkStyle 5 stroke:#868e96,stroke-width:3px
+```
+
+| Router | Role |
+|--------|------|
+| R1 | iperf client, WireGuard peer, `lagg0` (loadbalance) over DHCP and SLAAC |
+| R2 | FRR (BGP, OSPF, OSPFv3, BFD), `net/pimd` Candidate-BSR, mpd5 PPTP server, DHCP relay, freevrrpd, rtadvd, strongSwan |
+| R3 | bird (BGP, RIP, RIPng), pf dropping transit tcp/2323 |
+| R4 | FRR (OSPF, OSPFv3, IS-IS, RIP, RIPng, BFD, PIM Candidate-RP), mpd5 PPTP client, strongSwan, WireGuard, ipfw shaping, NAT and NetFlow export |
+| jail5 | FRR (IS-IS), `net/pimd`, DHCP server, rtadvd, CARP, NetFlow collector (nfacctd) |
+| jail6 | iperf server, bsnmpd, `lagg0` (failover) over DHCP and SLAAC |
+
+The tunnels and overlays added on top of it, all ending on R4:
+
+```mermaid
+flowchart LR
+    R1(("<b>R1</b>"))
+    R2(("<b>R2</b>"))
+    R4(("<b>R4</b>"))
+    J6(("<b>jail6</b>"))
+    R3(("<b>R3</b>"))
+
+    R2 -.-|"<b>PPTP</b> ng0 10.4.24.0/24, ng1 10.6.24.0/24<br/>shaped to 10 Mb/s IPv4, 20 Mb/s IPv6"| R4
+    R2 -.-|"<b>IPsec</b> IKEv2, ipsec0, 10.8.24.0/24<br/>over 10.0.23.2 - 10.0.34.4"| R4
+    R2 -.-|"<b>VXLAN</b> vni 42, vxlan0, 10.7.24.0/24<br/>over the IPv4 loopbacks"| R4
+    R2 -.-|"<b>GENEVE</b> vni 43, geneve0, 10.7.25.0/24<br/>over the IPv6 loopbacks"| R4
+    R1 -.-|"<b>WireGuard</b> wg0, 10.9.14.0/24<br/>to 10.0.0.4:51820"| R4
+    J6 -->|"<b>NAT</b> on R4<br/>as 10.0.34.44"| R3
+
+    classDef frr fill:#fde2c4,stroke:#d9480f,stroke-width:2px,color:#222
+    classDef bird fill:#d0e4f7,stroke:#1c5fa8,stroke-width:2px,color:#222
+    classDef host fill:#e9ecef,stroke:#6c757d,stroke-width:2px,color:#222
+    class R2,R4 frr
+    class R3 bird
+    class R1,J6 host
+
+    linkStyle 0 stroke:#0b7285,stroke-width:3px
+    linkStyle 1 stroke:#c92a2a,stroke-width:3px
+    linkStyle 2 stroke:#7048e8,stroke-width:3px
+    linkStyle 3 stroke:#ae3ec9,stroke-width:3px
+    linkStyle 4 stroke:#2b8a3e,stroke-width:3px
+    linkStyle 5 stroke:#e8590c,stroke-width:3px
+```
+
+Each overlay also carries IPv6 (2001:db8:824::/64 for IPsec, 2001:db8:725::/64
+for GENEVE, 2001:db8:914::/64 for WireGuard), except VXLAN.
 
 ## Setting up the lab
 
