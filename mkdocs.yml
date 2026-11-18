@@ -95,6 +95,7 @@ nav:
               - Validating OpenVPN's low-latency servers patch: documentation/examples/validating-openvpn-s-low-latency-servers-selection-patch.md
               - Aggregating ISP links with ML-PPP (mpd5): documentation/examples/aggregating-multiple-isp-links.md
               - Aggregating ISP links with MLVPN: documentation/examples/aggregating-multiple-isp-links-with-mlvpn.md
+              - Branch office ECMP over WireGuard: documentation/examples/branch-office-ecmp-over-wireguard.md
               - Strongswan IPSec mediation feature: documentation/examples/strongswan-ipsec-mediation-feature.md
           - DHCP:
               - DHCP Relay and DHCP Server lab: documentation/examples/dhcp-relay-and-server-lab.md

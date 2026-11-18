@@ -28,6 +28,7 @@ VPN examples:
 - [Validating OpenVPN's low-latency server-selection patch](examples/validating-openvpn-s-low-latency-servers-selection-patch.md)
 - [Aggregating multiple ISP links with ML-PPP (mpd5)](examples/aggregating-multiple-isp-links.md)
 - [Aggregating multiple ISP links with MLVPN](examples/aggregating-multiple-isp-links-with-mlvpn.md)
+- [Branch office ECMP over WireGuard](examples/branch-office-ecmp-over-wireguard.md)
 - [strongSwan IPsec mediation feature (NAT hole punching)](examples/strongswan-ipsec-mediation-feature.md)
 
 DHCP examples:

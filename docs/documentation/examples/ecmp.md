@@ -3,17 +3,16 @@ title: Equal-cost multi-path routing (ECMP)
 ---
 ## Overview
 
-!!! danger "A bhyve lab will NOT exercise ECMP"
-    bhyve's `virtio-net` (vtnet) does not support multi-queue, so the host
-    network stack has only a single RSS bucket per interface and assigns the
-    same flow-id to every packet. As a result, the FreeBSD ECMP next-hop
-    selection collapses onto a single path and **all traffic ends up using
-    one link, regardless of how many equal-cost routes are installed**.
-    The bhyve labconfig (`ecmp_vm1`..`ecmp_vm4`) is useful only to verify the
-    routing configuration; to actually observe load distribution across the
-    two paths you need a **physical lab** with multi-queue NICs (`igb(4)`,
-    `cxgbe(4)`, `mlxen(4)`, etc.).
-
+!!! note "ECMP on bhyve and on NICs without RSS"
+    FreeBSD picks the ECMP next-hop from the packet's flow hash, which the
+    receiving NIC computes with RSS. bhyve's `virtio-net` (vtnet) has a
+    single queue and gives the same flow-id to every packet, so all the
+    traffic would take one path, regardless of how many equal-cost routes
+    are installed. Since BSDRP 2.4, `net.route.hash_forward=1` makes the
+    routers hash forwarded packets that arrive without a flow hash; the
+    bhyve labconfig (`ecmp_vm1`..`ecmp_vm4`) sets it on VM2 and VM3. On a
+    physical lab with RSS-capable NICs (`igb(4)`, `cxgbe(4)`, `mlxen(4)`,
+    etc.) the NIC already provides the hash.
 
 ### Network diagram
 
