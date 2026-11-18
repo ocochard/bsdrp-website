@@ -20,6 +20,7 @@ High availability examples:
 - [Simple uCarp lab](examples/simple-ucarp-lab.md)
 - [pf, pfsync, carp and pflog lab](examples/pf-and-carp-lab.md)
 - [Anycast DNS failover with ExaBGP](examples/anycast-dns-failover-with-exabgp.md)
+- [DDoS mitigation with RTBH](examples/rtbh-ddos-mitigation.md)
 
 VPN examples:
 
