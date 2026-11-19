@@ -25,6 +25,7 @@ High availability examples:
 
 VPN examples:
 
+- [Broadband gateway with PPPoE and DHCPv6 prefix delegation](examples/broadband-gateway-pppoe-dhcpv6-pd.md)
 - [Simple PPPoE (client/server) and L2TP (LAC/LNS) lab with mpd](examples/pppoe-and-l2tp-lab.md)
 - [Simple VPN with GRE, GIF, IPsec, OpenVPN and WireGuard](examples/gre-ipsec-and-openvpn.md)
 - [Validating OpenVPN's low-latency server-selection patch](examples/validating-openvpn-s-low-latency-servers-selection-patch.md)
