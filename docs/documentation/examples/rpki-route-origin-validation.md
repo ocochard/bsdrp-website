@@ -253,8 +253,11 @@ exit
     On a stock FRR 10.7, a ROA change updates the state that `show bgp`
     displays, but the routes it covers are not run through the route map
     again: a route that a new ROA makes invalid stays the best route
-    (`I*>`), until a `clear bgp ... soft in`. BSDRP's FRR package fixes
-    the lookup that finds these routes.
+    (`I*>`), and a denied route that becomes valid stays out, until a
+    `clear bgp ... soft in` (FRR issue
+    [#24001](https://github.com/FRRouting/frr/issues/24001)). BSDRP's FRR
+    package carries the fix proposed upstream, pull request
+    [#24131](https://github.com/FRRouting/frr/pull/24131).
 
 ### edge-bird (VM3)
 
@@ -420,4 +423,5 @@ several, FRR with one `rpki cache` line per cache and BIRD with one
 `tools/regression-test.sh <image> rpki` runs the checks above: the RTR
 sessions and the ROAs on both edges, the invalid routes dropped and the
 traffic to transit-a, the not-found hijack, the new ROAs stopping it
-without a BGP reset, and the cache outage.
+without a BGP reset, the cache outage, and a withdrawn ROA that lets its
+hijack back in.
