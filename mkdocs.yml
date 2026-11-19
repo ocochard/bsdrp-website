@@ -108,6 +108,7 @@ nav:
           - Traffic accounting:
               - Per-customer traffic accounting with NetFlow: documentation/examples/per-customer-traffic-accounting.md
           - IPv6:
+              - IPv6-only access with NAT64 and 464XLAT: documentation/examples/ipv6-only-access-with-nat64-and-464xlat.md
               - NAT64: documentation/examples/nat64.md
               - IPv6-only BGP/OSPF/RIPNG/ISIS lab: documentation/examples/ipv6-only-bgp-ospf-ripng-isis-lab-frrouting.md
           - Benchmarks:

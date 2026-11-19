@@ -51,6 +51,7 @@ Traffic accounting:
 
 IPv6:
 
+- [IPv6-only access with NAT64, DNS64 and 464XLAT](examples/ipv6-only-access-with-nat64-and-464xlat.md)
 - [NAT64](examples/nat64.md)
 - [IPv6-only BGP/OSPF/RIPNG/ISIS lab with FRRouting](examples/ipv6-only-bgp-ospf-ripng-isis-lab-frrouting.md)
 
