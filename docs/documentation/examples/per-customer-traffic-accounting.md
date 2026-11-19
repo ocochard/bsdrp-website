@@ -148,7 +148,6 @@ netflow_tune_start()
 {
 	ngctl msg netflow: settimeouts '{ inactive=5 active=60 }'
 	ngctl msg netflow: settemplate '{ time=60 packets=20 }'
-	ngctl msg netflow: setmtu '{ mtu=200 }'
 }
 
 load_rc_config $name
@@ -160,10 +159,14 @@ run_rc_command "$1"
 - `settemplate`: the NetFlow v9 template, without which the collector
   cannot decode anything, goes out with the first export instead of after
   10 minutes of uptime.
-- `setmtu`: `ng_netflow` sends an export datagram only once it is full.
-  On a busy router a 1500-byte datagram fills in a blink; on a quiet lab
-  router the last flows of a test could wait for minutes. 200 bytes leave
-  room for one record per datagram. Keep the default in production.
+
+!!! note "Export delay on a quiet router"
+    FreeBSD's `ng_netflow` sends an export datagram only once it is full.
+    On a busy router a 1500-byte datagram fills in a blink; on a quiet one,
+    expired flows could wait for minutes. BSDRP's kernel also sends a partly
+    filled datagram every second. On a stock FreeBSD kernel,
+    `ngctl msg netflow: setmtu '{ mtu=200 }'` gets the same result for
+    NetFlow v9, with one record per datagram.
 
 ### Customers (VM3 and VM4)
 
