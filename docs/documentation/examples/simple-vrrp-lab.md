@@ -191,3 +191,15 @@ PING 192.168.2.4 (192.168.2.4): 56 data bytes
 64 bytes from 192.168.2.4: icmp_seq=0 ttl=63 time=0.571 ms
 64 bytes from 192.168.2.4: icmp_seq=1 ttl=63 time=0.795 ms
 ```
+
+R1 losing its link sends no last advertisement, so R2 only takes over once
+R1's advertisements time out: about 3 seconds of traffic are lost. When
+vtnet3 comes back up, preemption gives both groups back to R1.
+
+### Automated test
+
+`./BSDRP-lab-bhyve.sh -r vrrp` configures all four routers as above, and
+`tools/regression-test.sh <image> vrrp` runs the checks above: the VRRP
+states on R1 and R2, the forwarding and the VRRP MAC addresses seen by R3
+and R4, then the failover (both groups move to R2, under 5 seconds of
+loss) and the return of both groups to R1.
