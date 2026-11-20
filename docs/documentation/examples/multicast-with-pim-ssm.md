@@ -168,19 +168,24 @@ headings, which keeps the output copy-pasteable.
 
 ### No Rendezvous Point, no Bootstrap Router
 
-This is the visible difference from the PIM-SM lab: the RP set holds only the
-static SSM entry (169.254.0.1 is the placeholder pimd uses for "no RP needed"),
-and there is no BSR line at all.
+This is the visible difference from the PIM-SM lab: the RP set is empty and no
+Bootstrap Router is elected. With pimd 3.4.0 (BSDRP 2.4):
 
 ```
 [root@VM2]~# pimctl -p show rp
 _______________________________________________________________________________
 PIM Rendez-Vous Point Set Table
+[root@VM2]~# pimctl -p show status | head -6
 ===============================================================================
-Group Address     RP Address       Prio  Holdtime  Type
+PIM Daemon Status
 ===============================================================================
-232.0.0.0/8       169.254.0.1         1   Forever  Static
+Elected BSR
+    Address             : 0.0.0.0
+    Expiry Time         : 0h1m30s
 ```
+
+pimd 3.1.0 listed the SSM range in the RP set instead, as a static entry for
+232.0.0.0/8 with the placeholder RP 169.254.0.1.
 
 The PIM adjacency between the two routers is built exactly as in sparse mode:
 
@@ -408,3 +413,12 @@ listening on vtnet2, link-type EN10MB (Ethernet), snapshot length 262144 bytes
 
 The decoy traffic never leaves the source LAN: with SSM, a source that nobody
 subscribed to costs the rest of the network nothing.
+
+## Automated test
+
+`./BSDRP-lab-bhyve.sh -n 4 -r pimssm` configures the four VMs as above, and
+`tools/regression-test.sh <image> pimssm` runs the checks above with pimd
+restarted first, so the any-source test starts from a clean state: no RP
+nor BSR, an any-source join that receives nothing, then a source-specific
+join whose (S,G) route exists before any traffic, whose source reaches VM4,
+and whose decoy source never leaves the source LAN.
