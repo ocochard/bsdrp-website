@@ -195,6 +195,14 @@ Usage: /usr/local/sbin/config option
                             If [option] given, display more detail about the option
 ```
 
+`config diff` lists every change that `config save` would store: new,
+modified and deleted files, symlinks, and permission or owner changes.
+`config save` fails with an error, instead of reporting success, when a
+file could not be saved (for example on a full `/cfg`).
+
+`config factory` archives the current configuration before clearing it, so
+`config rollback factory` brings it back.
+
 !!! warning "`config apply` is not implemented yet"
     `apply` and its options (`secure`, `confirm`, `in`, `at`, `cancel`)
     are placeholders: they print what they would do and change nothing.
@@ -210,6 +218,12 @@ Usage: /usr/local/sbin/config option
 
 
 ## Upgrading examples
+
+!!! note
+    `upgrade` checks that it received the whole image before switching the
+    boot partition: if the transfer is cut midway, it fails and the router
+    keeps booting its current system. After an upgrade, `system rollback`
+    makes the next boot use the previous system again.
 
 ### From BSDRP directly
 

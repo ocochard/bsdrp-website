@@ -264,6 +264,26 @@ On the FreeBSD `projects/routing` branch the impact is much larger:
 
 ### NIC driver tuning
 
+#### Interrupt affinity
+
+The iflib drivers (`em`, `igb`, `ix`, `ixl` and others) already bind each
+queue interrupt, together with the thread that processes the queue, to one
+CPU, and spread several NICs across the CPUs. Don't move these interrupts
+with `cpuset -x`: the interrupt would then run on a different CPU from its
+thread. To change the placement, use the iflib(4) loader tunables instead,
+for example in `/boot/loader.conf.local`:
+
+```
+dev.ix.0.iflib.core_offset="4"
+dev.ix.0.iflib.separate_txrx="1"
+```
+
+BSDRP 2.4 removed the `igb_affinity`, `ix_affinity` and `ixiflib_affinity`
+rc scripts for this reason. For the drivers that don't use iflib, BSDRP
+still provides `chelsio_affinity` (`cxgbe`, T4 to T7 cards),
+`mlx5en_affinity` and `bxe_affinity`, enabled with
+`sysrc <name>_enable=YES`.
+
 #### RX and TX descriptor (queue) size on igb
 
 The receive (`hw.igb.rxd`) and transmit (`hw.igb.txd`) internal buffer sizes of the igb and em drivers can be increased, but doing so is not a good idea.
